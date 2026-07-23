@@ -28,16 +28,17 @@ export function spawnInLinuxPidNamespace(
   const canonicalPrivateTempRoot = realpathSync("/tmp");
   const canonicalCwd = realpathSync(options.cwd);
   const relativeCwd = relative(canonicalPrivateTempRoot, canonicalCwd);
-  const cwdUnderPrivateTemp = relativeCwd.length > 0 && relativeCwd !== ".."
-    && !relativeCwd.startsWith(`..${sep}`) && !isAbsolute(relativeCwd);
+  const cwdUnderPrivateTemp = relativeCwd.length > 0 && isWithinOrSame(relativeCwd);
   const writableRoots = [...new Set(options.writableRoots)].map((root) => {
     if (root.includes("\0")) {
       throw new Error(`Atomic interruption writable root must be an explicit /tmp child: ${root}`);
     }
     const canonicalRoot = realpathSync(root);
     const relativeRoot = relative(canonicalTempRoot, canonicalRoot);
-    if (root !== canonicalRoot || relativeRoot.length === 0 || relativeRoot === ".."
-      || relativeRoot.startsWith(`..${sep}`) || isAbsolute(relativeRoot)) {
+    const overlapsCwd = isWithinOrSame(relative(canonicalCwd, canonicalRoot))
+      || isWithinOrSame(relative(canonicalRoot, canonicalCwd));
+    if (root !== canonicalRoot || relativeRoot.length === 0 || !isWithinOrSame(relativeRoot)
+      || overlapsCwd) {
       throw new Error(`Atomic interruption writable root must be a canonical /tmp child: ${root}`);
     }
     return canonicalRoot;
@@ -60,6 +61,10 @@ export function spawnInLinuxPidNamespace(
     "--",
     ...command,
   ], { ...spawnOptions, cwd: canonicalCwd });
+}
+
+function isWithinOrSame(relativePath: string): boolean {
+  return relativePath !== ".." && !relativePath.startsWith(`..${sep}`) && !isAbsolute(relativePath);
 }
 
 export function killLinuxProcessTree(child: CapturedChild): void {

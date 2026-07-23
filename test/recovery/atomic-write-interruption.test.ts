@@ -225,6 +225,13 @@ describe("real-process atomic write interruption", () => {
       const probePath = join(repositoryRoot, "filesystem-probe.ts");
       await writeFile(readOnlyPath, "{}\n", { mode: 0o600 });
       await copyFile(FILESYSTEM_PROBE, probePath);
+      expect(() => spawnInLinuxPidNamespace([process.execPath, "--version"], {
+        cwd: repositoryRoot,
+        detached: true,
+        writableRoots: [repositoryRoot],
+        stdout: "pipe",
+        stderr: "pipe",
+      })).toThrow("writable root must be a canonical /tmp child");
       const child = spawnInLinuxPidNamespace(
         [process.execPath, "run", probePath, writableRoot, readOnlyPath],
         {

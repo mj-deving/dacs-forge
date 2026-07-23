@@ -1,6 +1,6 @@
 {
   "schema": "dacs-forge-source-provenance/v1",
-  "sourceCommit": "733fe35aaa42a661cbfb54d1fb8fde83a1e8d7fd",
+  "sourceCommit": "fc88ca27d5cca7121977a9bfe9058255bd94f849",
   "scaffoldCommit": "a4ba4b88f4ad8cc33a65a89b4423643fb6797682",
   "upstreamPins": {
     "dacsStandard": {
@@ -451,7 +451,7 @@
     },
     {
       "path": "test/fixtures/linux-process-tree.ts",
-      "sha256": "8ff2dde0bc22772844b38f4e47424ac9a9a39a97051ef5be66e3b9bf96c567ef"
+      "sha256": "51bb2e762ea0f2f27e6db610adbd07e6c55c49ca35acfbfd6c00b23113a918c1"
     },
     {
       "path": "test/fixtures/local-receiver-assignment-fixture.ts",
@@ -719,7 +719,7 @@
     },
     {
       "path": "test/recovery/atomic-write-interruption.test.ts",
-      "sha256": "9a8053dae936d327c489bb9ea5c14e1cc9d3840315f794c722f6b3dec85b72f7"
+      "sha256": "44ddcdd4e3c7dbda5e80b82e9b89e01cfbd22489f437be8844dda813d70098dd"
     },
     {
       "path": "test/recovery/atomic-write-registry.test.ts",
