@@ -47,3 +47,34 @@ private build snapshot, not a certification of the public prototype. Raw interna
 review transcripts, runtime IDs, local paths, and steering records are intentionally
 not published here. Public CI independently re-runs the product test and build
 surface on every pushed snapshot.
+
+## Post-seal assurance evidence
+
+DACS Forge may become an implementation-evidence source after a supported Forge
+release and its public evidence snapshot are frozen at named revisions. In
+[DACS-Standard #272](https://github.com/DACS-Agent-commerce/DACS-Standard/issues/272#issuecomment-5049397102),
+the steward invited a small first pilot of no more than five findings and preferred
+three strong, independently reproducible packets over five overlapping ones.
+
+Each packet covers one finding. It names the exact Forge and DACS revisions, states
+one invariant and its normative classification, provides a minimal deterministic
+counterexample, bounds the impact, and includes correction evidence. A vector
+proposal must include positive and adversarial arms and must be executable by a
+second implementation without importing Forge code. Packets are deduplicated
+against current DACS sources, issues, corrections, and vectors before submission;
+executed and inferred claims remain distinct; fixtures are synthetic or otherwise
+publishable.
+
+This intake changes no DACS requirement, conformance verdict, or implementation
+obligation by itself. Normative proposals follow the ordinary public steward review
+and merge process. Forge remains independent and non-normative: it supplies
+evidence for classification, never the expected-answer oracle.
+
+## Bilateral Vet evidence boundary
+
+The public source-provenance manifest binds the shipped Bilateral Vet
+implementation and tests to one exact source commit. The repository does not
+publish the raw semantic-review logs behind their development, a portable generated
+Vet corpus, or evidence that an accepted external conformance rig has qualified this
+snapshot. Local producer, consumer, adversarial, persistence, and restart tests are
+implementation evidence only; they do not establish external qualification.
