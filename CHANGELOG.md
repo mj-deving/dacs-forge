@@ -1,0 +1,16 @@
+# Changelog
+
+All notable changes to DACS Forge will be recorded here.
+
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and release versions follow [Semantic Versioning](https://semver.org/).
+
+## Unreleased
+
+### Added
+
+- Initial fixture/no-spend reference substrate and service-agent extension surface.
+- Producer, consumer, lifecycle, persistence, conformance, and adversarial test rig.
+- Public security, contribution, provenance, forking, governance, and versioning contracts.
+
+No public release has been cut yet.

@@ -1,0 +1,8 @@
+node_modules/
+dist/
+coverage/
+.stryker-tmp/
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+data/

@@ -1,0 +1,58 @@
+{
+  "schema": "dacs-forge-storage-program-compat/v1",
+  "source": {
+    "repository": "DACS-Agent-commerce/DACS-Standard",
+    "main": "2ff69b7f1fa13440a64cc865bd3f7e5fce6d34d2",
+    "next": "fcbf804dcc53184726eed4385d794a0fdbbe00cc",
+    "specPath": "spec/DACS-4-SETTLE.md",
+    "specSha256": "8dec25b08f7eb896699d97a8449be71ec6ae293bf9e796f78cd5d8c0ccfe1f16",
+    "section": "9.6.1",
+    "securityVectorPath": "conformance/vectors/security/private-deliverables-v0.1.json",
+    "securityVectorSha256": "fc8e08ac99ca5b4dd18dfed85eb4b6e8d8efbc2d65e12b71077b8b489e95f8a9",
+    "securityVectorSetHash": "da6c16c5c96b319316260894b50c309ba8e2d18f5e342287a200b95aa05f0373"
+  },
+  "fixture": {
+    "jobId": "01J8ME0SXKQ4T9V2RC5HJ6WX7D",
+    "listingDeliverable": {
+      "kind": "storage-program",
+      "expectedSizeBytes": 131073,
+      "accessModel": "buyer-only"
+    },
+    "agreementBuyer": {
+      "primaryClaim": "key:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "address": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+    },
+    "unauthorizedReader": {
+      "primaryClaim": "key:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "address": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "payload": {
+      "generation": "repeat-byte",
+      "byte": 97,
+      "sizeBytes": 131073,
+      "sha256": "7e009ea4ef882e385b3c0bcbbfa8d009bb0a633bdd764415c09182ee0e75da73"
+    },
+    "evidence": {
+      "deliverableAnchor": {
+        "kind": "storage-program",
+        "locator": "dacs4:deliverable:01J8ME0SXKQ4T9V2RC5HJ6WX7D"
+      },
+      "deliverableContentHash": "7e009ea4ef882e385b3c0bcbbfa8d009bb0a633bdd764415c09182ee0e75da73"
+    },
+    "pointer": {
+      "externalUrl": "https://fixture.invalid/dacs4/01J8ME0SXKQ4T9V2RC5HJ6WX7D/payload",
+      "externalContentHash": "7e009ea4ef882e385b3c0bcbbfa8d009bb0a633bdd764415c09182ee0e75da73",
+      "segmentRefs": [
+        {
+          "anchor": {
+            "kind": "storage-program",
+            "locator": "dacs4:deliverable:01J8ME0SXKQ4T9V2RC5HJ6WX7D:segment:0"
+          },
+          "contentHash": "1b0df538e72bcb5f9e75a2860fa21a53a39307e35f01dacd5781e63f99f17dc1",
+          "signer": "key:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"
+        }
+      ]
+    },
+    "pointerCanonicalSha256": "a8adc5bb54757b62ca44248b126932e27ae0ea7b377694b4728d4ab229026265"
+  }
+}

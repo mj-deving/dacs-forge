@@ -1,0 +1,124 @@
+{
+  "upstreamCommit": "ad48d16c25a810a6420b4d4cc9b9d8d6d38908c4",
+  "upstreamPath": "conformance/vectors/security/settlement-finalization-propagation-v0.3.json",
+  "upstreamSha256": "98c6356157b180d62e1049201143ab5681d9db2e71eb6f9aef6fdf20f787c555",
+  "set": "settlement-finalization-propagation-v0.3",
+  "spec": "DACS-4 §9.7 FP-1..FP-4; DACS-5 §10.4.1 and §10.4.3",
+  "hash": "f7ac3446cb19766933b1bc60c3bca3841429291744efcf6041a343e2219a7282",
+  "count": 6,
+  "requiredChangedPaths": [
+    "SettlementEvidence.paymentTxRefs[0].txHash",
+    "SettlementEvidence.contentHash",
+    "SettlementEvidence.signature.value",
+    "AttestationBundle.settlementEvidence[0].contentHash",
+    "AttestationBundle.phaseSummary[0].txRefs[0].txHash",
+    "AttestationBundle.phaseSummary[0].attestationRef.contentHash",
+    "AttestationBundle.attestationBundleHash",
+    "AttestationBundle.signatures"
+  ],
+  "allowedChangedPaths": [
+    "SettlementEvidence.paymentTxRefs[0].txHash",
+    "SettlementEvidence.contentHash",
+    "SettlementEvidence.signature.value",
+    "SettlementEvidence.anchor",
+    "AttestationBundle.settlementEvidence[0].contentHash",
+    "AttestationBundle.settlementEvidence[0].anchor",
+    "AttestationBundle.phaseSummary[0].txRefs[0].txHash",
+    "AttestationBundle.phaseSummary[0].attestationRef.contentHash",
+    "AttestationBundle.phaseSummary[0].attestationRef.anchor",
+    "AttestationBundle.attestationBundleHash",
+    "AttestationBundle.signatures",
+    "AttestationBundle.anchor"
+  ],
+  "vectors": [
+    {
+      "name": "final-source-propagates-through-evidence-and-bundle",
+      "rule": "FP-2..FP-4",
+      "expected": "pass",
+      "draftDisposition": "in-memory-only",
+      "changedPaths": [
+        "SettlementEvidence.paymentTxRefs[0].txHash",
+        "SettlementEvidence.contentHash",
+        "SettlementEvidence.signature.value",
+        "AttestationBundle.settlementEvidence[0].contentHash",
+        "AttestationBundle.phaseSummary[0].txRefs[0].txHash",
+        "AttestationBundle.phaseSummary[0].attestationRef.contentHash",
+        "AttestationBundle.attestationBundleHash",
+        "AttestationBundle.signatures"
+      ]
+    },
+    {
+      "name": "signed-anchored-placeholder-is-never-valid-evidence",
+      "rule": "FP-1",
+      "expected": "fail",
+      "draftDisposition": "signed-anchored-success",
+      "changedPaths": [
+        "SettlementEvidence.paymentTxRefs[0].txHash",
+        "SettlementEvidence.contentHash",
+        "SettlementEvidence.signature.value",
+        "AttestationBundle.settlementEvidence[0].contentHash",
+        "AttestationBundle.phaseSummary[0].txRefs[0].txHash",
+        "AttestationBundle.phaseSummary[0].attestationRef.contentHash",
+        "AttestationBundle.attestationBundleHash",
+        "AttestationBundle.signatures"
+      ]
+    },
+    {
+      "name": "evidence-rebuilt-but-bundle-reference-stays-stale",
+      "rule": "FP-3/FP-4",
+      "expected": "fail",
+      "draftDisposition": "in-memory-only",
+      "changedPaths": [
+        "SettlementEvidence.paymentTxRefs[0].txHash",
+        "SettlementEvidence.contentHash",
+        "SettlementEvidence.signature.value"
+      ]
+    },
+    {
+      "name": "bundle-reference-updated-but-phase-txref-stays-placeholder",
+      "rule": "FP-3/FP-4",
+      "expected": "fail",
+      "draftDisposition": "in-memory-only",
+      "changedPaths": [
+        "SettlementEvidence.paymentTxRefs[0].txHash",
+        "SettlementEvidence.contentHash",
+        "SettlementEvidence.signature.value",
+        "AttestationBundle.settlementEvidence[0].contentHash",
+        "AttestationBundle.phaseSummary[0].attestationRef.contentHash",
+        "AttestationBundle.attestationBundleHash",
+        "AttestationBundle.signatures"
+      ]
+    },
+    {
+      "name": "hashes-updated-without-required-resigning",
+      "rule": "FP-2/FP-3",
+      "expected": "fail",
+      "draftDisposition": "in-memory-only",
+      "changedPaths": [
+        "SettlementEvidence.paymentTxRefs[0].txHash",
+        "SettlementEvidence.contentHash",
+        "AttestationBundle.settlementEvidence[0].contentHash",
+        "AttestationBundle.phaseSummary[0].txRefs[0].txHash",
+        "AttestationBundle.phaseSummary[0].attestationRef.contentHash",
+        "AttestationBundle.attestationBundleHash"
+      ]
+    },
+    {
+      "name": "unrelated-agreement-change-is-outside-propagation-closure",
+      "rule": "FP-3/FP-4",
+      "expected": "fail",
+      "draftDisposition": "in-memory-only",
+      "changedPaths": [
+        "SettlementEvidence.paymentTxRefs[0].txHash",
+        "SettlementEvidence.contentHash",
+        "SettlementEvidence.signature.value",
+        "AttestationBundle.settlementEvidence[0].contentHash",
+        "AttestationBundle.phaseSummary[0].txRefs[0].txHash",
+        "AttestationBundle.phaseSummary[0].attestationRef.contentHash",
+        "AttestationBundle.attestationBundleHash",
+        "AttestationBundle.signatures",
+        "AttestationBundle.agreementRef.contentHash"
+      ]
+    }
+  ]
+}

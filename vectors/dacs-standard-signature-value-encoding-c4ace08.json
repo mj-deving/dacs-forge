@@ -1,0 +1,74 @@
+{
+  "source": {
+    "repository": "DACS-Agent-commerce/DACS-Standard",
+    "commit": "c4ace086a6f7117784d65f527b93e632039db6de",
+    "path": "conformance/vectors/security/signature-value-encoding-v0.1.json"
+  },
+  "signatureBytesHex": "436f7b1e403a964f7b23c121c47b16cbf1ce9a60fd1f4b709998991cb8cd682939cd2c3e94446a33839515e83d45a37a32f378fbc51a9b30ad084acac5cf8405",
+  "canonicalValue": "Q297HkA6lk97I8EhxHsWy_HOmmD9H0twmZiZHLjNaCk5zSw-lERqM4OVFeg9RaN6MvN4-8UamzCtCErKxc-EBQ",
+  "vectors": [
+    {
+      "name": "canonical-base64url-unpadded",
+      "mode": "conforming-verifier",
+      "value": "Q297HkA6lk97I8EhxHsWy_HOmmD9H0twmZiZHLjNaCk5zSw-lERqM4OVFeg9RaN6MvN4-8UamzCtCErKxc-EBQ",
+      "expected": "accept",
+      "decodedLength": 64
+    },
+    {
+      "name": "standard-base64-same-bytes-rejected",
+      "mode": "conforming-verifier",
+      "value": "Q297HkA6lk97I8EhxHsWy/HOmmD9H0twmZiZHLjNaCk5zSw+lERqM4OVFeg9RaN6MvN4+8UamzCtCErKxc+EBQ==",
+      "expected": "reject"
+    },
+    {
+      "name": "padded-base64url-same-bytes-rejected",
+      "mode": "conforming-verifier",
+      "value": "Q297HkA6lk97I8EhxHsWy_HOmmD9H0twmZiZHLjNaCk5zSw-lERqM4OVFeg9RaN6MvN4-8UamzCtCErKxc-EBQ==",
+      "expected": "reject"
+    },
+    {
+      "name": "embedded-whitespace-rejected",
+      "mode": "conforming-verifier",
+      "value": "Q297HkA6lk97I8EhxHsW y_HOmmD9H0twmZiZHLjNaCk5zSw-lERqM4OVFeg9RaN6MvN4-8UamzCtCErKxc-EBQ",
+      "expected": "reject"
+    },
+    {
+      "name": "impossible-length-rejected",
+      "mode": "conforming-verifier",
+      "value": "A",
+      "expected": "reject"
+    },
+    {
+      "name": "non-zero-residual-bits-rejected",
+      "mode": "conforming-verifier",
+      "value": "AB",
+      "expected": "reject"
+    },
+    {
+      "name": "canonical-wire-wrong-ed25519-length-rejected",
+      "mode": "conforming-verifier",
+      "value": "Q297HkA6lk97I8EhxHsWy_HOmmD9H0twmZiZHLjNaCk5zSw-lERqM4OVFeg9RaN6MvN4-8UamzCtCErKxc-E",
+      "expected": "reject"
+    },
+    {
+      "name": "declared-standard-base64-legacy-import",
+      "mode": "legacy-import",
+      "declaredEncoding": "standard-base64-padded",
+      "value": "Q297HkA6lk97I8EhxHsWy/HOmmD9H0twmZiZHLjNaCk5zSw+lERqM4OVFeg9RaN6MvN4+8UamzCtCErKxc+EBQ==",
+      "expected": "accept"
+    },
+    {
+      "name": "declared-lowercase-hex-legacy-import",
+      "mode": "legacy-import",
+      "declaredEncoding": "lowercase-hex",
+      "value": "436f7b1e403a964f7b23c121c47b16cbf1ce9a60fd1f4b709998991cb8cd682939cd2c3e94446a33839515e83d45a37a32f378fbc51a9b30ad084acac5cf8405",
+      "expected": "accept"
+    },
+    {
+      "name": "undeclared-legacy-encoding-rejected",
+      "mode": "legacy-import",
+      "value": "Q297HkA6lk97I8EhxHsWy/HOmmD9H0twmZiZHLjNaCk5zSw+lERqM4OVFeg9RaN6MvN4+8UamzCtCErKxc+EBQ==",
+      "expected": "reject"
+    }
+  ]
+}

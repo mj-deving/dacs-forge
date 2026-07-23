@@ -1,0 +1,23 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:dacs-agent-template:reference-json-transform:input:1",
+  "title": "Reference JSON Transform Input",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["document", "select"],
+  "properties": {
+    "document": {
+      "type": "object",
+      "maxProperties": 32,
+      "propertyNames": { "minLength": 1, "maxLength": 128 },
+      "additionalProperties": { "type": "string", "maxLength": 4096 }
+    },
+    "select": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 32,
+      "uniqueItems": true,
+      "items": { "type": "string", "minLength": 1, "maxLength": 128 }
+    }
+  }
+}

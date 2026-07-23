@@ -1,0 +1,52 @@
+{
+  "source": {
+    "repository": "DACS-Agent-commerce/DACS-Standard",
+    "commit": "db9f9c0075a63d69d4464bac62cbfb2362a3f223",
+    "manifestPath": "conformance/MANIFEST.json",
+    "area": "canonicalize"
+  },
+  "cases": [
+    {
+      "id": "canon-key-order",
+      "operation": "canonicalize",
+      "input": { "b": 1, "a": 2, "A": 3 },
+      "want": "{\"A\":3,\"a\":2,\"b\":1}"
+    },
+    {
+      "id": "canon-nested",
+      "operation": "canonicalize",
+      "input": { "z": [3, 1, 2], "a": { "y": 1, "x": 2 } },
+      "want": "{\"a\":{\"x\":2,\"y\":1},\"z\":[3,1,2]}"
+    },
+    {
+      "id": "canon-escaping",
+      "operation": "canonicalize",
+      "input": "a\"b\\c\n\t",
+      "want": "\"a\\\"b\\\\c\\n\\t\""
+    },
+    {
+      "id": "canon-no-escape-slash",
+      "operation": "canonicalize",
+      "input": "a/bé",
+      "want": "\"a/bé\""
+    },
+    {
+      "id": "canon-int",
+      "operation": "canonicalize",
+      "input": 9007199254740991,
+      "want": "9007199254740991"
+    },
+    {
+      "id": "canon-fractional",
+      "operation": "canonicalize",
+      "input": 1.5,
+      "want": "1.5"
+    },
+    {
+      "id": "canon-without-signature",
+      "operation": "without-signature",
+      "input": { "a": 1, "signature": "excluded" },
+      "want": "{\"a\":1}"
+    }
+  ]
+}

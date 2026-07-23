@@ -1,0 +1,12 @@
+{
+  "profile": "legacy-sdk-v0.1",
+  "communityCommit": "634caef4b952838281c8c602402e657d41074703",
+  "legacyFixturePath": "reference-implementations/dacs-directory/test/fixtures/reviewbot-listing-anchor.json",
+  "legacyFixtureSha256": "a390974f6579d2e57df259c3e13787458bf9ebc856c19b5e4f821230b8ee18f3",
+  "liveSchemaUrl": "https://community-production-9ab1.up.railway.app/schemas/listing-summary.schema.json",
+  "liveSchemaSha256": "cbd8f545c03929acbd9cc6eccad53268eb267c8270d0d63e492651633f0048ab",
+  "liveSchemaBytes": 1672,
+  "liveSchemaSourcePath": "reference-implementations/dacs-directory/src/catalog/contracts.ts",
+  "liveSchemaRoutePath": "reference-implementations/dacs-directory/app/schemas/listing-summary.schema.json/route.ts",
+  "capturedAt": "2026-07-21T18:10:00Z"
+}
