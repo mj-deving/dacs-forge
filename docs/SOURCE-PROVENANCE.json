@@ -853,7 +853,7 @@
   "packagingFiles": [
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "14cc63102b532cecdebb026f3e8c002082884a581438a528658b06bd1f3201a3"
+      "sha256": "3aae8fa51b526123ab2827bb49951e24e7b573f401ef8fbc4423c5ba8051231e"
     },
     {
       "path": "CHANGELOG.md",
