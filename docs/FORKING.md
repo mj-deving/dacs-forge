@@ -23,7 +23,7 @@ service logic plus its own schema or fixtures and must pass:
 
 ```sh
 bun install --frozen-lockfile
-bun test test/e2e/full-handshake.test.ts
+bun test --timeout 10000 test/e2e/full-handshake.test.ts
 bun run check
 bun run build
 ```

@@ -1,8 +1,13 @@
 # Provenance
 
 The machine-readable [source provenance manifest](SOURCE-PROVENANCE.json) binds
-the history-clean root to its allowlisted implementation source and separates
-public-only packaging files. The manifest intentionally omits its own digest.
+the history-clean tree contents to its allowlisted implementation source and
+separates public-only packaging files. `bun run verify:provenance` rejects a
+digest mismatch or any undeclared tracked file. The manifest intentionally omits
+its own digest because a file cannot contain its own stable digest. Cutover
+evidence therefore binds one exact candidate commit to the external manifest
+SHA-256; `sourceCommit` identifies the private origin snapshot, not the public
+candidate commit.
 
 ## Normative source
 

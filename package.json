@@ -12,9 +12,10 @@
   },
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target bun --packages external",
-    "check": "bun run typecheck && bun test",
+    "check": "bun run verify:provenance && bun run typecheck && bun test",
     "test": "bun test --timeout 10000",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "verify:provenance": "bun tools/verify-source-provenance.ts"
   },
   "devDependencies": {
     "@types/bun": "1.3.14",

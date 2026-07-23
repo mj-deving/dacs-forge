@@ -34,7 +34,7 @@ Requires Bun `1.3.9` on Linux.
 git clone https://github.com/mj-deving/dacs-forge.git
 cd dacs-forge
 bun install --frozen-lockfile
-bun test test/e2e/full-handshake.test.ts
+bun test --timeout 10000 test/e2e/full-handshake.test.ts
 bun run check
 bun run build
 ```

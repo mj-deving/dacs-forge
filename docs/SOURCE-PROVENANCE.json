@@ -853,7 +853,7 @@
   "packagingFiles": [
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "5d066db36235cfd34f25d955d65e6ee4f3ebc24045e26ca4d72a778ed2a9cf15"
+      "sha256": "14cc63102b532cecdebb026f3e8c002082884a581438a528658b06bd1f3201a3"
     },
     {
       "path": "CHANGELOG.md",
@@ -869,7 +869,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "03e7c803b9d3d2e0f58177357894cbaae795ae516d21c4cbe53ab6116b77c2e0"
+      "sha256": "402890e2dda6fad4788f730748c905641366bcf2dde0afc5f9e0ab8fc09d5dae"
     },
     {
       "path": "SECURITY.md",
@@ -877,7 +877,7 @@
     },
     {
       "path": "docs/FORKING.md",
-      "sha256": "2778579e137c9d62da58e2a2af9271c8a2a96147eaedb07f3a269c168aafe1cb"
+      "sha256": "0d6629fd854a0bd2ffb85979505a7d2a1fab7b2529ba94c273e5dd27a2395f40"
     },
     {
       "path": "docs/HARDENING.md",
@@ -889,7 +889,7 @@
     },
     {
       "path": "docs/PROVENANCE.md",
-      "sha256": "21c2db44218a3ddfb2f95a9b2ae85b557e3b4c8d5df7afb66866b51009190cf1"
+      "sha256": "638375853cd81dee83a4ba778134614271df2578a5f90f26a9c4bc004e4f5e0b"
     },
     {
       "path": "docs/SERVICE-CONTRACT.md",
@@ -901,7 +901,11 @@
     },
     {
       "path": "package.json",
-      "sha256": "f9d741fe6670889524abc0e2f349dbed1bbd94d795b6623ac7f38ce24650765f"
+      "sha256": "3e9b50c6fb700dd01c9a2dbd0368a1c33fb261ff7d7080e600d376e9959d729a"
+    },
+    {
+      "path": "tools/verify-source-provenance.ts",
+      "sha256": "7c9bedb78bf0c4319d76234bd00a591da173287c95a852327ccab8a1862f5729"
     }
   ],
   "self": {
