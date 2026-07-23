@@ -25,6 +25,11 @@ export function spawnInLinuxPidNamespace(
   options: LinuxPidNamespaceSpawnOptions,
 ) {
   const canonicalTempRoot = realpathSync(tmpdir());
+  const canonicalPrivateTempRoot = realpathSync("/tmp");
+  const canonicalCwd = realpathSync(options.cwd);
+  const relativeCwd = relative(canonicalPrivateTempRoot, canonicalCwd);
+  const cwdUnderPrivateTemp = relativeCwd.length > 0 && relativeCwd !== ".."
+    && !relativeCwd.startsWith(`..${sep}`) && !isAbsolute(relativeCwd);
   const writableRoots = [...new Set(options.writableRoots)].map((root) => {
     if (root.includes("\0")) {
       throw new Error(`Atomic interruption writable root must be an explicit /tmp child: ${root}`);
@@ -37,20 +42,24 @@ export function spawnInLinuxPidNamespace(
     }
     return canonicalRoot;
   });
+  const readOnlyCwdBind = cwdUnderPrivateTemp
+    ? ["--ro-bind", canonicalCwd, canonicalCwd]
+    : [];
   const tempBinds = writableRoots.flatMap((root) => ["--bind", root, root]);
-  const { writableRoots: _, ...spawnOptions } = options;
+  const { writableRoots: _, cwd: __, ...spawnOptions } = options;
   return Bun.spawn([
     BWRAP,
     "--unshare-pid",
     "--die-with-parent",
     "--ro-bind", "/", "/",
     "--tmpfs", "/tmp",
+    ...readOnlyCwdBind,
     ...tempBinds,
     "--proc", "/proc",
     "--dev-bind", "/dev", "/dev",
     "--",
     ...command,
-  ], spawnOptions);
+  ], { ...spawnOptions, cwd: canonicalCwd });
 }
 
 export function killLinuxProcessTree(child: CapturedChild): void {

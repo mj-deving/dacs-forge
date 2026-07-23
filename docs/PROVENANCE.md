@@ -9,6 +9,9 @@ evidence therefore binds one exact candidate commit to the external manifest
 SHA-256; `sourceCommit` identifies the private origin snapshot, not the public
 candidate commit.
 
+Copied and projected upstream vectors retain their source licenses and exact
+path/commit mapping in [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
+
 ## Normative source
 
 - DACS-Standard commit: `ad48d16c25a810a6420b4d4cc9b9d8d6d38908c4`

@@ -214,6 +214,37 @@ describe("real-process atomic write interruption", () => {
     })).toThrow("writable root must be a canonical /tmp child");
   });
 
+  test("keeps an explicit repository cwd under private /tmp readable but not writable", async () => {
+    const previousTmpdir = process.env["TMPDIR"];
+    process.env["TMPDIR"] = "/var/tmp";
+    try {
+      const writableRoot = await mkdtemp(join(tmpdir(), "dacs-atomic-cwd-write-"));
+      const repositoryRoot = await mkdtemp("/tmp/dacs-atomic-cwd-read-");
+      roots.push(writableRoot, repositoryRoot);
+      const readOnlyPath = join(repositoryRoot, "package.json");
+      const probePath = join(repositoryRoot, "filesystem-probe.ts");
+      await writeFile(readOnlyPath, "{}\n", { mode: 0o600 });
+      await copyFile(FILESYSTEM_PROBE, probePath);
+      const child = spawnInLinuxPidNamespace(
+        [process.execPath, "run", probePath, writableRoot, readOnlyPath],
+        {
+          cwd: repositoryRoot,
+          detached: true,
+          writableRoots: [writableRoot],
+          stdout: "pipe",
+          stderr: "pipe",
+        },
+      );
+      const result = await collectChild(child, "private /tmp repository cwd probe", 5_000);
+      expect(result.exitCode, result.stderr).toBe(0);
+      expect(await readFile(join(writableRoot, "namespace-write-probe"), "utf8")).toBe("bounded\n");
+      expect(await readFile(readOnlyPath, "utf8")).toBe("{}\n");
+    } finally {
+      if (previousTmpdir === undefined) delete process.env["TMPDIR"];
+      else process.env["TMPDIR"] = previousTmpdir;
+    }
+  });
+
   test("copies rollback-journal and WAL sidecars into paused checkpoints", async () => {
     const root = await mkdtemp(join(tmpdir(), "dacs-atomic-sidecars-"));
     roots.push(root);

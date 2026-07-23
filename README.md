@@ -100,6 +100,8 @@ allowlisted source snapshot by
 [docs/SOURCE-PROVENANCE.json](docs/SOURCE-PROVENANCE.json). The public review narrative is in
 [docs/HARDENING.md](docs/HARDENING.md); raw internal review-control artifacts are
 deliberately excluded from this repository.
+Upstream vector and fixture licenses are retained in
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
 ## Versioning and governance
 

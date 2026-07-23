@@ -4,9 +4,15 @@ DACS Forge is a prototype and must not be used for live value transfer.
 
 ## Reporting a vulnerability
 
-Please use GitHub private vulnerability reporting for `mj-deving/dacs-forge`.
-Do not open a public issue for an exploitable authority, signature, secret,
-settlement, or persistence defect.
+If the repository Security settings visibly show private vulnerability reporting
+as enabled, use that channel. Until that live readback exists, report privately
+to `mariusclaude@proton.me`. Do not open a public issue for an exploitable
+authority, signature, secret, settlement, or persistence defect.
+
+Publication is not evidence that GitHub security controls are enabled. The
+authorized public cutover must separately enable and read back private
+vulnerability reporting and must record whether Dependabot alerts, secret
+scanning, and push protection are enabled, unavailable, or unsupported.
 
 Include the affected commit, attack preconditions, minimal reproduction, expected
 fail-closed behavior, and observed result. Do not include real credentials,

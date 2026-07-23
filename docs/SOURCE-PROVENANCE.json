@@ -1,6 +1,6 @@
 {
   "schema": "dacs-forge-source-provenance/v1",
-  "sourceCommit": "7532d0a18c71ecbd073ab0b604d77ad00a6b4719",
+  "sourceCommit": "733fe35aaa42a661cbfb54d1fb8fde83a1e8d7fd",
   "scaffoldCommit": "a4ba4b88f4ad8cc33a65a89b4423643fb6797682",
   "upstreamPins": {
     "dacsStandard": {
@@ -39,7 +39,7 @@
     },
     {
       "path": "bun.lock",
-      "sha256": "c3cc6965ce955682177be3e95e93b5415c07780870eb78453ed35eafec4570c4"
+      "sha256": "d2e21f0992f44951a09c31a76c485fdf14577867c616f061cf89ab15227f971d"
     },
     {
       "path": "service/fixtures/basic.ts",
@@ -451,7 +451,7 @@
     },
     {
       "path": "test/fixtures/linux-process-tree.ts",
-      "sha256": "037badebcc38d9d79151ab6ef32b2f740b489110ad7612dd5d78d4cee24f1814"
+      "sha256": "8ff2dde0bc22772844b38f4e47424ac9a9a39a97051ef5be66e3b9bf96c567ef"
     },
     {
       "path": "test/fixtures/local-receiver-assignment-fixture.ts",
@@ -719,7 +719,7 @@
     },
     {
       "path": "test/recovery/atomic-write-interruption.test.ts",
-      "sha256": "2448f326303b0f82386c92606185adece7bfdcdcae099fc185f6549c15193d41"
+      "sha256": "9a8053dae936d327c489bb9ea5c14e1cc9d3840315f794c722f6b3dec85b72f7"
     },
     {
       "path": "test/recovery/atomic-write-registry.test.ts",
@@ -869,11 +869,15 @@
     },
     {
       "path": "README.md",
-      "sha256": "402890e2dda6fad4788f730748c905641366bcf2dde0afc5f9e0ab8fc09d5dae"
+      "sha256": "5c2312c5c55de413c98e9ffb5700cfa88362bdae2ff156e18d7d0e834e6f4750"
     },
     {
       "path": "SECURITY.md",
-      "sha256": "06c359129554823b3ca91580eb4cccd08616972be1bd02973b6f43909fd784cf"
+      "sha256": "3eda36d217ad126bacd5c112e7ef62965553bc74b4bcef0edfde56e3adccdfeb"
+    },
+    {
+      "path": "THIRD_PARTY_NOTICES.md",
+      "sha256": "2149c4e7d572ff924e506b0426dc074a61c12955d71725195ef9a3c4d64bc151"
     },
     {
       "path": "docs/FORKING.md",
@@ -889,7 +893,7 @@
     },
     {
       "path": "docs/PROVENANCE.md",
-      "sha256": "638375853cd81dee83a4ba778134614271df2578a5f90f26a9c4bc004e4f5e0b"
+      "sha256": "c3de00c8197bed54a29030e9fea62a48f960f289b8fe5092bd11296febd9d100"
     },
     {
       "path": "docs/SERVICE-CONTRACT.md",
@@ -901,7 +905,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "3e9b50c6fb700dd01c9a2dbd0368a1c33fb261ff7d7080e600d376e9959d729a"
+      "sha256": "bf858d8223a120d898bb3d6018677d31ff001d7e918696f53b7dd006b03ec80c"
     },
     {
       "path": "tools/verify-source-provenance.ts",
