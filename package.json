@@ -26,6 +26,7 @@
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target bun --packages external",
     "check": "bun run verify:provenance && bun run typecheck && bun test",
+    "evidence:assurance": "bun tools/run-assurance-evidence.ts",
     "test": "bun test --timeout 10000",
     "typecheck": "tsc --noEmit",
     "verify:provenance": "bun tools/verify-source-provenance.ts"

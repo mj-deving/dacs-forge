@@ -1,0 +1,671 @@
+{
+  "schema": "dacs-forge-assurance-results/v1",
+  "forgeBase": "8a18849f932621c38795f4358560b07326dd9ad3",
+  "dacsStandardPin": "9a1ca624e8cc68361cff35c85a919cd72ba25199",
+  "evaluationSource": "runner-model",
+  "productCodeRole": "digest-pinned anchors with separately recorded focused product tests",
+  "manifestDigest": "5665d504677af202ca5b0c08c3c453eb4891327decdf645f6eb651e1a08149eb",
+  "codeDigestChecks": [
+    {
+      "sliceId": "FORGE-ASSURANCE-001",
+      "path": "src/protocol/canonical-json.ts",
+      "sha256": "46aee9aeef7a63721ba5795debf9a3b4f17ed0fa2778607fe35766c025dff65f",
+      "matched": true
+    },
+    {
+      "sliceId": "FORGE-ASSURANCE-001",
+      "path": "src/protocol/vet.ts",
+      "sha256": "0450790828494987cb89fbd09c86eade113217d9a7ddf8c1b59be7d37472bcb6",
+      "matched": true
+    },
+    {
+      "sliceId": "FORGE-ASSURANCE-002",
+      "path": "src/consumer/settlement-evidence-verifier.ts",
+      "sha256": "077163cc3267eaed0c4081dada77435089d318438f497eee572b533d8d2fb1b6",
+      "matched": true
+    },
+    {
+      "sliceId": "FORGE-ASSURANCE-002",
+      "path": "src/consumer/attestation-bundle-verifier.ts",
+      "sha256": "71bfd555de240fce565338ed6f699e4f83f946cf02dcee2f6ba9407eda592142",
+      "matched": true
+    },
+    {
+      "sliceId": "FORGE-ASSURANCE-003",
+      "path": "src/consumer/attestation-bundle-verifier.ts",
+      "sha256": "71bfd555de240fce565338ed6f699e4f83f946cf02dcee2f6ba9407eda592142",
+      "matched": true
+    },
+    {
+      "sliceId": "FORGE-ASSURANCE-003",
+      "path": "src/substrate/sqlite/fixture-bundle.ts",
+      "sha256": "98596362731194bf9360997a94837b710ccca8eb568ec70775ec9f93c66bf6c8",
+      "matched": true
+    }
+  ],
+  "slices": [
+    {
+      "id": "FORGE-ASSURANCE-001",
+      "fixtureDigest": "c77d4bbae3a8a2d6fa08423837a1b682e7e4d71458842dad4c1d05ce4a2066b7",
+      "cases": [
+        {
+          "caseId": "exact-pass",
+          "expected": "pass",
+          "observed": "pass"
+        },
+        {
+          "caseId": "recipe-version-mismatch",
+          "expected": "fail",
+          "observed": "fail",
+          "mutation": {
+            "name": "scheme-only",
+            "expectedGreen": "fail",
+            "observedRed": "pass",
+            "killed": true
+          }
+        },
+        {
+          "caseId": "stale-result",
+          "expected": "fail",
+          "observed": "fail",
+          "mutation": {
+            "name": "scheme-only",
+            "expectedGreen": "fail",
+            "observedRed": "pass",
+            "killed": true
+          }
+        },
+        {
+          "caseId": "parameter-mismatch",
+          "expected": "fail",
+          "observed": "fail",
+          "mutation": {
+            "name": "scheme-only",
+            "expectedGreen": "fail",
+            "observedRed": "pass",
+            "killed": true
+          }
+        },
+        {
+          "caseId": "parameter-missing",
+          "expected": "fail",
+          "observed": "fail",
+          "mutation": {
+            "name": "scheme-only",
+            "expectedGreen": "fail",
+            "observedRed": "pass",
+            "killed": true
+          }
+        },
+        {
+          "caseId": "unconstrained-data-does-not-block-pass",
+          "expected": "pass",
+          "observed": "pass"
+        },
+        {
+          "caseId": "unrelated-result-does-not-block-exact-pass",
+          "expected": "pass",
+          "observed": "pass"
+        }
+      ]
+    },
+    {
+      "id": "FORGE-ASSURANCE-002",
+      "fixtureDigest": "3a8e4ca1b4aebe376509b45e19b78a9f1375e75eef273af28c01ebdb2a7ea2e1",
+      "cases": [
+        {
+          "caseId": "exact-pass",
+          "expected": "included",
+          "observed": {
+            "admission": "included",
+            "completionNumerator": 1,
+            "partyFaultDenominator": 1,
+            "counterpartyAdjustedDenominator": 1,
+            "volumeByCurrency": [
+              "5 DEM"
+            ],
+            "disposition": "eligible"
+          }
+        },
+        {
+          "caseId": "amount-mismatch",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          },
+          "mutation": {
+            "name": "cryptographic-only",
+            "expectedGreen": "excluded",
+            "observedRed": "included",
+            "killed": true,
+            "details": {
+              "admission": "included",
+              "completionNumerator": 1,
+              "partyFaultDenominator": 1,
+              "counterpartyAdjustedDenominator": 1,
+              "volumeByCurrency": [
+                "5 DEM"
+              ],
+              "disposition": "eligible"
+            }
+          }
+        },
+        {
+          "caseId": "payer-mismatch",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          },
+          "mutation": {
+            "name": "cryptographic-only",
+            "expectedGreen": "excluded",
+            "observedRed": "included",
+            "killed": true,
+            "details": {
+              "admission": "included",
+              "completionNumerator": 1,
+              "partyFaultDenominator": 1,
+              "counterpartyAdjustedDenominator": 1,
+              "volumeByCurrency": [
+                "5 DEM"
+              ],
+              "disposition": "eligible"
+            }
+          }
+        },
+        {
+          "caseId": "payee-mismatch",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          },
+          "mutation": {
+            "name": "cryptographic-only",
+            "expectedGreen": "excluded",
+            "observedRed": "included",
+            "killed": true,
+            "details": {
+              "admission": "included",
+              "completionNumerator": 1,
+              "partyFaultDenominator": 1,
+              "counterpartyAdjustedDenominator": 1,
+              "volumeByCurrency": [
+                "5 DEM"
+              ],
+              "disposition": "eligible"
+            }
+          }
+        },
+        {
+          "caseId": "session-mismatch",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          },
+          "mutation": {
+            "name": "skip-session-authority",
+            "expectedGreen": "excluded",
+            "observedRed": "included",
+            "killed": true,
+            "details": {
+              "admission": "included",
+              "completionNumerator": 1,
+              "partyFaultDenominator": 1,
+              "counterpartyAdjustedDenominator": 1,
+              "volumeByCurrency": [
+                "5 DEM"
+              ],
+              "disposition": "eligible"
+            }
+          }
+        },
+        {
+          "caseId": "phase-mismatch",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          },
+          "mutation": {
+            "name": "skip-phase-authority",
+            "expectedGreen": "excluded",
+            "observedRed": "included",
+            "killed": true,
+            "details": {
+              "admission": "included",
+              "completionNumerator": 1,
+              "partyFaultDenominator": 1,
+              "counterpartyAdjustedDenominator": 1,
+              "volumeByCurrency": [
+                "5 DEM"
+              ],
+              "disposition": "eligible"
+            }
+          }
+        },
+        {
+          "caseId": "rail-mismatch",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          },
+          "mutation": {
+            "name": "cryptographic-only",
+            "expectedGreen": "excluded",
+            "observedRed": "included",
+            "killed": true,
+            "details": {
+              "admission": "included",
+              "completionNumerator": 1,
+              "partyFaultDenominator": 1,
+              "counterpartyAdjustedDenominator": 1,
+              "volumeByCurrency": [
+                "5 DEM"
+              ],
+              "disposition": "eligible"
+            }
+          }
+        },
+        {
+          "caseId": "finality-mismatch",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          },
+          "mutation": {
+            "name": "cryptographic-only",
+            "expectedGreen": "excluded",
+            "observedRed": "included",
+            "killed": true,
+            "details": {
+              "admission": "included",
+              "completionNumerator": 1,
+              "partyFaultDenominator": 1,
+              "counterpartyAdjustedDenominator": 1,
+              "volumeByCurrency": [
+                "5 DEM"
+              ],
+              "disposition": "eligible"
+            }
+          }
+        },
+        {
+          "caseId": "transaction-rejected",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          }
+        },
+        {
+          "caseId": "authority-indeterminate",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          }
+        },
+        {
+          "caseId": "invalid-failed-outcome",
+          "expected": "excluded",
+          "observed": {
+            "admission": "excluded",
+            "completionNumerator": 0,
+            "partyFaultDenominator": 0,
+            "counterpartyAdjustedDenominator": 0,
+            "volumeByCurrency": [],
+            "disposition": "excluded-without-fault"
+          },
+          "mutation": {
+            "name": "cryptographic-only",
+            "expectedGreen": "excluded",
+            "observedRed": "included",
+            "killed": true,
+            "details": {
+              "admission": "included",
+              "completionNumerator": 0,
+              "partyFaultDenominator": 1,
+              "counterpartyAdjustedDenominator": 1,
+              "volumeByCurrency": [],
+              "disposition": "eligible"
+            }
+          }
+        },
+        {
+          "caseId": "unrelated-delivery-only-success",
+          "expected": "included",
+          "observed": {
+            "admission": "included",
+            "completionNumerator": 1,
+            "partyFaultDenominator": 1,
+            "counterpartyAdjustedDenominator": 1,
+            "volumeByCurrency": [],
+            "disposition": "eligible"
+          }
+        }
+      ]
+    },
+    {
+      "id": "FORGE-ASSURANCE-003",
+      "fixtureDigest": "53bfde51ccf35fce411bbfef0c47b452bb28d5dbd6fff219c460afe2abda3b21",
+      "cases": [
+        {
+          "caseId": "exact-pointerless-pass",
+          "expected": "verified",
+          "observed": {
+            "disposition": "verified",
+            "reasonCode": "ok"
+          },
+          "mutation": {
+            "name": "pointer-required",
+            "expectedGreen": "verified",
+            "observedRed": "rejected",
+            "killed": true,
+            "details": {
+              "disposition": "rejected",
+              "reasonCode": "pointer-agreement"
+            }
+          }
+        },
+        {
+          "caseId": "exact-pointers-pass",
+          "expected": "verified",
+          "observed": {
+            "disposition": "verified",
+            "reasonCode": "ok"
+          }
+        },
+        {
+          "caseId": "missing-member-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "exact-cardinality"
+          },
+          "mutation": {
+            "name": "bundle-derived-plan",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "equal-count-duplicate-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "raw-multiplicity"
+          },
+          "mutation": {
+            "name": "count-only",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "coverage-complete-duplicate-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "raw-multiplicity"
+          },
+          "mutation": {
+            "name": "dedupe-before-uniqueness",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "extra-member-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "exact-cardinality"
+          },
+          "mutation": {
+            "name": "bundle-derived-plan",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "pointer-reused-across-phases-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "pointer-agreement"
+          },
+          "mutation": {
+            "name": "membership-only",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "equal-count-wrong-phase-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "exact-phase-mapping"
+          },
+          "mutation": {
+            "name": "count-only",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "distinct-references-same-phase-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "exact-phase-mapping"
+          },
+          "mutation": {
+            "name": "count-only",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "present-pointer-conflict-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "pointer-agreement"
+          },
+          "mutation": {
+            "name": "membership-only",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "non-evidence-phase-substitution-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "exact-phase-mapping"
+          },
+          "mutation": {
+            "name": "bundle-derived-plan",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "omission-with-unrelated-uncertainty-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "exact-cardinality"
+          },
+          "mutation": {
+            "name": "uncertainty-first",
+            "expectedGreen": "rejected",
+            "observedRed": "indeterminate",
+            "killed": true,
+            "details": {
+              "disposition": "indeterminate",
+              "reasonCode": "unrelated-authority-indeterminate"
+            }
+          }
+        },
+        {
+          "caseId": "exact-with-unrelated-uncertainty-indeterminate",
+          "expected": "indeterminate",
+          "observed": {
+            "disposition": "indeterminate",
+            "reasonCode": "unrelated-authority-indeterminate"
+          }
+        },
+        {
+          "caseId": "st8-resolved-only-pass",
+          "expected": "verified",
+          "observed": {
+            "disposition": "verified",
+            "reasonCode": "ok"
+          }
+        },
+        {
+          "caseId": "st8-resolved-missing-supersedes-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "st8-raw-admissibility"
+          },
+          "mutation": {
+            "name": "skip-st8-raw",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "st8-interim-only-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "st8-raw-admissibility"
+          },
+          "mutation": {
+            "name": "skip-st8-raw",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
+          "caseId": "st8-interim-plus-resolved-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "st8-raw-admissibility"
+          }
+        },
+        {
+          "caseId": "unrelated-verified-reference-control",
+          "expected": "verified",
+          "observed": {
+            "disposition": "verified",
+            "reasonCode": "ok"
+          }
+        }
+      ]
+    }
+  ]
+}

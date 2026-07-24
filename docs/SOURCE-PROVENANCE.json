@@ -402,6 +402,10 @@
       "sha256": "0cba59339af4519866bce4b851d4cba07c5f760843d56d6221b2079c28c6b8d5"
     },
     {
+      "path": "test/evidence/assurance-evidence.test.ts",
+      "sha256": "d0664dffd4bae4f22239a28977367f53d9e5dbc09d0d5a1cdb4b5d0905a35c8f"
+    },
+    {
       "path": "test/fixtures/atomic-logical-snapshot.ts",
       "sha256": "3d04534e24c4a67bbb0e61132f7ea531d277efaa572decf2c140154d558cbdd1"
     },
@@ -814,6 +818,10 @@
       "sha256": "94537a0d289069380253322cee135a9bbdbe0b9b39089cf352a3edc53d153217"
     },
     {
+      "path": "tools/run-assurance-evidence.ts",
+      "sha256": "a756be48ed7cdfc3d373846491748c8faa15161fc2b4e6cdf99fcacf9e402483"
+    },
+    {
       "path": "tsconfig.json",
       "sha256": "305dfcd2576c7187ee5305dc6cfd8c4540970ac2c02bd45a95b47036cf27c284"
     },
@@ -904,8 +912,36 @@
       "sha256": "61b2b74e283dbbcf2253b20aad016448986ade50791fedd15aa74ec4ebaf587a"
     },
     {
+      "path": "evidence/assurance/README.md",
+      "sha256": "508b1a796637f8064b5803fd9e5aac9d127612572c6afd732f25f6b3b02444a4"
+    },
+    {
+      "path": "evidence/assurance/fixtures/claim-requirement.json",
+      "sha256": "4f3946d0233d19f858f18f08bc53bbc872402ae68043456cacbbea6d59447902"
+    },
+    {
+      "path": "evidence/assurance/fixtures/settlement-bijection.json",
+      "sha256": "0d629d1a2ebd355fa8efa9463ecc74c4298eacde38e9a10bf79d1144e1c1aaf9"
+    },
+    {
+      "path": "evidence/assurance/fixtures/settlement-reputation.json",
+      "sha256": "205056c4a1bce0820f2fc05a9356fed1c8685b38f7444b9670fff2c0bc09f795"
+    },
+    {
+      "path": "evidence/assurance/manifest.json",
+      "sha256": "d8ec642e3510e9953755240a96fb274f2713bb0830d6c4f6853989f0dc610700"
+    },
+    {
+      "path": "evidence/assurance/results.json",
+      "sha256": "9f23d13512e65018b88ebea505f55ca9002488c7e15a482000b6c892de89c903"
+    },
+    {
+      "path": "evidence/assurance/verification.json",
+      "sha256": "94a45a296f08053e8fed7e8caebce3755ca5455b64c5e4dc1b835aa269a40a16"
+    },
+    {
       "path": "package.json",
-      "sha256": "bf858d8223a120d898bb3d6018677d31ff001d7e918696f53b7dd006b03ec80c"
+      "sha256": "a7185f15ac489bea9526f16e51501f04287a06ad3be9fe16c9b29d51be141385"
     },
     {
       "path": "tools/verify-source-provenance.ts",

@@ -1,0 +1,34 @@
+{
+  "schema": "forge-assurance-settlement-bijection/v1",
+  "id": "FORGE-ASSURANCE-003",
+  "referenceDefinitions": {
+    "E-pay": { "phaseKey": "2:pay-dem", "st8": "ordinary" },
+    "E-pay-alt": { "phaseKey": "2:pay-dem", "st8": "ordinary" },
+    "E-deliver": { "phaseKey": "3:deliver-attested-payload", "st8": "ordinary" },
+    "E-extra": { "phaseKey": "4:pay-dem", "st8": "ordinary" },
+    "E-commit": { "phaseKey": "1:commit-payee-bound-agreement", "st8": "ordinary" },
+    "E-interim": { "phaseKey": "2:pay-cross-chain-liquidity-tank", "st8": "interim" },
+    "E-resolved": { "phaseKey": "2:pay-cross-chain-liquidity-tank", "st8": "resolved", "supersedes": "E-interim" },
+    "E-resolved-unbound": { "phaseKey": "2:pay-cross-chain-liquidity-tank", "st8": "resolved" }
+  },
+  "cases": [
+    { "caseId": "exact-pointerless-pass", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-deliver"], "pointers": {}, "expected": "verified", "killedMutation": "pointer-required" },
+    { "caseId": "exact-pointers-pass", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-deliver"], "pointers": { "2:pay-dem": "E-pay", "3:deliver-attested-payload": "E-deliver" }, "expected": "verified" },
+    { "caseId": "missing-member-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay"], "pointers": {}, "expected": "rejected", "killedMutation": "bundle-derived-plan" },
+    { "caseId": "equal-count-duplicate-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-pay"], "pointers": {}, "expected": "rejected", "killedMutation": "count-only" },
+    { "caseId": "coverage-complete-duplicate-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-deliver", "E-pay"], "pointers": {}, "expected": "rejected", "killedMutation": "dedupe-before-uniqueness" },
+    { "caseId": "extra-member-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-deliver", "E-extra"], "pointers": {}, "expected": "rejected", "killedMutation": "bundle-derived-plan" },
+    { "caseId": "pointer-reused-across-phases-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-deliver"], "pointers": { "2:pay-dem": "E-pay", "3:deliver-attested-payload": "E-pay" }, "expected": "rejected", "killedMutation": "membership-only" },
+    { "caseId": "equal-count-wrong-phase-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-extra"], "pointers": {}, "expected": "rejected", "killedMutation": "count-only" },
+    { "caseId": "distinct-references-same-phase-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-pay-alt"], "pointers": {}, "expected": "rejected", "killedMutation": "count-only" },
+    { "caseId": "present-pointer-conflict-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-deliver"], "pointers": { "2:pay-dem": "E-extra" }, "expected": "rejected", "killedMutation": "membership-only" },
+    { "caseId": "non-evidence-phase-substitution-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-commit"], "pointers": {}, "expected": "rejected", "killedMutation": "bundle-derived-plan" },
+    { "caseId": "omission-with-unrelated-uncertainty-reject", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay"], "pointers": {}, "unrelatedAuthority": "indeterminate", "expected": "rejected", "killedMutation": "uncertainty-first" },
+    { "caseId": "exact-with-unrelated-uncertainty-indeterminate", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-deliver"], "pointers": {}, "unrelatedAuthority": "indeterminate", "expected": "indeterminate" },
+    { "caseId": "st8-resolved-only-pass", "expectedPhases": ["2:pay-cross-chain-liquidity-tank"], "topLevel": ["E-resolved"], "pointers": {}, "expected": "verified" },
+    { "caseId": "st8-resolved-missing-supersedes-reject", "expectedPhases": ["2:pay-cross-chain-liquidity-tank"], "topLevel": ["E-resolved-unbound"], "pointers": {}, "expected": "rejected", "killedMutation": "skip-st8-raw" },
+    { "caseId": "st8-interim-only-reject", "expectedPhases": ["2:pay-cross-chain-liquidity-tank"], "topLevel": ["E-interim"], "pointers": {}, "expected": "rejected", "killedMutation": "skip-st8-raw" },
+    { "caseId": "st8-interim-plus-resolved-reject", "expectedPhases": ["2:pay-cross-chain-liquidity-tank"], "topLevel": ["E-interim", "E-resolved"], "pointers": {}, "expected": "rejected" },
+    { "caseId": "unrelated-verified-reference-control", "expectedPhases": ["2:pay-dem", "3:deliver-attested-payload"], "topLevel": ["E-pay", "E-deliver"], "pointers": {}, "unrelatedAuthority": "verified", "expected": "verified" }
+  ]
+}

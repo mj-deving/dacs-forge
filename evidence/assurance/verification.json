@@ -1,0 +1,52 @@
+{
+  "schema": "dacs-forge-assurance-verification/v1",
+  "forgeBase": "8a18849f932621c38795f4358560b07326dd9ad3",
+  "dacsStandardPin": "9a1ca624e8cc68361cff35c85a919cd72ba25199",
+  "runtime": {
+    "bun": "1.3.9",
+    "typescript": "7.0.2",
+    "platform": "linux"
+  },
+  "commands": [
+    {
+      "command": "bun install --frozen-lockfile",
+      "exitCode": 0,
+      "observed": "14 packages installed; lockfile unchanged"
+    },
+    {
+      "command": "bun run evidence:assurance",
+      "exitCode": 0,
+      "observed": "37 cases; 25 killed bounded mutations; three fixture digests emitted"
+    },
+    {
+      "command": "bun test test/evidence/assurance-evidence.test.ts",
+      "exitCode": 0,
+      "observed": "1 pass; 0 fail; 54 assertions"
+    },
+    {
+      "command": "bun test test/conformance/vet-protocol.test.ts test/settlement/fixture-settlement.test.ts test/lifecycle/attestation-bundle-finalisation.test.ts test/producer/attestation-bundle.test.ts",
+      "exitCode": 0,
+      "observed": "123 pass; 0 fail; 369 assertions"
+    },
+    {
+      "command": "bun run check",
+      "exitCode": 0,
+      "observed": "source provenance verified: 208 source, 22 packaging; TypeScript clean; 677 pass; 0 fail; 51180 assertions"
+    },
+    {
+      "command": "bun run build",
+      "exitCode": 0,
+      "observed": "62 modules bundled"
+    },
+    {
+      "command": "git diff --check",
+      "exitCode": 0,
+      "observed": "clean"
+    }
+  ],
+  "boundaries": [
+    "synthetic fixture and no-spend evidence only",
+    "no live authority, registration, transfer, reputation write, or deployment",
+    "no normative, certification, adoption, or steward-endorsement claim"
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "schema": "forge-assurance-claim-requirement/v1",
+  "id": "FORGE-ASSURANCE-001",
+  "now": 1784073610000,
+  "requirement": {
+    "scheme": "key",
+    "verificationRequired": true,
+    "recipeVersion": 2,
+    "maxAge": 10,
+    "parameters": {
+      "possessionVerified": true
+    }
+  },
+  "cases": [
+    {
+      "caseId": "exact-pass",
+      "results": [
+        {
+          "scheme": "key",
+          "decision": "pass",
+          "recipeVersion": 2,
+          "verifiedAt": 1784073605000,
+          "data": {
+            "possessionVerified": true
+          }
+        }
+      ],
+      "expected": "pass"
+    },
+    {
+      "caseId": "recipe-version-mismatch",
+      "results": [
+        {
+          "scheme": "key",
+          "decision": "pass",
+          "recipeVersion": 1,
+          "verifiedAt": 1784073605000,
+          "data": {
+            "possessionVerified": true
+          }
+        }
+      ],
+      "expected": "fail",
+      "killedMutation": "scheme-only"
+    },
+    {
+      "caseId": "stale-result",
+      "results": [
+        {
+          "scheme": "key",
+          "decision": "pass",
+          "recipeVersion": 2,
+          "verifiedAt": 1784073599999,
+          "data": {
+            "possessionVerified": true
+          }
+        }
+      ],
+      "expected": "fail",
+      "killedMutation": "scheme-only"
+    },
+    {
+      "caseId": "parameter-mismatch",
+      "results": [
+        {
+          "scheme": "key",
+          "decision": "pass",
+          "recipeVersion": 2,
+          "verifiedAt": 1784073605000,
+          "data": {
+            "possessionVerified": false
+          }
+        }
+      ],
+      "expected": "fail",
+      "killedMutation": "scheme-only"
+    },
+    {
+      "caseId": "parameter-missing",
+      "results": [
+        {
+          "scheme": "key",
+          "decision": "pass",
+          "recipeVersion": 2,
+          "verifiedAt": 1784073605000,
+          "data": {}
+        }
+      ],
+      "expected": "fail",
+      "killedMutation": "scheme-only"
+    },
+    {
+      "caseId": "unconstrained-data-does-not-block-pass",
+      "results": [
+        {
+          "scheme": "key",
+          "decision": "pass",
+          "recipeVersion": 2,
+          "verifiedAt": 1784073605000,
+          "data": {
+            "possessionVerified": true,
+            "proofId": "fixture-proof-1"
+          }
+        }
+      ],
+      "expected": "pass"
+    },
+    {
+      "caseId": "unrelated-result-does-not-block-exact-pass",
+      "results": [
+        {
+          "scheme": "domain",
+          "decision": "fail"
+        },
+        {
+          "scheme": "key",
+          "decision": "pass",
+          "recipeVersion": 2,
+          "verifiedAt": 1784073605000,
+          "data": {
+            "possessionVerified": true
+          }
+        }
+      ],
+      "expected": "pass"
+    }
+  ]
+}

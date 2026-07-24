@@ -1,0 +1,59 @@
+{
+  "schema": "dacs-forge-assurance-manifest/v1",
+  "forgeBase": "8a18849f932621c38795f4358560b07326dd9ad3",
+  "dacsStandardPin": "9a1ca624e8cc68361cff35c85a919cd72ba25199",
+  "runtime": {
+    "name": "bun",
+    "version": "1.3.9",
+    "platform": "linux"
+  },
+  "command": "bun run evidence:assurance",
+  "verification": "evidence/assurance/verification.json",
+  "slices": [
+    {
+      "id": "FORGE-ASSURANCE-001",
+      "fixture": "evidence/assurance/fixtures/claim-requirement.json",
+      "code": [
+        {
+          "path": "src/protocol/canonical-json.ts",
+          "sha256": "46aee9aeef7a63721ba5795debf9a3b4f17ed0fa2778607fe35766c025dff65f"
+        },
+        {
+          "path": "src/protocol/vet.ts",
+          "sha256": "0450790828494987cb89fbd09c86eade113217d9a7ddf8c1b59be7d37472bcb6"
+        }
+      ],
+      "focusedTest": "bun test test/conformance/vet-protocol.test.ts"
+    },
+    {
+      "id": "FORGE-ASSURANCE-002",
+      "fixture": "evidence/assurance/fixtures/settlement-reputation.json",
+      "code": [
+        {
+          "path": "src/consumer/settlement-evidence-verifier.ts",
+          "sha256": "077163cc3267eaed0c4081dada77435089d318438f497eee572b533d8d2fb1b6"
+        },
+        {
+          "path": "src/consumer/attestation-bundle-verifier.ts",
+          "sha256": "71bfd555de240fce565338ed6f699e4f83f946cf02dcee2f6ba9407eda592142"
+        }
+      ],
+      "focusedTest": "bun test test/settlement/fixture-settlement.test.ts test/lifecycle/attestation-bundle-finalisation.test.ts"
+    },
+    {
+      "id": "FORGE-ASSURANCE-003",
+      "fixture": "evidence/assurance/fixtures/settlement-bijection.json",
+      "code": [
+        {
+          "path": "src/consumer/attestation-bundle-verifier.ts",
+          "sha256": "71bfd555de240fce565338ed6f699e4f83f946cf02dcee2f6ba9407eda592142"
+        },
+        {
+          "path": "src/substrate/sqlite/fixture-bundle.ts",
+          "sha256": "98596362731194bf9360997a94837b710ccca8eb568ec70775ec9f93c66bf6c8"
+        }
+      ],
+      "focusedTest": "bun test test/producer/attestation-bundle.test.ts"
+    }
+  ]
+}

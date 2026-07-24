@@ -1,0 +1,87 @@
+{
+  "schema": "forge-assurance-settlement-reputation/v1",
+  "id": "FORGE-ASSURANCE-002",
+  "agreementPrice": "5 DEM",
+  "cases": [
+    {
+      "caseId": "exact-pass",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "verified" }],
+      "expected": "included"
+    },
+    {
+      "caseId": "amount-mismatch",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "verified", "amount": false }],
+      "expected": "excluded",
+      "killedMutation": "cryptographic-only"
+    },
+    {
+      "caseId": "payer-mismatch",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "verified", "payer": false }],
+      "expected": "excluded",
+      "killedMutation": "cryptographic-only"
+    },
+    {
+      "caseId": "payee-mismatch",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "verified", "payee": false }],
+      "expected": "excluded",
+      "killedMutation": "cryptographic-only"
+    },
+    {
+      "caseId": "session-mismatch",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "verified", "session": false }],
+      "expected": "excluded",
+      "killedMutation": "skip-session-authority"
+    },
+    {
+      "caseId": "phase-mismatch",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "verified", "phase": false }],
+      "expected": "excluded",
+      "killedMutation": "skip-phase-authority"
+    },
+    {
+      "caseId": "rail-mismatch",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "verified", "rail": false }],
+      "expected": "excluded",
+      "killedMutation": "cryptographic-only"
+    },
+    {
+      "caseId": "finality-mismatch",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "verified", "finality": false }],
+      "expected": "excluded",
+      "killedMutation": "cryptographic-only"
+    },
+    {
+      "caseId": "transaction-rejected",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "rejected" }],
+      "expected": "excluded"
+    },
+    {
+      "caseId": "authority-indeterminate",
+      "outcome": "completed",
+      "evidence": [{ "disposition": "indeterminate" }],
+      "expected": "excluded"
+    },
+    {
+      "caseId": "invalid-failed-outcome",
+      "outcome": "failed-perm",
+      "evidence": [{ "disposition": "verified", "amount": false }],
+      "expected": "excluded",
+      "killedMutation": "cryptographic-only"
+    },
+    {
+      "caseId": "unrelated-delivery-only-success",
+      "outcome": "completed",
+      "evidence": [],
+      "expected": "included"
+    }
+  ]
+}
