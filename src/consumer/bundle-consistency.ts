@@ -6,6 +6,10 @@ import {
 import type { BundleOutcome, BundleRole } from "../producer/attestation-bundle.ts";
 import { sha256Hex } from "../protocol/hash.ts";
 import { consumerCanonicalize } from "./canonical-json.ts";
+import {
+  gateReputationOutputCandidate,
+  type ReputationOutputGateResult,
+} from "./reputation-eligibility.ts";
 
 export type BundleAddressRead =
   | { readonly status: "present"; readonly canonicalJson: string }
@@ -22,6 +26,17 @@ export interface BundleConsistencyResult {
   readonly reason: string;
   readonly attribution?: Readonly<Record<"buyer" | "seller", "self" | "counterparty">>;
   readonly preferredRole?: "buyer" | "seller";
+}
+
+export function gateBundleReputationOutput(
+  result: BundleConsistencyResult,
+  candidate: Readonly<{ readonly artifact: unknown; readonly provenance: unknown }>,
+): ReputationOutputGateResult {
+  return gateReputationOutputCandidate({
+    artifact: candidate.artifact,
+    protocolEligibility: result.reputationEligibility,
+    provenance: candidate.provenance,
+  });
 }
 
 export function reconcileAttestationBundleReads(
