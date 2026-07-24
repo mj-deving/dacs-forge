@@ -16,4 +16,17 @@ test("reproduces the frozen three-slice assurance evidence", async () => {
       expect(testCase.mutation.expectedGreen).not.toBe(testCase.mutation.observedRed);
     }
   }
+
+  const bijection = frozen.slices.find((slice: { id: string }) => slice.id === "FORGE-ASSURANCE-003");
+  expect(bijection).toBeDefined();
+  if (bijection === undefined) throw new Error("FORGE-ASSURANCE-003 slice missing");
+  type FrozenCase = { caseId: string; observed: unknown };
+  const cases = new Map<string, FrozenCase>(
+    (bijection.cases as FrozenCase[]).map((testCase) => [testCase.caseId, testCase]),
+  );
+  expect(cases.get("st8-missing-terminal-projection-reject")?.observed).toEqual({ disposition: "rejected", reasonCode: "st8-raw-admissibility" });
+  expect(cases.get("st8-resolved-only-pass")?.observed).toEqual({ disposition: "verified", reasonCode: "ok" });
+  expect(cases.get("st8-expired-interim-only-pass")?.observed).toEqual({ disposition: "verified", reasonCode: "ok" });
+  expect(cases.get("st8-resolved-success-suppressed-reject")?.observed).toEqual({ disposition: "rejected", reasonCode: "st8-raw-admissibility" });
+  expect(cases.get("st8-interim-plus-resolved-reject")?.observed).toEqual({ disposition: "rejected", reasonCode: "st8-raw-admissibility" });
 });

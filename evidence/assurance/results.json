@@ -389,7 +389,7 @@
     },
     {
       "id": "FORGE-ASSURANCE-003",
-      "fixtureDigest": "53bfde51ccf35fce411bbfef0c47b452bb28d5dbd6fff219c460afe2abda3b21",
+      "fixtureDigest": "b5399c0c59006920f72ce8ea8a15125efc293ee7f969128bdc97da61618cc845",
       "cases": [
         {
           "caseId": "exact-pointerless-pass",
@@ -606,6 +606,24 @@
           }
         },
         {
+          "caseId": "st8-missing-terminal-projection-reject",
+          "expected": "rejected",
+          "observed": {
+            "disposition": "rejected",
+            "reasonCode": "st8-raw-admissibility"
+          },
+          "mutation": {
+            "name": "skip-st8-raw",
+            "expectedGreen": "rejected",
+            "observedRed": "verified",
+            "killed": true,
+            "details": {
+              "disposition": "verified",
+              "reasonCode": "ok"
+            }
+          }
+        },
+        {
           "caseId": "st8-resolved-only-pass",
           "expected": "verified",
           "observed": {
@@ -632,7 +650,25 @@
           }
         },
         {
-          "caseId": "st8-interim-only-reject",
+          "caseId": "st8-expired-interim-only-pass",
+          "expected": "verified",
+          "observed": {
+            "disposition": "verified",
+            "reasonCode": "ok"
+          },
+          "mutation": {
+            "name": "reject-all-st8-interim",
+            "expectedGreen": "verified",
+            "observedRed": "rejected",
+            "killed": true,
+            "details": {
+              "disposition": "rejected",
+              "reasonCode": "st8-raw-admissibility"
+            }
+          }
+        },
+        {
+          "caseId": "st8-resolved-success-suppressed-reject",
           "expected": "rejected",
           "observed": {
             "disposition": "rejected",

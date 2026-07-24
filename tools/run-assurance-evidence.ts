@@ -83,6 +83,12 @@ interface BijectionCase {
   readonly expectedPhases: readonly string[];
   readonly topLevel: readonly string[];
   readonly pointers: Readonly<Record<string, string>>;
+  readonly st8Terminal?: {
+    readonly phaseKey: string;
+    readonly state: "resolved" | "expired";
+    readonly interimRef: string;
+    readonly resolvedRef?: string;
+  };
   readonly unrelatedAuthority?: "verified" | "indeterminate";
   readonly expected: Disposition;
   readonly killedMutation?: BijectionMutation;
@@ -93,6 +99,7 @@ type BijectionMutation =
   | "dedupe-before-uniqueness"
   | "membership-only"
   | "skip-st8-raw"
+  | "reject-all-st8-interim"
   | "uncertainty-first"
   | "pointer-required"
   | "bundle-derived-plan";
@@ -288,13 +295,32 @@ function checkBijection(
     if (definition === undefined) throw new Error(`Unknown reference ${id}`);
     return { id, ...definition };
   });
+  if (mutation === "reject-all-st8-interim" && refs.some((ref) => ref.st8 === "interim")) {
+    return rejected("st8-raw-admissibility");
+  }
   if (mutation !== "skip-st8-raw") {
-    for (const ref of refs) {
-      if (ref.st8 === "interim") return rejected("st8-raw-admissibility");
-      if (ref.st8 !== "resolved") continue;
-      const superseded = ref.supersedes === undefined ? undefined : definitions[ref.supersedes];
-      if (superseded?.st8 !== "interim" || superseded.phaseKey !== ref.phaseKey) {
+    const st8Refs = refs.filter((ref) => ref.st8 !== "ordinary");
+    const terminal = testCase.st8Terminal;
+    if (st8Refs.length > 0 && terminal === undefined) return rejected("st8-raw-admissibility");
+    if (terminal !== undefined) {
+      const interim = definitions[terminal.interimRef];
+      if (interim?.st8 !== "interim" || interim.phaseKey !== terminal.phaseKey) {
         return rejected("st8-raw-admissibility");
+      }
+      if (terminal.state === "expired") {
+        if (terminal.resolvedRef !== undefined || !testCase.topLevel.includes(terminal.interimRef)
+          || st8Refs.some((ref) => ref.id !== terminal.interimRef)) {
+          return rejected("st8-raw-admissibility");
+        }
+      } else {
+        const resolvedRef = terminal.resolvedRef;
+        const resolved = resolvedRef === undefined ? undefined : definitions[resolvedRef];
+        if (resolvedRef === undefined || resolved?.st8 !== "resolved"
+          || resolved.phaseKey !== terminal.phaseKey || resolved.supersedes !== terminal.interimRef
+          || !testCase.topLevel.includes(resolvedRef) || testCase.topLevel.includes(terminal.interimRef)
+          || st8Refs.some((ref) => ref.id !== resolvedRef)) {
+          return rejected("st8-raw-admissibility");
+        }
       }
     }
   }

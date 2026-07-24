@@ -403,7 +403,7 @@
     },
     {
       "path": "test/evidence/assurance-evidence.test.ts",
-      "sha256": "d0664dffd4bae4f22239a28977367f53d9e5dbc09d0d5a1cdb4b5d0905a35c8f"
+      "sha256": "72800931f27d8ce31bd2df1f206c6468e11efb16827817e0fab92cb8c4123fc0"
     },
     {
       "path": "test/fixtures/atomic-logical-snapshot.ts",
@@ -819,7 +819,7 @@
     },
     {
       "path": "tools/run-assurance-evidence.ts",
-      "sha256": "a756be48ed7cdfc3d373846491748c8faa15161fc2b4e6cdf99fcacf9e402483"
+      "sha256": "27b4625c8f2fb7f05f7ca76b4a20262905cb54d008a785813387efca682866f5"
     },
     {
       "path": "tsconfig.json",
@@ -913,7 +913,7 @@
     },
     {
       "path": "evidence/assurance/README.md",
-      "sha256": "508b1a796637f8064b5803fd9e5aac9d127612572c6afd732f25f6b3b02444a4"
+      "sha256": "77dc12a2dd8692f75fc324e105f512f509bd74cf8d28736a25846725bbc6eb65"
     },
     {
       "path": "evidence/assurance/fixtures/claim-requirement.json",
@@ -921,7 +921,7 @@
     },
     {
       "path": "evidence/assurance/fixtures/settlement-bijection.json",
-      "sha256": "0d629d1a2ebd355fa8efa9463ecc74c4298eacde38e9a10bf79d1144e1c1aaf9"
+      "sha256": "a499bfb219beeb5032be252abb168ebffd1a93a81bdf5473738cd202dd2d6efc"
     },
     {
       "path": "evidence/assurance/fixtures/settlement-reputation.json",
@@ -933,11 +933,11 @@
     },
     {
       "path": "evidence/assurance/results.json",
-      "sha256": "9f23d13512e65018b88ebea505f55ca9002488c7e15a482000b6c892de89c903"
+      "sha256": "8ddfa46e25287068bb2490e75419aad2972ad56ad66a23752c8da1919d2cdf81"
     },
     {
       "path": "evidence/assurance/verification.json",
-      "sha256": "94a45a296f08053e8fed7e8caebce3755ca5455b64c5e4dc1b835aa269a40a16"
+      "sha256": "7f8975dbc2460a1875277f6699f9195c312c266cc3f9cbb85189bfac6f352e78"
     },
     {
       "path": "package.json",

@@ -16,12 +16,12 @@
     {
       "command": "bun run evidence:assurance",
       "exitCode": 0,
-      "observed": "37 cases; 25 killed bounded mutations; three fixture digests emitted"
+      "observed": "39 cases; 27 killed bounded mutations; three fixture digests emitted"
     },
     {
       "command": "bun test test/evidence/assurance-evidence.test.ts",
       "exitCode": 0,
-      "observed": "1 pass; 0 fail; 54 assertions"
+      "observed": "1 pass; 0 fail; 64 assertions"
     },
     {
       "command": "bun test test/conformance/vet-protocol.test.ts test/settlement/fixture-settlement.test.ts test/lifecycle/attestation-bundle-finalisation.test.ts test/producer/attestation-bundle.test.ts",
@@ -29,9 +29,19 @@
       "observed": "123 pass; 0 fail; 369 assertions"
     },
     {
-      "command": "bun run check",
+      "command": "bun run verify:provenance",
       "exitCode": 0,
-      "observed": "source provenance verified: 208 source, 22 packaging; TypeScript clean; 677 pass; 0 fail; 51180 assertions"
+      "observed": "source provenance verified: 208 source, 22 packaging"
+    },
+    {
+      "command": "bun run typecheck",
+      "exitCode": 0,
+      "observed": "TypeScript clean"
+    },
+    {
+      "command": "bun test --timeout 10000",
+      "exitCode": 0,
+      "observed": "677 pass; 0 fail; 51190 assertions"
     },
     {
       "command": "bun run build",
@@ -42,6 +52,11 @@
       "command": "git diff --check",
       "exitCode": 0,
       "observed": "clean"
+    },
+    {
+      "command": "autoreview --mode local --engine claude --model claude-opus-4-8 --thinking high",
+      "exitCode": 0,
+      "observed": "pass 1 found one accepted P2 missing-case finding; corrected; pass 2 clean with no accepted or actionable findings"
     }
   ],
   "boundaries": [

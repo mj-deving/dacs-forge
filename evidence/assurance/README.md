@@ -35,6 +35,8 @@ Slice 001 models only the DACS fields that qualify a resolved candidate during a
 
 Slice 002 deliberately treats inadmissible settlement evidence symmetrically: the job contributes to neither numerator nor denominators, even when its outcome is a permanent failure. A semantic contradiction makes the job unsafe as reputation input but does not identify which party caused it. Evidence-completeness, withholding, dispute, and adjudication rules are outside this snapshot; the runner does not infer fault from invalid input.
 
+Slice 003 binds ST-8 representation to authenticated terminal state. A resolved path lists only its success successor and retains the interim failure through `supersedesEvidenceRef`; an expired-unresolved path lists the standing interim failure. The fixture separately kills both an old blanket-interim rejection and a checker that ignores the known resolved successor. This terminal-state projection is an explicit fixture input, not inferred from the presented top-level array.
+
 The repository-wide `check` intentionally fails if a pinned product file changes. Refreshing such a pin is a new evidence snapshot: update its digest in `manifest.json`, regenerate `results.json`, update the affected source-provenance digests, and re-run all recorded gates. A digest mismatch is not auto-accepted.
 
 Public product-code anchors and focused tests are listed in `manifest.json`. The neutral fixtures do not depend on private review prompts, paths, commits, or task identifiers.
