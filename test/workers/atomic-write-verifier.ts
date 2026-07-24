@@ -2,6 +2,7 @@ import { Database } from "bun:sqlite";
 import { FixtureLifecycleOrchestrator } from "../../src/lifecycle/fixture-orchestrator.ts";
 import { ArtifactStore } from "../../src/substrate/sqlite/artifact-store.ts";
 import { openDatabase } from "../../src/substrate/sqlite/database.ts";
+import { ListingStore } from "../../src/substrate/sqlite/listing-store.ts";
 import { FixtureBundleStore } from "../../src/substrate/sqlite/fixture-bundle.ts";
 import { FixtureAuthorityStore } from "../../src/substrate/sqlite/fixture-authority-store.ts";
 import { FixtureCommitmentStore } from "../../src/substrate/sqlite/fixture-commitment.ts";
@@ -36,6 +37,7 @@ const DETACHED_JOB_DEPENDENCIES = Object.freeze([
   { column: "job_id", table: "fixture_failure_evidence" },
   { column: "job_id", table: "fixture_lifecycle_runs" },
   { column: "job_id", table: "fixture_listing_verification_authorities" },
+  { column: "job_id", table: "fixture_session_listing_pins" },
   { column: "job_id", table: "fixture_settlement_consumptions" },
   { column: "job_id", table: "fixture_settlements" },
   { column: "job_id", table: "fixture_vet_records" },
@@ -74,6 +76,7 @@ try {
   const commitments = commitmentStore();
   verifyCommitments(commitments, ownerChecks);
   verifyAuthorities(ownerChecks);
+  verifyListingLifecycle(ownerChecks);
   const vetAnchors = verifyVet(sessions, ownerChecks);
   verifyFailureEvidence(ownerChecks);
   verifySettlements(ownerChecks);
@@ -129,16 +132,31 @@ function verifySessions(checks: string[]): ReadonlyMap<string, SessionRecord> {
     const { jobId } = row;
     const session = readPersistedSessionByJobId(database, jobId);
     if (session === null) {
-      if (!isKnownDetachedServiceFixture(row)) {
+      const listingDriverFixture = isKnownDetachedListingFixture(row);
+      if (!listingDriverFixture && !isKnownDetachedServiceFixture(row)) {
         throw new Error(`Session owner cannot reopen ${jobId}`);
       }
       assertDetachedDependencyContract();
-      const dependentRows = DETACHED_JOB_DEPENDENCIES.reduce((count, { column, table }) =>
+      const dependentRows = DETACHED_JOB_DEPENDENCIES
+        .filter(({ table }) => !listingDriverFixture || table !== "fixture_session_listing_pins")
+        .reduce((count, { column, table }) =>
         count + (database.query<{ count: bigint }, { jobId: string }>(
           `SELECT count(*) AS count FROM "${table}" WHERE "${column}" = $jobId`,
         ).get({ jobId })?.count ?? 0n), 0n);
       if (dependentRows !== 0n) {
+        if (listingDriverFixture) {
+          throw new Error(`Detached Listing driver session ${jobId} owns unexpected dependent state`);
+        }
         throw new Error(`Detached service test session ${jobId} owns dependent state`);
+      }
+      if (listingDriverFixture) {
+        const pinCount = database.query<{ count: bigint }, { jobId: string }>(
+          "SELECT count(*) AS count FROM fixture_session_listing_pins WHERE job_id = $jobId",
+        ).get({ jobId })?.count ?? 0n;
+        const maximumPins = jobId === "01J00000000000000000000000" ? 1n : 0n;
+        if (pinCount > maximumPins) {
+          throw new Error(`Detached Listing driver session ${jobId} owns unexpected pins`);
+        }
       }
       detached += 1;
     } else {
@@ -148,6 +166,27 @@ function verifySessions(checks: string[]): ReadonlyMap<string, SessionRecord> {
   checks.push(`sessions:${sessions.size}`);
   checks.push(`detached-session-fixtures:${detached}`);
   return sessions;
+}
+
+function isKnownDetachedListingFixture(row: {
+  readonly admissionFingerprint: string;
+  readonly audience: string;
+  readonly createdAt: string;
+  readonly evidenceMode: string;
+  readonly instanceId: string;
+  readonly jobId: string;
+  readonly status: string;
+}): boolean {
+  const suffix = row.jobId === "01J00000000000000000000000" ? "a"
+    : row.jobId === "01J00000000000000000000001" ? "b" : null;
+  return target === "listing.pin-session"
+    && suffix !== null
+    && row.instanceId === "fixture-instance"
+    && row.audience === "fixture-audience"
+    && row.evidenceMode === "fixture"
+    && row.admissionFingerprint === suffix.repeat(64)
+    && row.status === "admitted"
+    && row.createdAt === "2026-07-15T00:00:00.000Z";
 }
 
 function assertDetachedDependencyContract(): void {
@@ -437,6 +476,82 @@ function verifyLifecycles(
     }
   }
   checks.push(`lifecycles:${rows.length}`);
+}
+
+function verifyListingLifecycle(checks: string[]): void {
+  const store = new ListingStore(database);
+  const versions = database.query<{
+    contentHash: string;
+    listingId: string;
+    listingVersion: bigint;
+    sellerPrimaryClaim: string;
+  }, []>(`
+    SELECT seller_primary_claim AS sellerPrimaryClaim, listing_id AS listingId,
+      listing_version AS listingVersion, listing_content_hash AS contentHash
+    FROM fixture_listing_lifecycle_versions
+    ORDER BY seller_primary_claim, listing_id, listing_version
+  `).all();
+  for (const row of versions) {
+    const retained = store.get(row.sellerPrimaryClaim, row.listingId, Number(row.listingVersion));
+    if (retained === null || retained.contentHash !== row.contentHash) {
+      throw new Error(`Listing owner lost ${row.sellerPrimaryClaim}/${row.listingId}/${row.listingVersion}`);
+    }
+  }
+
+  const discovery = database.query<{
+    contentHash: string;
+    listingId: string;
+    listingVersion: bigint;
+    sellerPrimaryClaim: string;
+  }, []>(`
+    SELECT seller_primary_claim AS sellerPrimaryClaim, listing_id AS listingId,
+      listing_version AS listingVersion, listing_content_hash AS contentHash
+    FROM fixture_listing_discovery
+    ORDER BY seller_primary_claim, listing_id
+  `).all();
+  for (const row of discovery) {
+    const current = store.current(row.sellerPrimaryClaim, row.listingId);
+    if (current === null || current.listingVersion !== Number(row.listingVersion)
+      || current.contentHash !== row.contentHash) {
+      throw new Error(`Listing discovery owner lost ${row.sellerPrimaryClaim}/${row.listingId}`);
+    }
+  }
+
+  const revocations = database.query<{
+    listingId: string;
+    listingVersion: bigint;
+    revocationContentHash: string;
+    sellerPrimaryClaim: string;
+  }, []>(`
+    SELECT seller_primary_claim AS sellerPrimaryClaim, listing_id AS listingId,
+      listing_version AS listingVersion, revocation_content_hash AS revocationContentHash
+    FROM fixture_listing_revocations
+    ORDER BY seller_primary_claim, listing_id, listing_version
+  `).all();
+  for (const row of revocations) {
+    const revocation = store.revocation(row.sellerPrimaryClaim, row.listingId, Number(row.listingVersion));
+    if (revocation === null || revocation.revocationContentHash !== row.revocationContentHash) {
+      throw new Error(`Listing revocation owner lost ${row.sellerPrimaryClaim}/${row.listingId}/${row.listingVersion}`);
+    }
+  }
+
+  const pins = database.query<{ jobId: string }, []>(
+    "SELECT job_id AS jobId FROM fixture_session_listing_pins ORDER BY job_id",
+  ).all();
+  for (const { jobId } of pins) {
+    if (store.sessionPin(jobId) === null) throw new Error(`Session Listing owner lost ${jobId}`);
+  }
+
+  const anchors = database.query<{ count: bigint }, []>(
+    "SELECT count(*) AS count FROM fixture_listing_anchor_registry",
+  ).get()?.count ?? 0n;
+  if (anchors !== BigInt(versions.length + revocations.length)) {
+    throw new Error("Listing anchor registry does not cover every retained artifact");
+  }
+  checks.push(`listing-versions:${versions.length}`);
+  checks.push(`listing-discovery:${discovery.length}`);
+  checks.push(`listing-revocations:${revocations.length}`);
+  checks.push(`listing-session-pins:${pins.length}`);
 }
 
 function tableCount(value: Database): number {

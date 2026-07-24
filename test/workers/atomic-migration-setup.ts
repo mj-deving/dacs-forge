@@ -19,6 +19,13 @@ export function setupMigrationScenario(
     } else if (scenario === "v18-no-vet-records") {
       database.run("DROP TABLE fixture_vet_records");
       database.run("PRAGMA user_version = 18");
+    } else if (scenario === "v19-current") {
+      database.run("DROP TABLE fixture_session_listing_pins");
+      database.run("DROP TABLE fixture_listing_revocations");
+      database.run("DROP TABLE fixture_listing_discovery");
+      database.run("DROP TABLE fixture_listing_lifecycle_versions");
+      database.run("DROP TABLE fixture_listing_anchor_registry");
+      database.run("PRAGMA user_version = 19");
     } else {
       throw new Error(`Unknown migration setup scenario: ${scenario}`);
     }

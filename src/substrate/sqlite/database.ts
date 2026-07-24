@@ -11,7 +11,7 @@ import { dirname, join, parse, resolve } from "node:path";
 
 export type DacsDatabase = Database;
 
-const SCHEMA_VERSION = 19;
+const SCHEMA_VERSION = 20;
 const WAL_RETRY_ATTEMPTS = 20;
 const WAL_RETRY_DELAY_MS = 25;
 const retrySignal = new Int32Array(new SharedArrayBuffer(4));
@@ -253,6 +253,99 @@ const FIXTURE_VET_SCHEMA = `
       REFERENCES sessions(instance_id, audience, job_id) ON DELETE RESTRICT,
     CHECK (evaluated_party <> verifier_party)
   ) STRICT;
+`;
+
+const FIXTURE_LISTING_ANCHOR_REGISTRY_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS fixture_listing_anchor_registry (
+    native_address TEXT PRIMARY KEY NOT NULL,
+    logical_address TEXT NOT NULL UNIQUE,
+    artifact_kind TEXT NOT NULL CHECK (artifact_kind IN ('listing', 'revocation')),
+    content_hash TEXT NOT NULL CHECK (
+      length(content_hash) = 64 AND content_hash NOT GLOB '*[^0-9a-f]*'
+    )
+  ) STRICT
+`;
+
+const FIXTURE_LISTING_LIFECYCLE_VERSIONS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS fixture_listing_lifecycle_versions (
+    seller_primary_claim TEXT NOT NULL,
+    listing_id TEXT NOT NULL,
+    listing_version INTEGER NOT NULL CHECK (listing_version > 0),
+    listing_content_hash TEXT NOT NULL UNIQUE CHECK (
+      length(listing_content_hash) = 64 AND listing_content_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    canonical_json TEXT NOT NULL,
+    logical_address TEXT NOT NULL UNIQUE,
+    native_address TEXT NOT NULL UNIQUE,
+    anchor_tx TEXT NOT NULL,
+    anchor_verified_at INTEGER NOT NULL CHECK (anchor_verified_at >= 0),
+    created_at TEXT NOT NULL,
+    PRIMARY KEY (seller_primary_claim, listing_id, listing_version)
+  ) STRICT
+`;
+
+const FIXTURE_LISTING_DISCOVERY_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS fixture_listing_discovery (
+    seller_primary_claim TEXT NOT NULL,
+    listing_id TEXT NOT NULL,
+    listing_version INTEGER NOT NULL CHECK (listing_version > 0),
+    listing_content_hash TEXT NOT NULL CHECK (
+      length(listing_content_hash) = 64 AND listing_content_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    native_address TEXT NOT NULL,
+    published_at TEXT NOT NULL,
+    PRIMARY KEY (seller_primary_claim, listing_id),
+    FOREIGN KEY (seller_primary_claim, listing_id, listing_version)
+      REFERENCES fixture_listing_lifecycle_versions(
+        seller_primary_claim, listing_id, listing_version
+      )
+      ON DELETE RESTRICT
+  ) STRICT
+`;
+
+const FIXTURE_LISTING_REVOCATIONS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS fixture_listing_revocations (
+    seller_primary_claim TEXT NOT NULL,
+    listing_id TEXT NOT NULL,
+    listing_version INTEGER NOT NULL CHECK (listing_version > 0),
+    listing_content_hash TEXT NOT NULL CHECK (
+      length(listing_content_hash) = 64 AND listing_content_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    revocation_content_hash TEXT NOT NULL UNIQUE CHECK (
+      length(revocation_content_hash) = 64
+        AND revocation_content_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    canonical_json TEXT NOT NULL,
+    logical_address TEXT NOT NULL UNIQUE,
+    native_address TEXT NOT NULL UNIQUE,
+    anchor_tx TEXT NOT NULL,
+    anchor_verified_at INTEGER NOT NULL CHECK (anchor_verified_at >= 0),
+    created_at TEXT NOT NULL,
+    PRIMARY KEY (seller_primary_claim, listing_id, listing_version),
+    FOREIGN KEY (seller_primary_claim, listing_id, listing_version)
+      REFERENCES fixture_listing_lifecycle_versions(
+        seller_primary_claim, listing_id, listing_version
+      )
+      ON DELETE RESTRICT
+  ) STRICT
+`;
+
+const FIXTURE_SESSION_LISTING_PINS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS fixture_session_listing_pins (
+    job_id TEXT PRIMARY KEY NOT NULL REFERENCES sessions(job_id) ON DELETE RESTRICT,
+    seller_primary_claim TEXT NOT NULL,
+    listing_id TEXT NOT NULL,
+    listing_version INTEGER NOT NULL CHECK (listing_version > 0),
+    listing_content_hash TEXT NOT NULL CHECK (
+      length(listing_content_hash) = 64 AND listing_content_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    pinned_at TEXT NOT NULL,
+    FOREIGN KEY (seller_primary_claim, listing_id, listing_version)
+      REFERENCES fixture_listing_lifecycle_versions(
+        seller_primary_claim, listing_id, listing_version
+      )
+      ON DELETE RESTRICT
+  ) STRICT
 `;
 
 export function openDatabase(path: string): DacsDatabase {
@@ -679,6 +772,13 @@ function migrate(database: Database): void {
       } else {
         database.run(FIXTURE_VET_SCHEMA);
       }
+    }
+    if (version < 20) {
+      database.run(FIXTURE_LISTING_ANCHOR_REGISTRY_SCHEMA);
+      database.run(FIXTURE_LISTING_LIFECYCLE_VERSIONS_SCHEMA);
+      database.run(FIXTURE_LISTING_DISCOVERY_SCHEMA);
+      database.run(FIXTURE_LISTING_REVOCATIONS_SCHEMA);
+      database.run(FIXTURE_SESSION_LISTING_PINS_SCHEMA);
     }
     database.run(`PRAGMA user_version = ${SCHEMA_VERSION}`);
   });

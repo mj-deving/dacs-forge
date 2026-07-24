@@ -21,6 +21,13 @@ export const EXPECTED_ATOMIC_WRITE_SITES: Readonly<Record<string, ExpectedAtomic
   "admission.consume-challenge": expected("session-admission", "SessionStore.#admitTransaction", "immediate", "session-store.ts:470"),
   "admission.create-session": expected("session-admission", "SessionStore.#admitTransaction", "immediate", "session-store.ts:520"),
   "admission.record-consumption": expected("session-admission", "SessionStore.#admitTransaction", "immediate", "session-store.ts:534"),
+  "listing.reserve-anchor": expected("listing-publication", "ListingStore.publish", "immediate", "listing-store.ts:71"),
+  "listing.publish-version": expected("listing-publication", "ListingStore.publish", "immediate", "listing-store.ts:81"),
+  "listing.advance-discovery": expected("listing-publication", "ListingStore.publish", "immediate", "listing-store.ts:95"),
+  "listing.reserve-revocation-anchor": expected("listing-revocation", "ListingStore.revoke", "immediate", "listing-store.ts:152"),
+  "listing.publish-revocation": expected("listing-revocation", "ListingStore.revoke", "immediate", "listing-store.ts:164"),
+  "listing.withdraw-discovery": expected("listing-revocation", "ListingStore.revoke", "immediate", "listing-store.ts:171"),
+  "listing.pin-session": expected("listing-session-pin", "ListingStore.pinSession", "immediate", "listing-store.ts:238"),
   "authority.put-listing": expected("agreement-commitment", "FixtureAuthorityStore.putListingWithinTransaction", "immediate", "fixture-authority-store.ts:105"),
   "authority.put-listing-verification": expected("agreement-commitment", "FixtureAuthorityStore.putListingWithinTransaction", "immediate", "fixture-authority-store.ts:124"),
   "authority.put-commitment-identity": expected(

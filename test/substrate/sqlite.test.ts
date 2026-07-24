@@ -152,14 +152,17 @@ describe("SQLite substrate", () => {
     const migrated = openDatabase(path);
     expect(migrated.query<{ user_version: bigint }, []>(
       "PRAGMA user_version",
-    ).get()?.user_version).toBe(19n);
+    ).get()?.user_version).toBe(20n);
     const tables = migrated.query<{ name: string }, []>(`
       SELECT name FROM sqlite_master
       WHERE type = 'table' AND name IN (
         'service_runs', 'fixture_settlements', 'fixture_anchors',
         'fixture_settlement_consumptions', 'fixture_commitments',
         'fixture_lifecycle_runs', 'fixture_deliveries', 'fixture_bundles',
-        'fixture_listing_verification_authorities'
+        'fixture_listing_verification_authorities',
+        'fixture_listing_anchor_registry', 'fixture_listing_lifecycle_versions',
+        'fixture_listing_discovery', 'fixture_listing_revocations',
+        'fixture_session_listing_pins'
       )
       ORDER BY name
     `).all().map(({ name }) => name);
@@ -169,7 +172,12 @@ describe("SQLite substrate", () => {
       "fixture_commitments",
       "fixture_deliveries",
       "fixture_lifecycle_runs",
+      "fixture_listing_anchor_registry",
+      "fixture_listing_discovery",
+      "fixture_listing_lifecycle_versions",
+      "fixture_listing_revocations",
       "fixture_listing_verification_authorities",
+      "fixture_session_listing_pins",
       "fixture_settlement_consumptions",
       "fixture_settlements",
       "service_runs",
@@ -257,7 +265,7 @@ describe("SQLite substrate", () => {
     const migrated = openDatabase(path);
     expect(migrated.query<{ user_version: bigint }, []>(
       "PRAGMA user_version",
-    ).get()?.user_version).toBe(19n);
+    ).get()?.user_version).toBe(20n);
     expect(migrated.query<{ name: string }, []>(
       "PRAGMA table_info(fixture_settlements)",
     ).all().map(({ name }) => name)).toContain("session_binding_hash");
@@ -359,7 +367,7 @@ describe("SQLite substrate", () => {
     const migrated = openDatabase(emptyPath);
     expect(migrated.query<{ user_version: bigint }, []>(
       "PRAGMA user_version",
-    ).get()?.user_version).toBe(19n);
+    ).get()?.user_version).toBe(20n);
     migrated.close();
 
     const populatedPath = await databasePath();
@@ -430,7 +438,7 @@ describe("SQLite substrate", () => {
     const migrated = openDatabase(path);
     expect(migrated.query<{ user_version: bigint }, []>(
       "PRAGMA user_version",
-    ).get()?.user_version).toBe(19n);
+    ).get()?.user_version).toBe(20n);
     expect(migrated.query<{ state: string }, []>(
       "SELECT state FROM fixture_lifecycle_runs",
     ).get()?.state).toBe("failed-substrate");

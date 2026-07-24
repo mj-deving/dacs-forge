@@ -34,6 +34,34 @@ const FULL_HANDSHAKE: Driver = Object.freeze({
 });
 
 const DRIVER_OVERRIDES: Readonly<Record<string, Driver>> = Object.freeze({
+  "listing.reserve-anchor": {
+    file: "test/directory/publication-order.test.ts",
+    pattern: "does not expose discovery until",
+  },
+  "listing.publish-version": {
+    file: "test/directory/publication-order.test.ts",
+    pattern: "does not expose discovery until",
+  },
+  "listing.advance-discovery": {
+    file: "test/directory/publication-order.test.ts",
+    pattern: "does not expose discovery until",
+  },
+  "listing.reserve-revocation-anchor": {
+    file: "test/directory/listing-revocation.test.ts",
+    pattern: "anchors a signed retained revocation",
+  },
+  "listing.publish-revocation": {
+    file: "test/directory/listing-revocation.test.ts",
+    pattern: "anchors a signed retained revocation",
+  },
+  "listing.withdraw-discovery": {
+    file: "test/directory/listing-revocation.test.ts",
+    pattern: "anchors a signed retained revocation",
+  },
+  "listing.pin-session": {
+    file: "test/directory/session-listing-pin.test.ts",
+    pattern: "keeps existing pins but atomically rejects",
+  },
   "service-run.claim": {
     file: "test/runtime/service-runtime.test.ts",
     pattern: "passes only the frozen documented request",
@@ -330,9 +358,21 @@ describe("real-process atomic write interruption", () => {
   });
 
   test("every declared multi-site boundary shares one observed outer transaction", async () => {
-    const observations = await observeFullHandshake();
-    const byBoundary = new Map<string, Map<string, Set<number>>>();
     const expectedBoundaries = groupExpectedSites();
+    const observations = await observeDriver(FULL_HANDSHAKE);
+    const observedTargets = new Set(observations.map(({ target }) => target));
+    const supplementalDrivers = new Map<string, Driver>();
+    for (const sites of expectedBoundaries.values()) {
+      if (sites.length < 2 || sites.every((site) => observedTargets.has(site))) continue;
+      for (const site of sites) {
+        const driver = DRIVER_OVERRIDES[site] ?? FULL_HANDSHAKE;
+        supplementalDrivers.set(`${driver.file}\0${driver.pattern}`, driver);
+      }
+    }
+    observations.push(...(await Promise.all(
+      [...supplementalDrivers.values()].map(observeDriver),
+    )).flat());
+    const byBoundary = new Map<string, Map<string, Set<number>>>();
     for (const event of observations) {
       const expected = expectedSite(event.target);
       const stack = [...event.callStack, ...event.transactionCallStack];
@@ -892,7 +932,7 @@ async function runVerifier(path: string, target: string): Promise<{
   return collectChild(child, `atomic-write verifier for ${target}`, 20_000);
 }
 
-async function observeFullHandshake(): Promise<ObservationEvent[]> {
+async function observeDriver(driver: Driver): Promise<ObservationEvent[]> {
   const root = await mkdtemp(join(tmpdir(), "dacs-atomic-observe-"));
   roots.push(root);
   const child = spawnInLinuxPidNamespace([
@@ -900,9 +940,9 @@ async function observeFullHandshake(): Promise<ObservationEvent[]> {
     "test",
     "--preload",
     PRELOAD,
-    join(ROOT, FULL_HANDSHAKE.file),
+    join(ROOT, driver.file),
     "-t",
-    FULL_HANDSHAKE.pattern,
+    driver.pattern,
     "--timeout",
     "60000",
   ], {

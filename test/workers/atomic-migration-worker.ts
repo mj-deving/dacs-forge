@@ -26,7 +26,7 @@ if (mode === "interrupt" && (!["before-run", "after-run", "post-commit"].include
   throw new Error("Migration interruption requires a valid phase and target index");
 }
 if (setupScenario !== undefined) {
-  if (!["v8-current", "v9-current", "v12-no-orchestrator", "v18-current", "v18-no-vet-records"]
+  if (!["v8-current", "v9-current", "v12-no-orchestrator", "v18-current", "v18-no-vet-records", "v19-current"]
     .includes(setupScenario)) throw new Error(`Unknown migration setup scenario: ${setupScenario}`);
   setupMigrationScenario(path, setupScenario as Parameters<typeof setupMigrationScenario>[1]);
 }
@@ -371,7 +371,7 @@ function hasCurrentSchemaVersion(database: Database): boolean {
     const row = (originalQuery.call(database, "PRAGMA user_version") as {
       get(): { readonly user_version: bigint | number } | null;
     }).get();
-    return row !== null && Number(row.user_version) === 19;
+    return row !== null && Number(row.user_version) === 20;
   } finally {
     schemaVersionReadDepth -= 1;
   }
@@ -396,7 +396,7 @@ function beforeMutation(database: Database, sql: string, api: string): number {
   if (probeApi === undefined) migrationCallSiteLines.set(index, migrationCallSiteLine());
   const transactions = transactionContexts.get(database) ?? [];
   const transactionMode = transactions[0]?.mode ?? "autocommit";
-  if (/^pragma user_version = 19$/i.test(sql.replace(/\s+/g, " ").trim()) && transactions.length > 0) {
+  if (/^pragma user_version = 20$/i.test(sql.replace(/\s+/g, " ").trim()) && transactions.length > 0) {
     transactions.at(-1)!.sawMigrationCompletion = true;
   }
   if (mode === "observe") {
