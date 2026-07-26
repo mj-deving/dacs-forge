@@ -82,8 +82,12 @@
       "sha256": "71bfd555de240fce565338ed6f699e4f83f946cf02dcee2f6ba9407eda592142"
     },
     {
+      "path": "src/consumer/binding-verifier.ts",
+      "sha256": "d38131f14f036098f1b90b644886a170c835161632b5776e3885f40517579ae3"
+    },
+    {
       "path": "src/consumer/bundle-consistency.ts",
-      "sha256": "f074c220b4271f32ba5dbfe07e14757ae977e5c637987741b1c170b16d0dc437"
+      "sha256": "03e71bc22f69810d91b12993f7d69069bf33c3484a976f474eac7784dc1d6d20"
     },
     {
       "path": "src/consumer/buyer-vet-requirement-verifier.ts",
@@ -110,8 +114,16 @@
       "sha256": "d16e096d1b9ebc0dc06199ff8883a34d6fe922116ad906d89f2daedac6ce249d"
     },
     {
+      "path": "src/consumer/identity-presentation-verifier.ts",
+      "sha256": "529e93e4f60102f311c7fb7301d51deb6a516c44f120415f19c4f9738ede929b"
+    },
+    {
       "path": "src/consumer/listing-verifier.ts",
       "sha256": "48931540d04a839aff558a28274013cd0ea3a14d16e25217e7d9258e1c6632b6"
+    },
+    {
+      "path": "src/consumer/reputation-eligibility.ts",
+      "sha256": "fe610e79f665ab76b6760242c9fbdb5bc2383163abfc8429bf41f7186fa685a8"
     },
     {
       "path": "src/consumer/settlement-evidence-verifier.ts",
@@ -134,12 +146,24 @@
       "sha256": "cc3612d991bfb90b87da14a91e7694d9a759cdfd308102c580bc1c82a2b28708"
     },
     {
+      "path": "src/directory/listing-lifecycle.ts",
+      "sha256": "045c7e24f6c7ae3b93cbeecc7025b47928d2d4287e11f1b7e1e9b08dd18e8cfe"
+    },
+    {
       "path": "src/directory/listing-summary.ts",
       "sha256": "24dd97c1a3c8e968f0840d22d7df4083521f784ff405dcf4e6bda4ef080333bb"
     },
     {
+      "path": "src/http/bind-policy.ts",
+      "sha256": "b82e9252ea7af2dcb410598475c4c072e2c24699884b990444a3c55e28a4af4d"
+    },
+    {
       "path": "src/http/readiness-server.ts",
-      "sha256": "d65429232ad634cc519aeefd328f706218021d9352642cd51e7a1851e6ae957e"
+      "sha256": "2444ef32d72d900e48f93e4ad914706ff8f9a41b580745f2b43cae3459af112e"
+    },
+    {
+      "path": "src/http/terminal-server.ts",
+      "sha256": "799bf8b286a06f2330b9996496e671dcaaa7ac3f406b86700e8ff13a7f1069be"
     },
     {
       "path": "src/index.ts",
@@ -254,6 +278,10 @@
       "sha256": "0450790828494987cb89fbd09c86eade113217d9a7ddf8c1b59be7d37472bcb6"
     },
     {
+      "path": "src/readiness/binding-readiness.ts",
+      "sha256": "ec90956777de32d9b763d1bdae0de95d3dccd48c82503152223fe31a35b10824"
+    },
+    {
       "path": "src/readiness/directory-schema-drift.ts",
       "sha256": "248ea42ea2631fa409bb3d36ba26f6692802db9aa51414c3a03d1b8be00b75cf"
     },
@@ -279,11 +307,11 @@
     },
     {
       "path": "src/substrate/sqlite/atomic-write-registry.ts",
-      "sha256": "63923218c977d940b93c1d27049d13228ac99d086fc933f59522de0738108580"
+      "sha256": "9ee09030b3a20339b25dcb0dec2d097879a857d474b0c8efdd03a1eaa45a60d4"
     },
     {
       "path": "src/substrate/sqlite/database.ts",
-      "sha256": "f25ede628fcda715e4310cec88442cb1200702a4f3d74edaf0805a156f43697e"
+      "sha256": "216ed3990e8d706f9a1a376ecb4d9bc8d53d6d5d2b8e95b031b56c55c3b32930"
     },
     {
       "path": "src/substrate/sqlite/fixture-authority-store.ts",
@@ -310,12 +338,32 @@
       "sha256": "8657856eb5898d26d1184ac688b3c71a1600703d502da22bd855e2333e8d7648"
     },
     {
+      "path": "src/substrate/sqlite/listing-store.ts",
+      "sha256": "099ced889e031b6eebd1ae2ea6f9bb7e2d148895cec3b941bd60916b860f41f3"
+    },
+    {
       "path": "src/substrate/sqlite/session-store.ts",
       "sha256": "64fc90a5b5aa44fbc1d4e3127f4d80891312e0754bf387076f826da481d5b9b8"
     },
     {
+      "path": "test/adversarial/fixture-reputation-exclusion.test.ts",
+      "sha256": "7ba7ff8f664d75ad8a642312687444a5ac1a3fa7e833914ef4f7f71ee2a980f8"
+    },
+    {
       "path": "test/adversarial/settlement-session-binding.test.ts",
       "sha256": "f6ea458bb6999d9ea87c3d991e309ae6ebdf75e7b18289882dfddf2335dffeec"
+    },
+    {
+      "path": "test/api/bind-policy.test.ts",
+      "sha256": "f07ae6ba0cd435288f0b73c7bec981f2e4daf5a1318e3d5278df5dbb92fb4d1c"
+    },
+    {
+      "path": "test/api/terminal-results.test.ts",
+      "sha256": "61aefea555b70a29adc60649b9f5fec8164ec4627f63eb507a1f83526803ad9f"
+    },
+    {
+      "path": "test/cli/binding-readiness.test.ts",
+      "sha256": "9a90eb1d390f596ac62e0a317e1994cad3a878e927388af87fd6665032fe29b5"
     },
     {
       "path": "test/cli/directory-schema-drift.test.ts",
@@ -336,6 +384,10 @@
     {
       "path": "test/conformance/attested-delivery.test.ts",
       "sha256": "ef1ec5e14fb8deeaed72ddde98d913fb977a21aecf7eda10305d81ebb6d9afd5"
+    },
+    {
+      "path": "test/conformance/binding.test.ts",
+      "sha256": "9de308d0bc8953550a8d63a96b009dcf644ad6fa3cae13641c5f0fb0af13e59a"
     },
     {
       "path": "test/conformance/bundle-convergence-pin.test.ts",
@@ -394,6 +446,30 @@
       "sha256": "c4175cb308fa75062f42076156d1433cab62e69bf1d7950144263afbd1d847ba"
     },
     {
+      "path": "test/directory/discovery-update.test.ts",
+      "sha256": "9d65b8355eb01d67f97729a875bf528068436aa9c5000874e9b941b663dc0d3a"
+    },
+    {
+      "path": "test/directory/listing-retention.test.ts",
+      "sha256": "58778b1eee41c7d1d43bd76fc31b54fbb740412d070a2332b30be82c7713fe97"
+    },
+    {
+      "path": "test/directory/listing-revocation.test.ts",
+      "sha256": "2976bd4e5692fed6d7eb4df39ca2c5c550c249ac18415f838baf529a9bf5bb81"
+    },
+    {
+      "path": "test/directory/listing-version.test.ts",
+      "sha256": "254ea1e59d9fb41202d0772b2ec46cceb2e3c122d8e9380d911fc5660766e17a"
+    },
+    {
+      "path": "test/directory/publication-order.test.ts",
+      "sha256": "9d4dfca0bc3b5445311ced5e7812e353ecf075ce655c018169310fba7d665063"
+    },
+    {
+      "path": "test/directory/session-listing-pin.test.ts",
+      "sha256": "9c00ea01a438f10bf1f7c7a0eb6ad833ae062c32b1046be55c94bbb84f7118d9"
+    },
+    {
       "path": "test/directory/summary-schema.test.ts",
       "sha256": "3531f92c638b1fda005cdd431fe55f5c4c964de8ee47858d63dba1c2296d730b"
     },
@@ -407,11 +483,11 @@
     },
     {
       "path": "test/fixtures/atomic-migration-scenarios.ts",
-      "sha256": "32aceffbd7985c05703af37a85ce8bda6c312736e85ac9a9eefc64c855d5d245"
+      "sha256": "9b18c2f29644cf91bcbdc77933926bb36361e41319df95a3d1dd30e1fe585ac9"
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "331d52c924f847f50d112d032e5bbd1835fa201824ade24cbbb351749faa2d4f"
+      "sha256": "a86d3c6889c4862769447dfd413bd2956d68f3b83f5065b629a296cd35f691d2"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -448,6 +524,14 @@
     {
       "path": "test/fixtures/generic-computed-indirect-fixture.ts",
       "sha256": "ea36856dbd0b586c23e50d6f7031a51564c8db03d41c5d2ec77259f4a7b8c4b7"
+    },
+    {
+      "path": "test/fixtures/http/tls.ts",
+      "sha256": "467e03aeea3405bb81b2dbf8919144d5be9823f3ea02a8f67454fb7e0b88cd04"
+    },
+    {
+      "path": "test/fixtures/identity-listing/lifecycle.ts",
+      "sha256": "bed88952139182f56364c17770db980484ac739cb0b211bfaedb2636639264a6"
     },
     {
       "path": "test/fixtures/linux-process-tree.ts",
@@ -639,7 +723,7 @@
     },
     {
       "path": "test/lifecycle/attestation-bundle-finalisation.test.ts",
-      "sha256": "5b5917ea5c1d9b34d8d7ba08278d1cc5199fedd59b6b43a03ac7e832ff081755"
+      "sha256": "833cbb40b2dca3576c66ebb2ffd3e794e47ab8eacbaeb9202e3d44f070e5959e"
     },
     {
       "path": "test/lifecycle/attested-delivery-integration.test.ts",
@@ -647,11 +731,11 @@
     },
     {
       "path": "test/lifecycle/commit-failure-stop.test.ts",
-      "sha256": "602fa14aea85cc83e5c558bfc8db412962f0a8be839634dc0d7687e7e07b1db3"
+      "sha256": "02a30199c87c7ef174dde5e88c8326f559ba6bf0ec9c3b4cefdc9bf3d3a0e6d1"
     },
     {
       "path": "test/lifecycle/fixture-vet-store.test.ts",
-      "sha256": "92319c5bda224ecd3948da261764713aa62e468eaa5e6a31a8be11289fb9105c"
+      "sha256": "e407a5b68d0474572dfe8ea57cf77e161ffbd7605761a68f70755195615258d4"
     },
     {
       "path": "test/lifecycle/fixtures.ts",
@@ -715,11 +799,11 @@
     },
     {
       "path": "test/recovery/atomic-migration-interruption.test.ts",
-      "sha256": "2de60a1f722bda2c1c8141e81fda19625795b4488cf03b9a366289c186ff44e2"
+      "sha256": "d0efcb0318b1020845341e2aa0cb283dcdde35df3cec1859a1131281f6887609"
     },
     {
       "path": "test/recovery/atomic-write-interruption.test.ts",
-      "sha256": "44ddcdd4e3c7dbda5e80b82e9b89e01cfbd22489f437be8844dda813d70098dd"
+      "sha256": "6e6975be144d036779604b104b1accf9d5b934215f2374ac2a433fa7601c3a3b"
     },
     {
       "path": "test/recovery/atomic-write-registry.test.ts",
@@ -746,6 +830,18 @@
       "sha256": "d067ba116becc1a6eb71fa082659d75999ef02f8c262739a352ee214feb8ed39"
     },
     {
+      "path": "test/security/log-redaction.test.ts",
+      "sha256": "b63a70cb4f6e676f267b4bb49a1dfac41b736645b5b0c7d7b5153045d4228194"
+    },
+    {
+      "path": "test/security/presentation-nonce-binding.test.ts",
+      "sha256": "73d89d7f3555b92bd62435f06637284524800621d01db3734b10c9496a466c1e"
+    },
+    {
+      "path": "test/security/siwd-presentation-binding.test.ts",
+      "sha256": "46e84bc815e83fc4618eda479a854c8ab0686d25a1556885b9ebf23faf3038e4"
+    },
+    {
       "path": "test/settlement/fixture-settlement.test.ts",
       "sha256": "d36d92f0bff410ad75cba50d6317cb1a757b0c1f0f942f5d5778fb15211b6e9c"
     },
@@ -759,15 +855,15 @@
     },
     {
       "path": "test/substrate/sqlite.test.ts",
-      "sha256": "1ad49959d2a9cbd7bfec73a110a3dd13421691203aa411d055f96fdf63c0900b"
+      "sha256": "48d3a32e128f217bb4759fb1a1d79a694bcfff7a2cfc270c1170d4116f0bafdf"
     },
     {
       "path": "test/workers/atomic-migration-setup.ts",
-      "sha256": "fd39d4767b764cdc066fb32d7f53c1e64d0a333418dfaafc3acf508bf26a896b"
+      "sha256": "cb64748001e2b1208e9a3efa56cad7712f538f3427d7c5ffb7f72cb83b882d35"
     },
     {
       "path": "test/workers/atomic-migration-worker.ts",
-      "sha256": "992aaf879bb6c66cf9c3c8fde3224ec7e1b4ee84d90fdc5fad0b6a3ff09c11e4"
+      "sha256": "e49bd952cd394db51646a790ba7211330417479222e0cc80ad49467e1f95191f"
     },
     {
       "path": "test/workers/atomic-write-api-worker.ts",
@@ -799,7 +895,7 @@
     },
     {
       "path": "test/workers/atomic-write-verifier.ts",
-      "sha256": "a3e62ef3b359c144e9e086e9d62bb581b5b34bf084444b18795c5b07eb8ad995"
+      "sha256": "06ad1c7d0c7771dd25757fbfd728a422a19f8f489c72aceee95c699ad21815fc"
     },
     {
       "path": "test/workers/concurrent-settlement-worker.ts",
