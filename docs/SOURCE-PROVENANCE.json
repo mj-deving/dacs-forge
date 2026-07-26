@@ -861,6 +861,10 @@
       "sha256": "f7b9085f2a24429ae024cf3f4f118abb7565f75090cc967094500fa454d99977"
     },
     {
+      "path": "test/runtime/active-write-shutdown.test.ts",
+      "sha256": "a2221ef35cff2401aa30f5213aed106bff22ed0dd7f1c07f18cc042e7b8251ce"
+    },
+    {
       "path": "test/runtime/service-runtime.test.ts",
       "sha256": "afa10d221933c110c421105829810da10c901a94c38042ab8201f61534a72df5"
     },
