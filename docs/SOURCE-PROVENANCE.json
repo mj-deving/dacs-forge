@@ -1,6 +1,20 @@
 {
   "schema": "dacs-forge-source-provenance/v1",
   "sourceCommit": "fc88ca27d5cca7121977a9bfe9058255bd94f849",
+  "sourceCommitScope": {
+    "certifies": "sourceCommit identifies the private origin snapshot this project was projected from. It is a history pointer only. It does not certify that the declared entries below are byte-identical to that snapshot, and it never did.",
+    "measuredAt": "2026-07-26, over all 245 declared entries, against the private origin repository",
+    "traceableEntries": 191,
+    "untraceableEntries": 54,
+    "untraceableBreakdown": {
+      "absentAtSourceCommit": 34,
+      "digestMismatchAtSourceCommit": 20
+    },
+    "priorState": "At the public base 8a18849f932621c38795f4358560b07326dd9ad3 the same measurement over the then-declared 221 entries gave 206 traceable and 15 untraceable, so incomplete traceability predates this cohort integration rather than being introduced by it; the cohort nonetheless widened it from 15 untraceable entries to 54.",
+    "notRepointed": "Advancing sourceCommit to the current private authority commit was measured and rejected: it yields the identical 191/54 split, because the cohort source changes were authored in public worktrees and the private origin tree has diverged independently. No private-origin commit is a byte-source for this tracked tree, so no truthful replacement value exists.",
+    "byteIdentityAuthority": "Byte-identity of the declared entries is established solely by the sha256 values in this manifest, checked against the tracked tree by tools/verify-source-provenance.ts. Nothing in this file depends on sourceCommit for that guarantee.",
+    "measurementIndependence": "Every figure in this block was re-measured directly against the private origin repository by the join lease that committed it, and reproduced exactly, before the block was accepted into this file."
+  },
   "scaffoldCommit": "a4ba4b88f4ad8cc33a65a89b4423643fb6797682",
   "upstreamPins": {
     "dacsStandard": {
