@@ -1085,7 +1085,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "5c2312c5c55de413c98e9ffb5700cfa88362bdae2ff156e18d7d0e834e6f4750"
+      "sha256": "28a506d3c37dfbbc50350c7867c9d87a2b00778f9f9c7135b3cd3a1215c978f6"
     },
     {
       "path": "SECURITY.md",
@@ -1096,8 +1096,12 @@
       "sha256": "2149c4e7d572ff924e506b0426dc074a61c12955d71725195ef9a3c4d64bc151"
     },
     {
+      "path": "docs/ARCHITECTURE.md",
+      "sha256": "24d6ca3f10801a086a3d92ef6d88f349d282cd908cb9e5f36844fee4287c582f"
+    },
+    {
       "path": "docs/FORKING.md",
-      "sha256": "0d6629fd854a0bd2ffb85979505a7d2a1fab7b2529ba94c273e5dd27a2395f40"
+      "sha256": "c9cabf522ce332a5ef49c36371bbaa57681ccec87424f31df21114ff1f95d64c"
     },
     {
       "path": "docs/HARDENING.md",

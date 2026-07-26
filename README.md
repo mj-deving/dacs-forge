@@ -23,8 +23,31 @@ bundle copies. Restart, replay, mutation, concurrency, migration, authority, and
 failure-path tests are first-class release evidence.
 
 It does **not** currently claim live Demos anchoring, live payment rails, external
-attestation authority, HTTP/CLI/container readiness, accepted external-rig
-qualification, reputation eligibility, or steward designation.
+attestation authority, release-qualified HTTP/CLI/container operation, accepted
+external-rig qualification, reputation eligibility, or steward designation.
+
+## The 90-second model
+
+A service fork owns five paths under `service/`: metadata, input schema, output
+schema, handler, and fixtures. Forge owns everything around them: admission,
+schema validation, canonical bytes and hashes, signing, independent verification,
+SQLite persistence, replay, the fixture protocol lifecycle, and role-local DACS-5
+evidence bundles.
+
+The handler is trusted application code, not a sandbox. It receives validated,
+deep-frozen input and inert run metadata, but no signer, database, wallet, network
+client, payment capability, or raw key through the handler API.
+
+Two tests prove different things:
+
+- `test/runtime/service-runtime.test.ts` executes the fork-owned handler and checks
+  its output, signed work-product receipt, persistence, and replay.
+- `test/e2e/full-handshake.test.ts` exercises the wider fixture lifecycle from a
+  signed Listing through bilateral Vet, settlement, delivery, and role-local
+  DACS-5 bundle verification.
+
+Read the [architecture](docs/ARCHITECTURE.md) for the component and artifact flow,
+then use [Forking DACS Forge](docs/FORKING.md) to build a first service.
 
 ## Quickstart
 
@@ -34,15 +57,17 @@ Requires Bun `1.3.9` on Linux.
 git clone https://github.com/mj-deving/dacs-forge.git
 cd dacs-forge
 bun install --frozen-lockfile
+bun test --timeout 10000 test/runtime/service-runtime.test.ts
 bun test --timeout 10000 test/e2e/full-handshake.test.ts
 bun run check
 bun run build
 ```
 
-The focused test proves the complete implemented fixture handshake. `bun run
-check` adds strict TypeScript validation, pinned DACS vectors, two independent
-10,000-case canonicalization runs, adversarial protocol probes, recovery tests,
-and cross-process SQLite tests.
+The first focused test proves the builder-owned service path. The second proves
+the complete implemented fixture handshake. `bun run check` verifies source
+provenance, runs strict TypeScript validation, and executes the full test suite,
+including pinned DACS vectors, independent canonicalization runs, adversarial
+protocol probes, recovery tests, and cross-process SQLite tests.
 
 ## Build a service agent
 
@@ -55,8 +80,9 @@ Fork-owned customization is intentionally narrow:
 - `service/fixtures/` — deterministic examples and expected outputs
 
 The protocol-critical lifecycle, persistence, signing, independent verification,
-and conformance tests live outside `service/`. See [Forking DACS Forge](docs/FORKING.md)
-and the [service contract](docs/SERVICE-CONTRACT.md).
+and conformance tests live outside `service/`. See [Forking DACS Forge](docs/FORKING.md),
+the [architecture](docs/ARCHITECTURE.md), and the
+[service contract](docs/SERVICE-CONTRACT.md).
 
 ## From Forge to Directory
 

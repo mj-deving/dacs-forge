@@ -1,0 +1,165 @@
+# DACS Forge architecture
+
+Status: prototype, fixture/no-spend only. This document describes the implemented
+local system. It does not claim production readiness, certification, live value
+transfer, external authority, or full DACS conformance.
+
+## What a service fork owns
+
+A normal service fork changes exactly five extension paths:
+
+- `service/service.config.ts`: service identity, version, title, and deliverable kind
+- `service/input.schema.json`: accepted request contract
+- `service/output.schema.json`: emitted work-product contract
+- `service/handler.ts`: deterministic application logic
+- `service/fixtures/**`: deterministic examples and expected outputs
+
+Forge keeps protocol and evidence machinery outside that boundary. Changing
+canonicalization, signing, verification, persistence, lifecycle ordering, or the
+qualification rig creates a substrate fork rather than an ordinary service fork.
+
+## Component and artifact flow
+
+```text
+builder-owned service contract
+  config + schemas + handler + fixtures
+                 |
+                 v
+session admission -- binds job, evidence mode, contract, input, and seed
+                 |
+                 v
+ServiceRuntime -- validates input -> executes handler -> validates output
+                 |
+                 v
+atomic SQLite write
+  canonical work-product artifact + signed work-product receipt + run ledger
+                 |
+                 v
+independent receipt verification and byte-identical replay after restart
+
+fixture protocol lifecycle (separate proof path)
+  signed Listing -> bilateral Vet -> Agreement -> Commitment
+  -> fixture settlement -> attested delivery -> role-local DACS-5 bundles
+                 |
+                 v
+independent consumers re-derive bytes, hashes, signatures, authority, and bindings
+```
+
+The service runtime and the full protocol lifecycle are complementary. The runtime
+test executes the builder handler and produces its template work-product receipt.
+The full-handshake test exercises the wider DACS lifecycle, but does not execute
+that handler. A first-service check therefore runs both.
+
+## Service runtime
+
+`ServiceRuntime` compiles the input and output JSON Schemas with strict JSON Schema
+2020-12 validation. It disables coercion, defaults, and unknown-property removal.
+An admitted session binds the exact service contract, input, and fixture seed
+before the handler runs.
+
+The runtime then:
+
+1. snapshots and deep-freezes validated input;
+2. claims the service run in SQLite;
+3. calls the handler with the input and `{ evidenceMode, jobId, seed }`;
+4. validates and canonicalizes the output;
+5. atomically stores the output artifact and signed work-product receipt;
+6. independently verifies stored bytes before returning them.
+
+The returned `ServiceRunResult` contains `output`, `receipt`, `outputArtifact`, and
+`receiptArtifact`. A completed job replays those stored artifacts without invoking
+the handler again. Concurrent duplicate execution is refused. Crash recovery is
+an explicit offline action with claim, age, and isolation checks; it is not an
+automatic retry loop.
+
+The work-product receipt binds the job, request hash, service identity and version,
+schema identities and hashes, input and output hashes, deliverable kind, evidence
+mode, timestamp, seller claim, and Ed25519 signature. It is a Forge-specific
+pre-settlement receipt, not DACS-4 `SettlementEvidence`.
+
+## Protocol producer and consumer
+
+Forge contains producers for signed protocol artifacts and separate consumer
+modules that parse canonical JSON, recompute hashes and signature scopes, resolve
+expected bindings, and fail closed on invalid or indeterminate evidence. They are
+separate implementations inside this repository and process; this supports
+independent checking, not external certification.
+
+The fixture handshake exercises:
+
+- a signed Listing and party identity bundles;
+- buyer- and seller-side Vet results and composite records;
+- Agreement and authenticated Commitment;
+- no-spend fixture payment and DACS-4 settlement evidence;
+- DACS-2 delivery assertion, verification result, and attestation references;
+- buyer, seller, and orchestrator role-local DACS-5 bundle copies;
+- restart readback of persisted state and artifacts.
+
+## Persistence and recovery
+
+SQLite stores sessions, service runs and artifacts, fixture authorities, Listings,
+Vet records, Commitments, settlement, delivery, and bundle state. Writes that must
+agree are transactional. Restart checks reopen the database and repeat resolution,
+canonical-byte, hash, signature, authority, and binding verification instead of
+trusting an earlier in-memory result.
+
+## Listing and Directory path
+
+The local `ListingLifecycle` verifies and stores immutable signed Listing versions
+and signed withdrawals under fixture authority. Forge also validates a pinned DACS
+Directory `ListingSummary` shape and can report Directory schema drift.
+
+There is no supported live registration or publication command in this prototype.
+Directory registration is a separate operator action, live binding remains gated,
+and no default development command publishes, anchors, or transfers value.
+
+## Trust boundary
+
+The service handler is trusted fork-owned code running in the same process. The API
+does not give it a signer, database, artifact store, wallet, payment capability,
+network client, or raw key. This is capability minimization, not sandboxing: the
+handler can still import ambient Bun or Node APIs. Fork maintainers must keep it
+deterministic and side-effect-free.
+
+The current prototype trusts reviewed first-party source, its pinned dependencies,
+the Bun runtime, the operating system, and fixture keys for fixture evidence only.
+It treats service input, persisted bytes, protocol messages, signatures, bindings,
+restart state, and interruption timing as data to validate. Fixture keys do not
+establish live identity, external source truth, reputation, or payment authority.
+
+## Implemented versus still open
+
+Implemented and locally exercised:
+
+- the five-path service contract and handler runtime;
+- strict schemas, canonical artifacts, signed receipts, persistence, replay, and
+  bounded stale-claim recovery;
+- the no-spend fixture protocol lifecycle and role-local DACS-5 bundles;
+- local Listing lifecycle, Directory summary compatibility, doctor/readiness/HTTP
+  surfaces, provenance checks, and mutation calibration.
+
+Still open or explicitly outside the current claim:
+
+- final extension-only reference-fork and complete release-rig qualification;
+- supported external-rig, container, and release qualification;
+- live Directory registration, Demos anchoring, payment rails, or value transfer;
+- external attestation authority, reputation eligibility, production operation,
+  certification, steward designation, or full conformance.
+
+## Glossary
+
+- **Service contract:** service descriptor plus input/output schemas and handler.
+- **Work-product artifact:** canonical output produced by the service handler.
+- **Work-product receipt:** Forge-specific signed receipt for that output.
+- **Settlement evidence:** DACS-4 artifact created later in the fixture lifecycle;
+  not the work-product receipt.
+- **Producer:** module that creates and signs an artifact.
+- **Consumer:** separate module that re-derives and verifies an artifact.
+- **Role-local bundle:** buyer, seller, or orchestrator copy of a DACS-5 evidence bundle.
+- **Evidence mode:** `fixture`, `local-chain`, or `live`; evidence does not transfer
+  authority between modes.
+- **Qualification:** bounded evidence for a named snapshot and claim, not general
+  certification or release status.
+
+See the [service contract](SERVICE-CONTRACT.md), [Listing trust boundary](LISTING-TRUST-BOUNDARY.md),
+[provenance model](PROVENANCE.md), and [versioning and release gates](VERSIONING.md).
