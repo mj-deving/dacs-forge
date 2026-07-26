@@ -1,7 +1,23 @@
 import { describe, expect, test } from "bun:test";
 import { canonicalize } from "../../src/protocol/canonical-json.ts";
-import { bundleLogicalAddress, signAttestationBundle } from "../../src/producer/attestation-bundle.ts";
+import {
+  bundleLogicalAddress,
+  signAttestationBundle,
+  signFaultAttestationBundleCopies,
+} from "../../src/producer/attestation-bundle.ts";
 import { verifyCanonicalAttestationBundleJson } from "../../src/consumer/attestation-bundle-verifier.ts";
+import {
+  attestationBundleHash,
+  bundleSignatureDomain,
+  impliedFaultSet,
+  isFaultAttestationBundle,
+  rosterRoles,
+} from "../../src/protocol/fault-attestation-bundle.ts";
+import {
+  bundleCopiesDiverge,
+  classifyBundlePair,
+  scoredOutcome,
+} from "../../src/consumer/bundle-consistency.ts";
 import { FIXTURE_SIGNING_CONTEXT } from "../fixtures/reference-listing.ts";
 import {
   fixtureBundleAuthorityOptions,
@@ -41,6 +57,124 @@ describe("AttestationBundle producer and independent verifier", () => {
         expect(verified.signatureCount).toBe(3);
       }
     }
+  });
+
+  test("emits a FaultAttestationBundle perspective pair with one absolute faultedParty", () => {
+    // An abort is attested over a strict prefix of the authenticated executed phase plan,
+    // every retained phase having succeeded (§10.4.1 abort class).
+    const full = fixtureUnsignedBundle();
+    const base = fixtureUnsignedBundle({
+      phaseSummary: full.phaseSummary.slice(0, 1),
+      settlementEvidence: full.settlementEvidence.slice(0, 1),
+    });
+    const { bundleVersion, outcome, ...shared } = base;
+    const signed = signFaultAttestationBundleCopies(
+      { ...shared, faultBundleVersion: "1", faultedParty: "seller" } as any,
+      "abort",
+      fixtureBundleSigners(),
+      ["buyer", "seller"],
+      FIXTURE_SIGNING_CONTEXT,
+      fixtureReferenceResolver,
+      fixtureBundleAuthorityOptions,
+    );
+
+    expect(signed.copies).toHaveLength(2);
+    expect(new Set(signed.copies.map((copy) => copy.logicalAddress)).size).toBe(2);
+
+    const buyerCopy = signed.copies.find((copy) => copy.anchoredByRole === "buyer")!;
+    const sellerCopy = signed.copies.find((copy) => copy.anchoredByRole === "seller")!;
+
+    // The role-relative spellings differ; the absolute hashed attribution does not.
+    expect(buyerCopy.outcome).toBe("aborted-by-other");
+    expect(sellerCopy.outcome).toBe("aborted-by-self");
+    expect(buyerCopy.artifact["faultedParty"]).toBe("seller");
+    expect(sellerCopy.artifact["faultedParty"]).toBe("seller");
+    expect(buyerCopy.bundleHash).not.toBe(sellerCopy.bundleHash);
+
+    for (const copy of signed.copies) {
+      expect(isFaultAttestationBundle(copy.artifact)).toBe(true);
+      expect(copy.artifact["bundleVersion"]).toBeUndefined();
+      // §10.4.1: each copy's signatures are over its OWN hash under the fault domain.
+      expect(attestationBundleHash(copy.artifact)).toBe(copy.bundleHash);
+      expect(bundleSignatureDomain(copy.artifact)).toBe("dacs-fault-bundle:v1:");
+      const permitted = impliedFaultSet(
+        copy.outcome, copy.anchoredByRole, rosterRoles(copy.artifact),
+      );
+      expect(permitted.has("seller")).toBe(true);
+      // ISC-34: the independent verifier recomputes hash, signed scope, and signatures for
+      // a FaultAttestationBundle exactly as it does for the legacy class.
+      const verified = verifyCanonicalAttestationBundleJson(copy.canonicalJson, {
+        expectedAddress: copy.logicalAddress,
+        expectedJobId: base.jobId,
+        ...fixtureBundleAuthorityOptions,
+        resolveAttestationRef: fixtureReferenceResolver,
+      });
+      expect(verified).toMatchObject({ disposition: "verified", bundleHash: copy.bundleHash });
+    }
+
+    // §10.4.3: the pair converges on faultedParty and outcome class despite unequal forms.
+    expect(bundleCopiesDiverge(buyerCopy.artifact, sellerCopy.artifact)).toBe(false);
+    const pair = classifyBundlePair(buyerCopy.artifact, sellerCopy.artifact);
+    expect(pair).toMatchObject({
+      convergence: "unified",
+      pairKind: "fault-pair",
+      faultedParty: "seller",
+    });
+    expect(scoredOutcome(sellerCopy.artifact, "seller")).toBe("aborted-by-self");
+    expect(scoredOutcome(sellerCopy.artifact, "buyer")).toBe("aborted-by-other");
+  });
+
+  test("emits a distinct orchestrator-anchored FaultAttestationBundle copy", () => {
+    const orchestrator = orchestratorFixtureSigner();
+    const successful = fixtureUnsignedBundle();
+    const base = fixtureUnsignedBundle({
+      parties: [
+        ...fixtureUnsignedBundle().parties,
+        { role: "orchestrator", bundleHash: "7".repeat(64), primaryClaim: orchestrator.signer },
+      ],
+      phaseSummary: [
+        successful.phaseSummary[0]!,
+        { ...successful.phaseSummary[1]!, outcome: "fail", errorClass: "counterparty" },
+      ],
+    });
+    const { bundleVersion, outcome, ...shared } = base;
+    const signed = signFaultAttestationBundleCopies(
+      { ...shared, faultBundleVersion: "1", faultedParty: "seller" } as any,
+      "failure",
+      fixtureBundleSigners(true),
+      ["buyer", "seller", "orchestrator"],
+      FIXTURE_SIGNING_CONTEXT,
+      fixtureReferenceResolver,
+      fixtureBundleAuthorityOptions,
+    );
+
+    expect(signed.copies).toHaveLength(3);
+    const orchestratorCopy = signed.copies.find((c) => c.anchoredByRole === "orchestrator")!;
+    // §10.4.2: anchoredByRole equals the role segment of the address it is bound to.
+    expect(orchestratorCopy.logicalAddress)
+      .toBe(bundleLogicalAddress(base.jobId, "orchestrator"));
+    expect(orchestratorCopy.outcome).toBe("failed-counterparty");
+    expect(orchestratorCopy.artifact["faultedParty"]).toBe("seller");
+    expect((orchestratorCopy.artifact["signatures"] as unknown[])).toHaveLength(3);
+    // An orchestrator-anchored copy follows the same permissible-set rule.
+    expect(impliedFaultSet("failed-counterparty", "orchestrator", rosterRoles(orchestratorCopy.artifact))
+      .has("seller")).toBe(true);
+  });
+
+  test("refuses to produce a FaultAttestationBundle copy outside the permissible fault set", () => {
+    const base = fixtureUnsignedBundle();
+    const { bundleVersion, outcome, ...shared } = base;
+    // `completed` admits only faultedParty "none"; naming a party is a production error,
+    // not something a consumer should have to reject downstream.
+    expect(() => signFaultAttestationBundleCopies(
+      { ...shared, faultBundleVersion: "1", faultedParty: "seller" } as any,
+      "completed",
+      fixtureBundleSigners(),
+      ["buyer", "seller"],
+      FIXTURE_SIGNING_CONTEXT,
+      fixtureReferenceResolver,
+      fixtureBundleAuthorityOptions,
+    )).toThrow(/faultedParty "none"/);
   });
 
   test("retains unknown signed fields and rejects post-sign mutation", () => {

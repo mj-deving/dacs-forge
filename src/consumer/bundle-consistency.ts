@@ -10,6 +10,17 @@ import {
   gateReputationOutputCandidate,
   type ReputationOutputGateResult,
 } from "./reputation-eligibility.ts";
+import { bundleCopiesDiverge } from "../protocol/fault-attestation-bundle.ts";
+
+// §10.4.3 pair classification is pure protocol semantics and lives with the bundle types;
+// it is re-exported here so consumers keep one reconciliation entry point.
+export {
+  bundleCopiesDiverge,
+  classifyBundlePair,
+  scoredOutcome,
+  type BundlePairClassification,
+  type BundlePairConvergence,
+} from "../protocol/fault-attestation-bundle.ts";
 
 export type BundleAddressRead =
   | { readonly status: "present"; readonly canonicalJson: string }
@@ -284,29 +295,15 @@ export function reconcileAttestationBundleReads(
 }
 
 function canonicallyDiverges(left: Readonly<Record<string, unknown>>, right: Readonly<Record<string, unknown>>): boolean {
-  return consumerCanonicalize(sharedAuthorityScope(left)) !== consumerCanonicalize(sharedAuthorityScope(right));
+  return bundleCopiesDiverge(left, right)
+    || consumerCanonicalize(sharedAuthorityScope(left)) !== consumerCanonicalize(sharedAuthorityScope(right));
 }
 
 function normativelyDiverges(
   left: Readonly<Record<string, unknown>>,
   right: Readonly<Record<string, unknown>>,
 ): boolean {
-  return consumerCanonicalize(contradictionScope(left)) !== consumerCanonicalize(contradictionScope(right));
-}
-
-function contradictionScope(artifact: Readonly<Record<string, unknown>>): Readonly<Record<string, unknown>> {
-  const phaseSummary = Array.isArray(artifact["phaseSummary"])
-    ? artifact["phaseSummary"].map((phase) => {
-      const value = phase as Readonly<Record<string, unknown>>;
-      return {
-        index: value["index"],
-        kind: value["kind"],
-        outcome: value["outcome"],
-        ...(value["errorClass"] === undefined ? {} : { errorClass: value["errorClass"] }),
-      };
-    })
-    : artifact["phaseSummary"];
-  return { outcome: artifact["outcome"], phaseSummary };
+  return bundleCopiesDiverge(left, right);
 }
 
 function mergeReferenceAuthorities(
@@ -340,10 +337,10 @@ function authenticatedArtifact(
 
 function sharedAuthorityScope(artifact: Readonly<Record<string, unknown>>): Record<string, unknown> {
   const scope = { ...artifact };
-  delete scope["anchoredByRole"];
-  delete scope["signatures"];
-  delete scope["finalisedAt"];
-  delete scope["ratingRefs"];
+  for (const field of [
+    "anchoredByRole", "signatures", "finalisedAt", "ratingRefs",
+    "bundleVersion", "faultBundleVersion", "faultedParty", "outcome",
+  ]) delete scope[field];
   if (Array.isArray(scope["amendments"])) {
     scope["amendments"] = [...scope["amendments"]].sort((left, right) => {
       const leftCanonical = consumerCanonicalize(left);
@@ -353,6 +350,7 @@ function sharedAuthorityScope(artifact: Readonly<Record<string, unknown>>): Reco
   }
   return scope;
 }
+
 function bundleAddress(jobId: string, role: BundleRole): string {
   // Kept local so the consumer does not rely on producer implementation details.
   return `stor-${sha256Hex(`${jobId}-bundle-${role}`)}`;

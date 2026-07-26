@@ -3,23 +3,23 @@
   "sourceCommit": "fc88ca27d5cca7121977a9bfe9058255bd94f849",
   "sourceCommitScope": {
     "certifies": "sourceCommit identifies the private origin snapshot this project was projected from. It is a history pointer only. It does not certify that the declared entries below are byte-identical to that snapshot, and it never did.",
-    "measuredAt": "2026-07-26, over all 245 declared entries, against the private origin repository",
-    "traceableEntries": 191,
-    "untraceableEntries": 54,
+    "measuredAt": "2026-07-26, over all 258 declared entries, against the private origin repository",
+    "traceableEntries": 187,
+    "untraceableEntries": 71,
     "untraceableBreakdown": {
-      "absentAtSourceCommit": 34,
-      "digestMismatchAtSourceCommit": 20
+      "absentAtSourceCommit": 47,
+      "digestMismatchAtSourceCommit": 24
     },
-    "priorState": "At the public base 8a18849f932621c38795f4358560b07326dd9ad3 the same measurement over the then-declared 221 entries gave 206 traceable and 15 untraceable, so incomplete traceability predates this cohort integration rather than being introduced by it; the cohort nonetheless widened it from 15 untraceable entries to 54.",
-    "notRepointed": "Advancing sourceCommit to the current private authority commit was measured and rejected: it yields the identical 191/54 split, because the cohort source changes were authored in public worktrees and the private origin tree has diverged independently. No private-origin commit is a byte-source for this tracked tree, so no truthful replacement value exists.",
+    "priorState": "At the joined public base 315c51a3cc954d699e011b577cae144c2f205207 the same measurement over 245 declared entries gave 191 traceable and 54 untraceable. This DACS-5 lane adds exact pinned vectors, protocol code, and probes; their byte identity is bound below without pretending they originated in the older private snapshot.",
+    "notRepointed": "Advancing sourceCommit to current private authority ec718b03b0466cff4cf76e42233e1c3c505dd70c was measured and rejected: it yields 187 traceable and 71 untraceable entries (47 absent, 24 digest-mismatch). No private-origin commit is asserted as the byte-source for this lane's public-worktree changes.",
     "byteIdentityAuthority": "Byte-identity of the declared entries is established solely by the sha256 values in this manifest, checked against the tracked tree by tools/verify-source-provenance.ts. Nothing in this file depends on sourceCommit for that guarantee.",
-    "measurementIndependence": "Every figure in this block was re-measured directly against the private origin repository by the join lease that committed it, and reproduced exactly, before the block was accepted into this file."
+    "measurementIndependence": "Every figure in this block was re-measured directly against the named private-origin commits by the DACS-5 lane before the manifest gate was accepted."
   },
   "scaffoldCommit": "a4ba4b88f4ad8cc33a65a89b4423643fb6797682",
   "upstreamPins": {
     "dacsStandard": {
       "main": "2ff69b7f1fa13440a64cc865bd3f7e5fce6d34d2",
-      "next": "fcbf804dcc53184726eed4385d794a0fdbbe00cc"
+      "next": "9a1ca624e8cc68361cff35c85a919cd72ba25199"
     },
     "community": {
       "main": "f2fd2145cddfd12ecaa32da2b953e859ec3fd8c3",
@@ -29,7 +29,8 @@
       "db9f9c0",
       "c4ace08",
       "ad48d16c25a810a6420b4d4cc9b9d8d6d38908c4",
-      "fcbf804dcc53184726eed4385d794a0fdbbe00cc"
+      "fcbf804dcc53184726eed4385d794a0fdbbe00cc",
+      "9a1ca624e8cc68361cff35c85a919cd72ba25199"
     ]
   },
   "excludedCategories": [
@@ -93,15 +94,19 @@
     },
     {
       "path": "src/consumer/attestation-bundle-verifier.ts",
-      "sha256": "71bfd555de240fce565338ed6f699e4f83f946cf02dcee2f6ba9407eda592142"
+      "sha256": "d5cc414183afda091ad2ca38f9d6bc5ba4e3473301576689053d3a39f48747cd"
     },
     {
       "path": "src/consumer/binding-verifier.ts",
       "sha256": "d38131f14f036098f1b90b644886a170c835161632b5776e3885f40517579ae3"
     },
     {
+      "path": "src/consumer/bundle-binding-resolver.ts",
+      "sha256": "c6484f6326aa6d75770b80ebe0d4e862e0b2b4c3c4e0cebffd71c36bd6259033"
+    },
+    {
       "path": "src/consumer/bundle-consistency.ts",
-      "sha256": "03e71bc22f69810d91b12993f7d69069bf33c3484a976f474eac7784dc1d6d20"
+      "sha256": "1adae33f7de1f8d9ea2e01fcdaf79bd88972f01628d6af2a143a23bfb148ef4e"
     },
     {
       "path": "src/consumer/buyer-vet-requirement-verifier.ts",
@@ -205,7 +210,7 @@
     },
     {
       "path": "src/producer/attestation-bundle.ts",
-      "sha256": "d66177a804fa9c55bbd92503018137bc556352f42a4310f878a068b197a50594"
+      "sha256": "ce709e47491f8b5a776104fa1242cdbaa733aafdae19a61ab651f95f5a081805"
     },
     {
       "path": "src/producer/buyer-vet-requirement.ts",
@@ -252,6 +257,10 @@
       "sha256": "68f96289aa25f20ad2d5955eff1e8c6ef5e832f3bb76f69a5f8b69d9b19d4e52"
     },
     {
+      "path": "src/protocol/bundle-binding.ts",
+      "sha256": "eaf4dbf295d80ec1c8ad7e95c15ea727215f00493db40606d404c71d4c069189"
+    },
+    {
       "path": "src/protocol/canonical-json.ts",
       "sha256": "46aee9aeef7a63721ba5795debf9a3b4f17ed0fa2778607fe35766c025dff65f"
     },
@@ -270,6 +279,10 @@
     {
       "path": "src/protocol/directory-summary-schema.ts",
       "sha256": "1520ebe32498bdb1d2ed49d1bc5a1567b5fae6f6c0514a98fccb8e8ef6d4235f"
+    },
+    {
+      "path": "src/protocol/fault-attestation-bundle.ts",
+      "sha256": "b5f611c4a1b458e3129529442593a6a806b95f75b94f74e295bcade12024fe58"
     },
     {
       "path": "src/protocol/hash.ts",
@@ -333,7 +346,7 @@
     },
     {
       "path": "src/substrate/sqlite/fixture-bundle.ts",
-      "sha256": "98596362731194bf9360997a94837b710ccca8eb568ec70775ec9f93c66bf6c8"
+      "sha256": "3654e7ae2e55b71a68608fd8ae519edc4a2377adf3769a466b91e5361f40ba1f"
     },
     {
       "path": "src/substrate/sqlite/fixture-commitment.ts",
@@ -360,8 +373,16 @@
       "sha256": "64fc90a5b5aa44fbc1d4e3127f4d80891312e0754bf387076f826da481d5b9b8"
     },
     {
+      "path": "test/adversarial/binding-unavailable.test.ts",
+      "sha256": "ef90348abf3a8ed0ce1568312058778c0e7833740cc9b358fb3cb646645b9e47"
+    },
+    {
       "path": "test/adversarial/fixture-reputation-exclusion.test.ts",
       "sha256": "7ba7ff8f664d75ad8a642312687444a5ac1a3fa7e833914ef4f7f71ee2a980f8"
+    },
+    {
+      "path": "test/adversarial/missing-reference.test.ts",
+      "sha256": "ff7045009ea1846f7072841f272e36dcb0841067148c312b35ec5ad029e04862"
     },
     {
       "path": "test/adversarial/settlement-session-binding.test.ts",
@@ -410,6 +431,10 @@
     {
       "path": "test/conformance/canonicalize-vectors.test.ts",
       "sha256": "f3dea4ddd85f3adf7ae060d9c5c15abc293959654bb64815536faeb9c61b8232"
+    },
+    {
+      "path": "test/conformance/dacs5-pr248-vectors.test.ts",
+      "sha256": "131c1062071814475749ca58fdcb17683f46b818c5ea9f6c984af69d6b8ca9d7"
     },
     {
       "path": "test/conformance/delivery-content.test.ts",
@@ -501,7 +526,7 @@
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "a86d3c6889c4862769447dfd413bd2956d68f3b83f5065b629a296cd35f691d2"
+      "sha256": "772e18a440d7be951a154e245bba73c12980b1905c024b18e723591af2c10583"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -737,7 +762,7 @@
     },
     {
       "path": "test/lifecycle/attestation-bundle-finalisation.test.ts",
-      "sha256": "833cbb40b2dca3576c66ebb2ffd3e794e47ab8eacbaeb9202e3d44f070e5959e"
+      "sha256": "fc2e4cdbd223582e4f22e3a94807f1d2a7e5df36169630d74c8c40b1e1e40dc0"
     },
     {
       "path": "test/lifecycle/attested-delivery-integration.test.ts",
@@ -769,7 +794,7 @@
     },
     {
       "path": "test/producer/attestation-bundle.test.ts",
-      "sha256": "da2faa4da5bec1e335be1d1266d96fb2631f8a762ca1a79e25aef8f08b8d0d9c"
+      "sha256": "065abe2e34c005fc308c3cb0e5321d72515839ac43a360376bb63e05e9481a54"
     },
     {
       "path": "test/producer/listing.test.ts",
@@ -946,6 +971,34 @@
     {
       "path": "vectors/dacs-standard-listing-preserve-unknown-c4ace08.json",
       "sha256": "7dbe60aa89d44321a3bb04661b1d71fc15bc84501b76f23b486a05cb905f91bd"
+    },
+    {
+      "path": "vectors/dacs-standard-pr248/bundle-binding-v0.1.json",
+      "sha256": "c0f7547e5dfea96232c3c761022ed194795a00bcf661e71f4ca807bec98f9461"
+    },
+    {
+      "path": "vectors/dacs-standard-pr248/fab-bundle-extended-pointer-v0.3.json",
+      "sha256": "2481a26d95d47643c549bfdca5b381fb006dca2e92fec19f04e669d68906a70d"
+    },
+    {
+      "path": "vectors/dacs-standard-pr248/fault-bundle-perspective-pair-v0.3.json",
+      "sha256": "f56586a27afa851202a121576814eb0a68bddc4bdc9ce675740ba085870ed285"
+    },
+    {
+      "path": "vectors/dacs-standard-pr248/mixed-version-reconciliation-v0.3.json",
+      "sha256": "41c1bc7eee95ac3bf625eaea4db88929e2eb6cb20c6bade9c3192dc3337a9e0b"
+    },
+    {
+      "path": "vectors/dacs-standard-pr248/outsider-binding-flooding-v0.3.json",
+      "sha256": "dc21789a945b07d377c99e295ba53e5bcabc7a3d944c36afcd219ec69d7ba97a"
+    },
+    {
+      "path": "vectors/dacs-standard-pr248/receipt-rederivation-v0.3.json",
+      "sha256": "ec9d6b9714fdd5ac6a8aaf13320c44a1a8231f2876bd030031b1865a867d3373"
+    },
+    {
+      "path": "vectors/dacs-standard-pr248/unresolved-vs-absent-v0.3.json",
+      "sha256": "8a543319798cb60073631a9a2431f45e866f89db8b136a76b679780718a15b91"
     },
     {
       "path": "vectors/dacs-standard-settlement-finalization-ad48d16.json",

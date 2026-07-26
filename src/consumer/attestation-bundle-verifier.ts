@@ -4,8 +4,12 @@ import { decodeComponentSignatureValue } from "../protocol/component-signature-c
 import { canonicalizeClaimReference, sameClaimIdentity } from "../protocol/claim-reference.ts";
 import { sha256Hex } from "../protocol/hash.ts";
 import type { BundleOutcome, BundleRole } from "../producer/attestation-bundle.ts";
+import {
+  bundleSignatureDomain,
+  faultedPartyPermitted,
+  validBundleTypeDiscriminator,
+} from "../protocol/fault-attestation-bundle.ts";
 
-const ATTESTATION_BUNDLE_DOMAIN = "dacs-bundle:v1:";
 const MAX_ATTESTATION_BUNDLE_BYTES = 128 * 1024;
 
 const ED25519_SPKI_PREFIX = Buffer.from("302a300506032b6570032100", "hex");
@@ -129,9 +133,12 @@ export function authenticateCanonicalAttestationBundleSignedScope(
     }
     const jobId = artifact["jobId"];
     const role = artifact["anchoredByRole"];
-    if (artifact["bundleVersion"] !== "1" || typeof jobId !== "string" || jobId.length === 0
+    if (!validBundleTypeDiscriminator(artifact) || typeof jobId !== "string" || jobId.length === 0
       || (role !== "buyer" && role !== "seller" && role !== "orchestrator")
       || (options.expectedJobId !== undefined && jobId !== options.expectedJobId)
+      // Pure-mapping address binding only. On a write-input-mapping substrate the native
+      // address is resolved through a published BundleBinding and MUST NOT be recomputed
+      // from the logical form (BB-7) — that path is bundle-binding-resolver.ts.
       || options.expectedAddress !== `stor-${sha256Hex(`${jobId}-bundle-${role}`)}`
       || !OUTCOMES.has(artifact["outcome"] as BundleOutcome)
       || !validReference(artifact["listingRef"], "listing")
@@ -150,6 +157,13 @@ export function authenticateCanonicalAttestationBundleSignedScope(
     const parties = partyClaims(artifact["parties"]);
     if (parties instanceof Error || !parties.has(role)) {
       return Object.freeze({ disposition: "rejected", reason: parties instanceof Error ? parties.message : "Anchor role is not a bundle party" });
+    }
+    // §10.4.1: a FaultAttestationBundle copy whose hashed faultedParty falls outside the
+    // permissible set for its (outcome, anchoredByRole) is rejected — this is what stops a
+    // cross-role rebind from silently reversing blame.
+    const faultScope = faultedPartyPermitted(artifact);
+    if (!faultScope.ok) {
+      return Object.freeze({ disposition: "rejected", reason: faultScope.reason });
     }
     const signatures = artifact["signatures"];
     if (!Array.isArray(signatures) || signatures.length === 0) {
@@ -207,7 +221,7 @@ export function authenticateCanonicalAttestationBundleSignedScope(
         format: "der",
         type: "spki",
       });
-      if (!verifySignature(null, Buffer.from(`${ATTESTATION_BUNDLE_DOMAIN}${bundleHash}`), publicKey, signature.value)) {
+      if (!verifySignature(null, Buffer.from(`${bundleSignatureDomain(artifact)}${bundleHash}`), publicKey, signature.value)) {
         return Object.freeze({ disposition: "rejected", reason: "Bundle signature verification failed" });
       }
     }
@@ -232,16 +246,20 @@ export function verifyCanonicalAttestationBundleJson(
     }
     const jobId = artifact["jobId"];
     const role = artifact["anchoredByRole"];
-    if (artifact["bundleVersion"] !== "1" || typeof jobId !== "string" || jobId.length === 0
+    if (!validBundleTypeDiscriminator(artifact) || typeof jobId !== "string" || jobId.length === 0
       || (role !== "buyer" && role !== "seller" && role !== "orchestrator")) {
       return rejected("shape", "Bundle version, jobId, or anchor role is invalid");
     }
     if (options.expectedJobId !== undefined && jobId !== options.expectedJobId) {
       return rejected("session-binding", "Bundle jobId differs from the expected session");
     }
+    // Pure-mapping address binding only; the write-input path resolves through a published
+    // BundleBinding and never recomputes the native address (BB-7).
     if (options.expectedAddress !== `stor-${sha256Hex(`${jobId}-bundle-${role}`)}`) {
       return rejected("anchor-binding", "Bundle anchor address does not match anchoredByRole");
     }
+    const faultScope = faultedPartyPermitted(artifact);
+    if (!faultScope.ok) return rejected("fault-attribution", faultScope.reason);
     if (!OUTCOMES.has(artifact["outcome"] as BundleOutcome)) return rejected("shape", "Bundle outcome is unsupported");
     if (!validReference(artifact["listingRef"], "listing")
       || (artifact["agreementRef"] !== undefined && !validAttestationReference(artifact["agreementRef"]))
@@ -263,10 +281,15 @@ export function verifyCanonicalAttestationBundleJson(
     if (requiresAgreement && artifact["agreementRef"] === undefined) {
       return rejected("agreement-binding", "Post-commit bundle lacks its authenticated Agreement reference");
     }
+    const isFaultBundle = Object.hasOwn(artifact, "faultBundleVersion");
     const outcomeErrorClasses = artifact["outcome"] === "failed-perm"
-      ? new Set(["permanent", "transient"])
+      ? new Set(isFaultBundle
+        ? ["permanent", "transient", "counterparty", "settlement-atomicity"]
+        : ["permanent", "transient"])
       : artifact["outcome"] === "failed-counterparty"
-        ? new Set(["counterparty", "settlement-atomicity"])
+        ? new Set(isFaultBundle
+          ? ["permanent", "transient", "counterparty", "settlement-atomicity"]
+          : ["counterparty", "settlement-atomicity"])
         : artifact["outcome"] === "failed-substrate"
           ? new Set(["substrate"])
           : null;
@@ -459,7 +482,7 @@ export function verifyCanonicalAttestationBundleJson(
       const publicKey = createPublicKey({
         key: Buffer.concat([ED25519_SPKI_PREFIX, Buffer.from(key)]), format: "der", type: "spki",
       });
-      if (!verifySignature(null, Buffer.from(`${ATTESTATION_BUNDLE_DOMAIN}${bundleHash}`), publicKey, value)) {
+      if (!verifySignature(null, Buffer.from(`${bundleSignatureDomain(artifact)}${bundleHash}`), publicKey, value)) {
         return rejected("signatures", "Bundle signature verification failed");
       }
       signedRoles.add(match[0]);

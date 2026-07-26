@@ -8,11 +8,16 @@ import { canonicalize } from "../../protocol/canonical-json.ts";
 import { sha256Hex } from "../../protocol/hash.ts";
 import {
   bundleLogicalAddress,
-  signAttestationBundle,
+  signFaultAttestationBundleCopies,
   type BundlePartySigner,
   type BundleRole,
   type UnsignedAttestationBundle,
 } from "../../producer/attestation-bundle.ts";
+import {
+  outcomeClass,
+  roleRelativeOutcome,
+  type BundleFaultedParty,
+} from "../../protocol/fault-attestation-bundle.ts";
 import type { AttestationReferenceContext } from "../../consumer/attestation-bundle-verifier.ts";
 import { ArtifactIntegrityError, ArtifactStore } from "./artifact-store.ts";
 import type { DacsDatabase } from "./database.ts";
@@ -48,6 +53,8 @@ export interface FixtureBundleFinaliseInput {
   readonly anchorRoles: readonly BundleRole[];
   readonly bundle: UnsignedAttestationBundle;
   readonly createdAt: string;
+  /** Required when the legacy lifecycle outcome leaves more than one non-anchor party possible. */
+  readonly faultedParty?: BundleFaultedParty;
   readonly partySigners: readonly BundlePartySigner[];
   readonly partyIdentityCanonicalJsons: readonly string[];
   readonly session: SessionRecord;
@@ -314,13 +321,7 @@ export class FixtureBundleStore {
         throw new FixtureBundleConflictError("Bundle party lacks an exact verified IdentityBundle authority");
       }
     }
-    const signed = signAttestationBundle(input.bundle, input.partySigners, input.anchorRoles, {
-      deploymentMode: "fixture", requestMode: "fixture",
-    }, (ref, context) => this.#resolveAttestationRef(ref, context, input.session), {
-      resolveListingRef: (ref) => this.#resolveListingAuthority(input.session.jobId, ref),
-      resolveExecutedPhasePlan: (expectedJobId) => this.#resolveExecutedPhasePlan(expectedJobId),
-      resolvePartyIdentity: (party) => this.#resolvePartyIdentityAuthority(input.session.jobId, party),
-    });
+    const signed = this.#signCurrentBundle(input, lifecycle);
     const records: FixtureBundleRecord[] = [];
     for (const copy of signed.copies) {
       const artifact = this.#artifacts.putWithinTransaction("dacs-5-bundle", copy.artifact, input.createdAt);
@@ -333,7 +334,7 @@ export class FixtureBundleStore {
           logical_address, artifact_kind, content_hash, artifact_content_hash, created_at
         ) VALUES ($logicalAddress, 'dacs-5-bundle', $bundleHash, $artifactContentHash, $createdAt)
       `).run({
-        logicalAddress: copy.logicalAddress, bundleHash: signed.bundleHash,
+        logicalAddress: copy.logicalAddress, bundleHash: copy.bundleHash,
         artifactContentHash: artifact.contentHash, createdAt: input.createdAt,
       });
       this.#database.query<never, Record<string, string | number>>(`
@@ -348,12 +349,12 @@ export class FixtureBundleStore {
       `).run({
         instanceId: input.session.instanceId, audience: input.session.audience,
         jobId: input.session.jobId, role: copy.anchoredByRole, logicalAddress: copy.logicalAddress,
-        bundleHash: signed.bundleHash, artifactContentHash: artifact.contentHash,
+        bundleHash: copy.bundleHash, artifactContentHash: artifact.contentHash,
         finalisedAt: input.bundle.finalisedAt, createdAt: input.createdAt,
       });
       records.push(Object.freeze({
         anchoredByRole: copy.anchoredByRole, artifactContentHash: artifact.contentHash,
-        bundleHash: signed.bundleHash, canonicalJson: artifact.canonicalJson,
+        bundleHash: copy.bundleHash, canonicalJson: artifact.canonicalJson,
         createdAt: input.createdAt, finalisedAt: input.bundle.finalisedAt,
         jobId: input.session.jobId, logicalAddress: copy.logicalAddress,
       }));
@@ -372,7 +373,36 @@ export class FixtureBundleStore {
       expectedState: lifecycle.state,
     });
     if (update.changes !== 1) throw new FixtureBundleConflictError("Bundle finalisation raced");
-    return Object.freeze({ state: "finalised", bundleHash: signed.bundleHash, copies: Object.freeze(records) });
+    return Object.freeze({
+      state: "finalised",
+      bundleHash: signed.copies[0]!.bundleHash,
+      copies: Object.freeze(records),
+    });
+  }
+
+  #signCurrentBundle(input: FixtureBundleFinaliseInput, lifecycle: LifecycleFinalisationRow) {
+    const perspectiveRole = input.anchorRoles[0]!;
+    const perspectiveOutcome = mappedTerminalOutcome(lifecycle, perspectiveRole);
+    const faultedParty = faultedPartyForLifecycle(
+      lifecycle,
+      perspectiveRole,
+      perspectiveOutcome,
+      input.faultedParty,
+    );
+    const { bundleVersion: _legacyVersion, outcome: _legacyOutcome, ...shared } = input.bundle;
+    return signFaultAttestationBundleCopies(
+      { ...shared, faultBundleVersion: "1", faultedParty },
+      outcomeClass(perspectiveOutcome),
+      input.partySigners,
+      input.anchorRoles,
+      { deploymentMode: "fixture", requestMode: "fixture" },
+      (ref, context) => this.#resolveAttestationRef(ref, context, input.session),
+      {
+        resolveListingRef: (ref) => this.#resolveListingAuthority(input.session.jobId, ref),
+        resolveExecutedPhasePlan: (expectedJobId) => this.#resolveExecutedPhasePlan(expectedJobId),
+        resolvePartyIdentity: (party) => this.#resolvePartyIdentityAuthority(input.session.jobId, party),
+      },
+    );
   }
 
   #validateBundleInput(
@@ -383,7 +413,7 @@ export class FixtureBundleStore {
   ): void {
     if (bundle.jobId.length === 0) throw new FixtureBundleConflictError("Bundle jobId is required");
     if (lifecycle.state === "finalised" && anchoredByRole !== undefined
-      && bundle.outcome !== mappedTerminalOutcome(lifecycle, anchoredByRole)) {
+      && bundle.outcome !== expectedPersistedOutcome(lifecycle, bundle, anchoredByRole)) {
       throw new FixtureBundleIntegrityError("Persisted bundle outcome differs from sealed lifecycle authority");
     }
     const agreementArtifact = this.#artifacts.get(lifecycle.agreementArtifactHash);
@@ -1263,19 +1293,12 @@ export class FixtureBundleStore {
       throw new FixtureBundleIntegrityError("Finalised bundle replay role set differs from persisted copies");
     }
     const records = input.anchorRoles.map((role) => persisted.get(role)!);
-    const hash = records[0]!.bundleHash;
-    if (records.some((copy) => copy.bundleHash !== hash)) throw new FixtureBundleIntegrityError("Finalised bundle copies disagree");
-    const proposed = signAttestationBundle(input.bundle, input.partySigners, input.anchorRoles, {
-      deploymentMode: "fixture", requestMode: "fixture",
-    }, (ref, context) => this.#resolveAttestationRef(ref, context, input.session), {
-      resolveListingRef: (ref) => this.#resolveListingAuthority(input.session.jobId, ref),
-      resolveExecutedPhasePlan: (expectedJobId) => this.#resolveExecutedPhasePlan(expectedJobId),
-      resolvePartyIdentity: (party) => this.#resolvePartyIdentityAuthority(input.session.jobId, party),
-    });
-    if (proposed.bundleHash !== hash || proposed.copies.some((copy, index) => copy.canonicalJson !== records[index]!.canonicalJson)) {
+    const proposed = this.#signCurrentBundle(input, this.#readLifecycle(input.session.jobId)!);
+    if (proposed.copies.some((copy, index) => copy.bundleHash !== records[index]!.bundleHash
+      || copy.canonicalJson !== records[index]!.canonicalJson)) {
       throw new FixtureBundleConflictError("Bundle replay differs from the finalised artifact set");
     }
-    return Object.freeze({ state: "finalised", bundleHash: hash, copies: Object.freeze(records) });
+    return Object.freeze({ state: "finalised", bundleHash: records[0]!.bundleHash, copies: Object.freeze(records) });
   }
 }
 
@@ -1539,4 +1562,51 @@ function mappedTerminalOutcome(
     return role === lifecycle.abortActorRole ? "aborted-by-self" : "aborted-by-other";
   }
   throw new FixtureBundleIntegrityError("Sealed lifecycle metadata has no exact bundle outcome mapping");
+}
+
+function expectedPersistedOutcome(
+  lifecycle: LifecycleFinalisationRow,
+  bundle: Readonly<Record<string, unknown>>,
+  role: BundleRole,
+): string {
+  const legacyOutcome = mappedTerminalOutcome(lifecycle, role);
+  if (!Object.hasOwn(bundle, "faultBundleVersion")) return legacyOutcome;
+  if (typeof bundle["faultedParty"] !== "string") {
+    throw new FixtureBundleIntegrityError("Persisted FaultAttestationBundle lacks faultedParty");
+  }
+  const terminalState = lifecycle.state === "finalised" ? lifecycle.terminalState : lifecycle.state;
+  if (terminalState === "aborted" && bundle["faultedParty"] !== lifecycle.abortActorRole) {
+    throw new FixtureBundleIntegrityError("Persisted faultedParty differs from abort authority");
+  }
+  return roleRelativeOutcome(outcomeClass(legacyOutcome), bundle["faultedParty"], role);
+}
+
+function faultedPartyForLifecycle(
+  lifecycle: LifecycleFinalisationRow,
+  perspectiveRole: BundleRole,
+  perspectiveOutcome: UnsignedAttestationBundle["outcome"],
+  declared: BundleFaultedParty | undefined,
+): BundleFaultedParty {
+  let expected: BundleFaultedParty;
+  if (perspectiveOutcome === "completed" || perspectiveOutcome === "failed-substrate") {
+    expected = "none";
+  } else if (perspectiveOutcome === "aborted-by-self" || perspectiveOutcome === "aborted-by-other") {
+    if (lifecycle.abortActorRole === null) {
+      throw new FixtureBundleIntegrityError("Abort lifecycle lacks its absolute faulted party");
+    }
+    expected = lifecycle.abortActorRole;
+  } else if (perspectiveOutcome === "failed-perm") {
+    expected = perspectiveRole;
+  } else {
+    if (declared === undefined) {
+      throw new FixtureBundleConflictError(
+        "Counterparty failure requires an explicit absolute faultedParty",
+      );
+    }
+    expected = declared;
+  }
+  if (declared !== undefined && declared !== expected) {
+    throw new FixtureBundleConflictError("Declared faultedParty differs from lifecycle authority");
+  }
+  return expected;
 }

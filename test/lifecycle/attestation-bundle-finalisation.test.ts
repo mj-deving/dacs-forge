@@ -150,6 +150,14 @@ describe("atomic DACS-5 lifecycle finalisation", () => {
     const finalised = bundles.finalise(input);
     expect(finalised.copies).toHaveLength(3);
     expect(new Set(finalised.copies.map((copy) => copy.bundleHash)).size).toBe(1);
+    for (const copy of finalised.copies) {
+      expect(JSON.parse(copy.canonicalJson)).toMatchObject({
+        faultBundleVersion: "1",
+        faultedParty: "none",
+        outcome: "completed",
+      });
+      expect(JSON.parse(copy.canonicalJson).bundleVersion).toBeUndefined();
+    }
     expect(bundles.verifySession(fixture.input.jobId)).toMatchObject({
       disposition: "unified", reputationEligibility: "eligible",
     });
@@ -941,7 +949,12 @@ describe("atomic DACS-5 lifecycle finalisation", () => {
     const prepared = await failedTerminalFixture(errorClass);
     const finalised = prepared.store.finalise(prepared.input);
     expect(finalised.copies).toHaveLength(3);
-    expect(JSON.parse(finalised.copies[0]!.canonicalJson)).toMatchObject({ outcome });
+    const artifacts = finalised.copies.map((copy) => JSON.parse(copy.canonicalJson));
+    expect(artifacts[0]).toMatchObject({ faultBundleVersion: "1", outcome });
+    expect(artifacts.every((artifact) => artifact.bundleVersion === undefined)).toBe(true);
+    expect(new Set(artifacts.map((artifact) => artifact.faultedParty)).size).toBe(1);
+    const seller = artifacts.find((artifact) => artifact.anchoredByRole === "seller")!;
+    expect(seller.outcome).toBe(outcome === "failed-perm" ? "failed-counterparty" : "failed-perm");
     expect(prepared.store.verifySession(prepared.input.session.jobId)).toMatchObject({
       disposition: "unified",
       reputationEligibility: "eligible",
@@ -1402,6 +1415,8 @@ async function failedTerminalFixture(
       anchorRoles: ["buyer", "seller", "orchestrator"] as const,
       bundle,
       createdAt: endedAt,
+      faultedParty: outcome === "failed-counterparty" ? "seller" as const
+        : outcome === "failed-perm" ? "buyer" as const : "none" as const,
       partySigners: [
         { role: "buyer" as const, signer: buyerFixtureSigner() },
         { role: "seller" as const, signer: fixtureSigner() },
