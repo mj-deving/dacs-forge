@@ -1,9 +1,9 @@
 {
-  "schema": "dacs-forge-source-provenance/v1",
+  "schema": "dacs-forge-source-provenance/v2",
   "sourceCommit": "fc88ca27d5cca7121977a9bfe9058255bd94f849",
   "sourceCommitScope": {
     "certifies": "sourceCommit identifies the private origin snapshot this project was projected from. It is a history pointer only. It does not certify that the declared entries below are byte-identical to that snapshot, and it never did.",
-    "measuredAt": "2026-07-26, over all 258 declared entries, against the private origin repository",
+    "measuredAt": "Historical measurement on 2026-07-26 over the then-current 258 entries against the private origin repository; later product lanes did not reinterpret or silently recompute it.",
     "traceableEntries": 187,
     "untraceableEntries": 71,
     "untraceableBreakdown": {
@@ -12,7 +12,7 @@
     },
     "priorState": "At the joined public base 315c51a3cc954d699e011b577cae144c2f205207 the same measurement over 245 declared entries gave 191 traceable and 54 untraceable. This DACS-5 lane adds exact pinned vectors, protocol code, and probes; their byte identity is bound below without pretending they originated in the older private snapshot.",
     "notRepointed": "Advancing sourceCommit to current private authority ec718b03b0466cff4cf76e42233e1c3c505dd70c was measured and rejected: it yields 187 traceable and 71 untraceable entries (47 absent, 24 digest-mismatch). No private-origin commit is asserted as the byte-source for this lane's public-worktree changes.",
-    "byteIdentityAuthority": "Byte-identity of the declared entries is established solely by the sha256 values in this manifest, checked against the tracked tree by tools/verify-source-provenance.ts. Nothing in this file depends on sourceCommit for that guarantee.",
+    "byteIdentityAuthority": "Current byte-identity of sourceFiles and packagingFiles is established solely by their sha256 values, checked against the tracked tree by tools/verify-source-provenance.ts. Extension baseline hashes preserve the template bytes while the verifier intentionally permits current tracked extension bytes to differ only inside its fixed extension scope. Nothing in this file depends on sourceCommit for either guarantee.",
     "measurementIndependence": "Every figure in this block was re-measured directly against the named private-origin commits by the DACS-5 lane before the manifest gate was accepted."
   },
   "scaffoldCommit": "a4ba4b88f4ad8cc33a65a89b4423643fb6797682",
@@ -39,6 +39,39 @@
     "internal coordination and operator tooling",
     "private history"
   ],
+  "extensionScope": {
+    "exactPaths": [
+      "service/handler.ts",
+      "service/input.schema.json",
+      "service/output.schema.json",
+      "service/service.config.ts"
+    ],
+    "prefixes": [
+      "service/fixtures/"
+    ],
+    "baselineFiles": [
+      {
+        "path": "service/fixtures/basic.ts",
+        "sha256": "ef3ddc0181a12742445799fe1ab6764d6fea92fe00aef17a7f7ae90ceba99187"
+      },
+      {
+        "path": "service/handler.ts",
+        "sha256": "9bb4503771be766cec993be593f1c80e7b2af05158895874ca80b52dada29c06"
+      },
+      {
+        "path": "service/input.schema.json",
+        "sha256": "3afe2f19d4fab0b760e4a1eef382e20c2927e100798bf7a0fa5c08536018d1e0"
+      },
+      {
+        "path": "service/output.schema.json",
+        "sha256": "70372ecd7cfaae5ec687c5be2d549b184e80023b73c233380be001642fc14d1d"
+      },
+      {
+        "path": "service/service.config.ts",
+        "sha256": "c7c9c9aeeb3f956322df7fc3c9de0da00e5280bf00e04baf42d90d6234a23b15"
+      }
+    ]
+  },
   "sourceFiles": [
     {
       "path": ".gitignore",
@@ -59,26 +92,6 @@
     {
       "path": "scripts/calibrate-mutation-runner.ts",
       "sha256": "a299612e055c93a9f6bfa7f1db260aa46028cc7131f74146b0c5b35802e65f3d"
-    },
-    {
-      "path": "service/fixtures/basic.ts",
-      "sha256": "ef3ddc0181a12742445799fe1ab6764d6fea92fe00aef17a7f7ae90ceba99187"
-    },
-    {
-      "path": "service/handler.ts",
-      "sha256": "9bb4503771be766cec993be593f1c80e7b2af05158895874ca80b52dada29c06"
-    },
-    {
-      "path": "service/input.schema.json",
-      "sha256": "3afe2f19d4fab0b760e4a1eef382e20c2927e100798bf7a0fa5c08536018d1e0"
-    },
-    {
-      "path": "service/output.schema.json",
-      "sha256": "70372ecd7cfaae5ec687c5be2d549b184e80023b73c233380be001642fc14d1d"
-    },
-    {
-      "path": "service/service.config.ts",
-      "sha256": "c7c9c9aeeb3f956322df7fc3c9de0da00e5280bf00e04baf42d90d6234a23b15"
     },
     {
       "path": "src/cli/dacs.ts",
@@ -921,6 +934,10 @@
       "sha256": "48d3a32e128f217bb4759fb1a1d79a694bcfff7a2cfc270c1170d4116f0bafdf"
     },
     {
+      "path": "test/tools/source-provenance.test.ts",
+      "sha256": "5e89e6d28d4103aee8c9a09976bba970c1c85b118dc99488ce9774f8c63a3b0f"
+    },
+    {
       "path": "test/workers/atomic-migration-setup.ts",
       "sha256": "cb64748001e2b1208e9a3efa56cad7712f538f3427d7c5ffb7f72cb83b882d35"
     },
@@ -1108,7 +1125,7 @@
     },
     {
       "path": "tools/verify-source-provenance.ts",
-      "sha256": "7c9bedb78bf0c4319d76234bd00a591da173287c95a852327ccab8a1862f5729"
+      "sha256": "f757de4c0cfdb8b263149d64341e505bf76e7ac3a19fe511a4765af2ba06c9ad"
     }
   ],
   "self": {
