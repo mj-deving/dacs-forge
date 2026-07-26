@@ -54,7 +54,11 @@
     },
     {
       "path": "bun.lock",
-      "sha256": "d2e21f0992f44951a09c31a76c485fdf14577867c616f061cf89ab15227f971d"
+      "sha256": "f5cdecfd124b6323787897930f515ac455b36e7be38ecceedbe5b733eb4cdffb"
+    },
+    {
+      "path": "scripts/calibrate-mutation-runner.ts",
+      "sha256": "a299612e055c93a9f6bfa7f1db260aa46028cc7131f74146b0c5b35802e65f3d"
     },
     {
       "path": "service/fixtures/basic.ts",
@@ -809,6 +813,22 @@
       "sha256": "bdff4091deb4cbfd7ab6e6526065ed155ed5c7af5e4fe728d3322ecf27cdfbdb"
     },
     {
+      "path": "test/mutation/calibration-target.ts",
+      "sha256": "3b292127159a019dfe054da603fb3fe7acb5c5fd48cea6acb5def316f43c487a"
+    },
+    {
+      "path": "test/mutation/calibration.test.ts",
+      "sha256": "63907b97d3af4862d04c49bec8aa186589e9ddf992dff639a190fb14886edb41"
+    },
+    {
+      "path": "test/mutation/protocol-pure-modules.test.ts",
+      "sha256": "8b1544a807929d3849ceed45b1fd8dd5624bb002ccf8fa63947e5814356b73f8"
+    },
+    {
+      "path": "test/mutation/runner-contract.test.ts",
+      "sha256": "569f8541ce7a615005dbbd660d26f2ae931fc3b3af7b19c82d67a139a843bcfe"
+    },
+    {
       "path": "test/protocol/canonical-json.test.ts",
       "sha256": "6b97078bd2d56782eeaecbf69475122c9b935a4c03d631a3e5c03eecc109fa47"
     },
@@ -965,6 +985,18 @@
       "sha256": "a390974f6579d2e57df259c3e13787458bf9ebc856c19b5e4f821230b8ee18f3"
     },
     {
+      "path": "tools/mutation/report.ts",
+      "sha256": "9330c345d8b668e5a1a9e9a91a6f3a577680d31d5845df5bcaf0a17661ae0fc9"
+    },
+    {
+      "path": "tools/mutation/stryker-calibration.config.mjs",
+      "sha256": "aaaa090a0d054af0d1f3e3b3542090d4d889c2d28a9ca30c64ef241fe0333bd5"
+    },
+    {
+      "path": "tools/mutation/stryker-protocol.config.mjs",
+      "sha256": "1ee9c4286fb4fd32542b5310b1b67cec8a6218ee2d9bfbdc0bea5428c4d52fad"
+    },
+    {
       "path": "vectors/dacs-standard-bundle-convergence-ad48d16.json",
       "sha256": "4226e6359513285022cadbcc8cf2ede9809d46c5aac128840d5b949fd8de3c7f"
     },
@@ -1072,7 +1104,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "bf858d8223a120d898bb3d6018677d31ff001d7e918696f53b7dd006b03ec80c"
+      "sha256": "95f42c976d0d42275f794ace5bc015fcfea4339da5b8c5a8dbac7df65f0c7667"
     },
     {
       "path": "tools/verify-source-provenance.ts",

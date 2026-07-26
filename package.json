@@ -26,11 +26,14 @@
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target bun --packages external",
     "check": "bun run verify:provenance && bun run typecheck && bun test",
+    "mutation:calibrate": "bun scripts/calibrate-mutation-runner.ts --calibration-only",
+    "mutation:check": "bun scripts/calibrate-mutation-runner.ts",
     "test": "bun test --timeout 10000",
     "typecheck": "tsc --noEmit",
     "verify:provenance": "bun tools/verify-source-provenance.ts"
   },
   "devDependencies": {
+    "@stryker-mutator/core": "9.6.1",
     "@types/bun": "1.3.14",
     "fast-check": "4.9.0",
     "typescript": "7.0.2"
