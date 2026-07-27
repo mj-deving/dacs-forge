@@ -373,14 +373,31 @@ export {
   MAX_ATTESTATION_BUNDLE_BYTES,
   bundleLogicalAddress,
   signAttestationBundle,
+  signEvidenceBoundFaultAttestationBundleCopies,
+  signFaultAttestationBundleCopies,
   type BundleOutcome,
   type BundleParty,
   type BundlePartySigner,
   type BundleRole,
   type SignedAttestationBundleCopy,
   type SignedAttestationBundleResult,
+  type SignedFaultAttestationBundleResult,
   type UnsignedAttestationBundle,
+  type UnsignedEvidenceBoundFaultAttestationBundleScope,
+  type UnsignedFaultAttestationBundleScope,
 } from "./producer/attestation-bundle.ts";
+export {
+  EVIDENCE_BOUND_FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN,
+  EVIDENCE_BOUND_FAULT_BUNDLE_POINTER_DOMAIN,
+  evaluateEvidenceBoundSettlementSet,
+  type EvidenceBoundSettlementReasonCode,
+  type EvidenceBoundSettlementSetInput,
+  type EvidenceBoundSettlementSetResult,
+} from "./protocol/evidence-bound-fault-bundle.ts";
+export {
+  resolveEvidenceBoundFaultBundleExtendedPointer,
+  type FaultBundleExtendedPointerResolution,
+} from "./protocol/fault-attestation-bundle.ts";
 export {
   authenticateCanonicalAttestationBundleSignedScope,
   verifyCanonicalAttestationBundleJson,

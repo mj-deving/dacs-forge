@@ -17,6 +17,7 @@ import {
   type FixtureSigningContext,
 } from "./fixture-ed25519.ts";
 import {
+  EVIDENCE_BOUND_FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN,
   FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN,
   faultedPartyPermitted,
   roleRelativeOutcome,
@@ -196,6 +197,21 @@ export interface UnsignedFaultAttestationBundleScope extends Record<string, unkn
   readonly finalisedAt: number;
 }
 
+export interface UnsignedEvidenceBoundFaultAttestationBundleScope extends Record<string, unknown> {
+  readonly evidenceBoundFaultBundleVersion: "1";
+  readonly jobId: string;
+  readonly faultedParty: BundleFaultedParty;
+  readonly listingRef: Readonly<Record<string, unknown>>;
+  readonly agreementRef?: Readonly<Record<string, unknown>>;
+  readonly parties: readonly BundleParty[];
+  readonly phaseSummary: readonly Readonly<Record<string, unknown>>[];
+  readonly vetRecords: readonly Readonly<Record<string, unknown>>[];
+  readonly settlementEvidence: readonly Readonly<Record<string, unknown>>[];
+  readonly recipeRegistryVersion: number;
+  readonly railRegistryVersion: number;
+  readonly finalisedAt: number;
+}
+
 export interface SignedFaultAttestationBundleCopy extends SignedAttestationBundleCopy {
   readonly outcome: string;
   readonly bundleHash: string;
@@ -231,14 +247,84 @@ export function signFaultAttestationBundleCopies(
     "resolveListingRef" | "resolvePartyIdentity" | "resolveExecutedPhasePlan"
   >,
 ): SignedFaultAttestationBundleResult {
+  return signAbsoluteFaultAttestationBundleCopies(
+    scope,
+    outcomeClassValue,
+    partySigners,
+    anchorRoles,
+    context,
+    resolveAttestationRef,
+    authorityResolvers,
+    {
+      discriminator: "faultBundleVersion",
+      domain: FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN,
+      label: "FaultAttestationBundle",
+    },
+  );
+}
+
+export function signEvidenceBoundFaultAttestationBundleCopies(
+  scope: UnsignedEvidenceBoundFaultAttestationBundleScope,
+  outcomeClassValue: BundleOutcomeClass,
+  partySigners: readonly BundlePartySigner[],
+  anchorRoles: readonly BundleRole[],
+  context: FixtureSigningContext,
+  resolveAttestationRef: (
+    ref: Readonly<Record<string, unknown>>,
+    context: AttestationReferenceContext,
+  ) => AttestationReferenceCheck,
+  authorityResolvers: Pick<
+    AttestationBundleVerificationOptions,
+    "resolveListingRef" | "resolvePartyIdentity" | "resolveExecutedPhasePlan"
+  >,
+): SignedFaultAttestationBundleResult {
+  return signAbsoluteFaultAttestationBundleCopies(
+    scope,
+    outcomeClassValue,
+    partySigners,
+    anchorRoles,
+    context,
+    resolveAttestationRef,
+    authorityResolvers,
+    {
+      discriminator: "evidenceBoundFaultBundleVersion",
+      domain: EVIDENCE_BOUND_FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN,
+      label: "EvidenceBoundFaultAttestationBundle",
+    },
+  );
+}
+
+function signAbsoluteFaultAttestationBundleCopies(
+  scope: UnsignedFaultAttestationBundleScope | UnsignedEvidenceBoundFaultAttestationBundleScope,
+  outcomeClassValue: BundleOutcomeClass,
+  partySigners: readonly BundlePartySigner[],
+  anchorRoles: readonly BundleRole[],
+  context: FixtureSigningContext,
+  resolveAttestationRef: (
+    ref: Readonly<Record<string, unknown>>,
+    context: AttestationReferenceContext,
+  ) => AttestationReferenceCheck,
+  authorityResolvers: Pick<
+    AttestationBundleVerificationOptions,
+    "resolveListingRef" | "resolvePartyIdentity" | "resolveExecutedPhasePlan"
+  >,
+  type: Readonly<{
+    discriminator: "faultBundleVersion" | "evidenceBoundFaultBundleVersion";
+    domain: string;
+    label: string;
+  }>,
+): SignedFaultAttestationBundleResult {
   if (Object.hasOwn(scope, "signatures") || Object.hasOwn(scope, "anchoredByRole")
-    || Object.hasOwn(scope, "outcome") || Object.hasOwn(scope, "bundleVersion")) {
+    || Object.hasOwn(scope, "outcome") || Object.hasOwn(scope, "bundleVersion")
+    || (type.discriminator !== "faultBundleVersion" && Object.hasOwn(scope, "faultBundleVersion"))
+    || (type.discriminator !== "evidenceBoundFaultBundleVersion"
+      && Object.hasOwn(scope, "evidenceBoundFaultBundleVersion"))) {
     throw new TypeError(
-      "FaultAttestationBundle scope must omit copy-local, signature, outcome, and legacy-version fields",
+      `${type.label} scope must omit copy-local, signature, outcome, and other-version fields`,
     );
   }
-  if (scope.faultBundleVersion !== "1") {
-    throw new TypeError("FaultAttestationBundle requires faultBundleVersion \"1\"");
+  if (scope[type.discriminator] !== "1") {
+    throw new TypeError(`${type.label} requires ${type.discriminator} \"1\"`);
   }
   const normalized = JSON.parse(canonicalize(scope)) as Record<string, unknown>;
   const parties = normalized["parties"];
@@ -287,7 +373,7 @@ export function signFaultAttestationBundleCopies(
     const signedScope = { ...normalized, outcome };
     const bundleHash = sha256Hex(canonicalize(signedScope));
     const payload = new TextEncoder().encode(
-      `${FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN}${bundleHash}`,
+      `${type.domain}${bundleHash}`,
     );
     const signatures = [...partySigners]
       .sort((left, right) => left.role < right.role ? -1 : left.role > right.role ? 1 : 0)
@@ -307,7 +393,7 @@ export function signFaultAttestationBundleCopies(
     const artifact = { ...signedScope, anchoredByRole, signatures };
     const canonicalJson = canonicalize(artifact);
     if (Buffer.byteLength(canonicalJson, "utf8") > MAX_ATTESTATION_BUNDLE_BYTES) {
-      throw new TypeError(`FaultAttestationBundle exceeds ${MAX_ATTESTATION_BUNDLE_BYTES} bytes`);
+      throw new TypeError(`${type.label} exceeds ${MAX_ATTESTATION_BUNDLE_BYTES} bytes`);
     }
     // §10.4.1: the copy must itself satisfy the permissible-fault set for its own
     // (outcome, anchoredByRole) — production never emits a copy a consumer must reject.
@@ -321,7 +407,7 @@ export function signFaultAttestationBundleCopies(
     });
     if (verified.disposition !== "verified" || verified.bundleHash !== bundleHash) {
       const reason = verified.disposition === "verified" ? "bundle hash mismatch" : verified.reason;
-      throw new TypeError(`FaultAttestationBundle failed independent conformance: ${reason}`);
+      throw new TypeError(`${type.label} failed independent conformance: ${reason}`);
     }
     return Object.freeze({
       anchoredByRole,

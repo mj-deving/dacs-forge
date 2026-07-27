@@ -20,5 +20,8 @@ and release versions follow [Semantic Versioning](https://semver.org/).
   signed seller policy, current buyer consent, and exact artifact binding.
 - Explicit fixture/no-spend Directory registration after operator authorization,
   independent anchor verification, and exact post-registration read-back.
+- Experimental draft PR #290 evidence-bound fault bundle production, persistence,
+  SEB-1..SEB-6 validation, distinct pointer/signature domains, and independent
+  dacs-verify cross-check fixture; no released-conformance claim.
 
 No public release has been cut yet.

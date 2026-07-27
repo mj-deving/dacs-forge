@@ -117,8 +117,11 @@ Overall status: **prototype**.
 
 The repository pins and exercises named DACS-Standard vectors for canonical JSON,
 signature-value encoding, Listing unknown-field retention, settlement finalization,
-and DACS-5 bundle convergence. This is implementation evidence, not certification
-or a claim of full DACS conformance.
+and DACS-5 bundle convergence. It also carries an explicitly experimental adapter
+for draft PR #290's `EvidenceBoundFaultAttestationBundle`: the fixture lifecycle
+produces, persists, reopens, and verifies the distinct type, while a portable fixture
+is cross-checked by dacs-verify. The draft adapter is candidate evidence only; it is
+not released DACS authority, a golden vector, certification, or full conformance.
 
 Normative development pin and source projections are recorded in
 [docs/PROVENANCE.md](docs/PROVENANCE.md). The history-clean root is bound to its

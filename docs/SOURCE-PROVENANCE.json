@@ -30,7 +30,8 @@
       "c4ace08",
       "ad48d16c25a810a6420b4d4cc9b9d8d6d38908c4",
       "fcbf804dcc53184726eed4385d794a0fdbbe00cc",
-      "9a1ca624e8cc68361cff35c85a919cd72ba25199"
+      "9a1ca624e8cc68361cff35c85a919cd72ba25199",
+      "2567c6c357d3fd28f75034b920258f2fd7da20d7"
     ]
   },
   "excludedCategories": [
@@ -94,6 +95,10 @@
       "sha256": "a299612e055c93a9f6bfa7f1db260aa46028cc7131f74146b0c5b35802e65f3d"
     },
     {
+      "path": "scripts/emit-evidence-bound-fault-bundle-fixture.ts",
+      "sha256": "d1042fcc77a1dcc1ab00d4df46a73902726831e4256bb62db53b9d5d7a9e2182"
+    },
+    {
       "path": "src/cli/dacs.ts",
       "sha256": "ff78b2bfe05449209a20cef329c2a9b901b311d38be57937f96cb71cd6afca32"
     },
@@ -115,7 +120,7 @@
     },
     {
       "path": "src/consumer/attestation-bundle-verifier.ts",
-      "sha256": "d5cc414183afda091ad2ca38f9d6bc5ba4e3473301576689053d3a39f48747cd"
+      "sha256": "29739fd5bc7d8324f0cf243c932e19485987c4d08688b341196c2f51b1a06c16"
     },
     {
       "path": "src/consumer/binding-verifier.ts",
@@ -223,7 +228,7 @@
     },
     {
       "path": "src/index.ts",
-      "sha256": "2ccbcd98f308b63e1141e05e56dcd7d55d9445b84b35e4a8b9a3daa25282a8d8"
+      "sha256": "1c9e522aa80cda32c808965fbc98c044f8285d488cedcebd28d43a24a3b8f440"
     },
     {
       "path": "src/lifecycle/fixture-attested-delivery-handler.ts",
@@ -247,7 +252,7 @@
     },
     {
       "path": "src/producer/attestation-bundle.ts",
-      "sha256": "ce709e47491f8b5a776104fa1242cdbaa733aafdae19a61ab651f95f5a081805"
+      "sha256": "2a520f6b4492f9c9f8f9bcdc81e9ae7e62f80fc27fc343a465351dbe4290a10b"
     },
     {
       "path": "src/producer/buyer-vet-requirement.ts",
@@ -318,8 +323,12 @@
       "sha256": "1520ebe32498bdb1d2ed49d1bc5a1567b5fae6f6c0514a98fccb8e8ef6d4235f"
     },
     {
+      "path": "src/protocol/evidence-bound-fault-bundle.ts",
+      "sha256": "f4bbefa86a08559c95b9e47e5c3f18d3fab48fa4dc800ff1a147c92c01afa8e9"
+    },
+    {
       "path": "src/protocol/fault-attestation-bundle.ts",
-      "sha256": "b5f611c4a1b458e3129529442593a6a806b95f75b94f74e295bcade12024fe58"
+      "sha256": "94caae22af326320a99ff871ec9b83ba6806529b96966cb35f6bfd366dfab02f"
     },
     {
       "path": "src/protocol/hash.ts",
@@ -383,7 +392,7 @@
     },
     {
       "path": "src/substrate/sqlite/fixture-bundle.ts",
-      "sha256": "3654e7ae2e55b71a68608fd8ae519edc4a2377adf3769a466b91e5361f40ba1f"
+      "sha256": "3c5489ce53bc78236d3c29e04ac7a8baa458c7c805387a11e551b13592d74eb9"
     },
     {
       "path": "src/substrate/sqlite/fixture-commitment.ts",
@@ -488,6 +497,10 @@
     {
       "path": "test/conformance/dacs5-pr248-vectors.test.ts",
       "sha256": "131c1062071814475749ca58fdcb17683f46b818c5ea9f6c984af69d6b8ca9d7"
+    },
+    {
+      "path": "test/conformance/evidence-bound-fault-bundle-vectors.test.ts",
+      "sha256": "30e597830a00ecfa55d4e52d65ad9e22776ea454c731ed0df9df6b20ba15c7bc"
     },
     {
       "path": "test/conformance/delivery-content.test.ts",
@@ -659,7 +672,7 @@
     },
     {
       "path": "test/fixtures/reference-bundle.ts",
-      "sha256": "20ba6818236c512a39bc2a51267135baa4f710ddc1bbbeec8cce909bedc48e05"
+      "sha256": "73e910baca3dd4e6cdb08b30900d6c4c62f8c46584455bab048d06a5cc434100"
     },
     {
       "path": "test/fixtures/reference-listing.ts",
@@ -815,7 +828,7 @@
     },
     {
       "path": "test/lifecycle/attestation-bundle-finalisation.test.ts",
-      "sha256": "9d86ea001726e347f54a9db0ebb18dd634db6168fdada8f34facefab6f8a5718"
+      "sha256": "3ae12a4e337a3cd5fa2ba1176c46a0fb122e487ec194c4413c50b9b536f2cba3"
     },
     {
       "path": "test/lifecycle/attested-delivery-integration.test.ts",
@@ -1090,6 +1103,10 @@
       "sha256": "8a543319798cb60073631a9a2431f45e866f89db8b136a76b679780718a15b91"
     },
     {
+      "path": "vectors/dacs-standard-pr290/bundle-settlement-evidence-bijection-v0.4.json",
+      "sha256": "39914c0859b979da37c56e887cf6a9486876553980753dc9efc116f56ae6be49"
+    },
+    {
       "path": "vectors/dacs-standard-settlement-finalization-ad48d16.json",
       "sha256": "046830e3596bb4d9ecc26b0dce7f5e36cf637e67ffa52192acd7a6f6fbe76b21"
     },
@@ -1205,7 +1222,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "4e1fea34bb81dda09518b800a70340a6d5538f1ef34535746304573cc9ce6448"
+      "sha256": "c2c5e0a94622c7a2d9bb202469ace76cddda5736aa7b04f7a08e9ca78505a11f"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1217,7 +1234,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "28a506d3c37dfbbc50350c7867c9d87a2b00778f9f9c7135b3cd3a1215c978f6"
+      "sha256": "570409b9a2fb884e4f219fb5b9e5bf0ba538353ce29d858f31aa1ce2ae890592"
     },
     {
       "path": "SECURITY.md",
@@ -1229,7 +1246,7 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "c3f939dc2e83da2c0db09ed88b44899063c0d5ca9410749b1e38ae68f32a2827"
+      "sha256": "179e27f0b93dce9c7267a5e1e495b017e7b893d75ecba62c36903429a1da9b23"
     },
     {
       "path": "docs/FORKING.md",

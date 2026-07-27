@@ -13,7 +13,10 @@ import {
 } from "../../src/producer/attestation-bundle.ts";
 import { createFixtureEd25519Signer } from "../../src/producer/fixture-ed25519.ts";
 import { signPerClaimIdentityBundle } from "../../src/producer/identity-bundle.ts";
-import type { AttestationReferenceContext } from "../../src/consumer/attestation-bundle-verifier.ts";
+import type {
+  AttestationReferenceCheck,
+  AttestationReferenceContext,
+} from "../../src/consumer/attestation-bundle-verifier.ts";
 import { buyerFixtureSigner, FIXTURE_JOB_ID } from "./reference-agreement.ts";
 import { fixtureSigner, FIXTURE_SIGNING_CONTEXT } from "./reference-listing.ts";
 
@@ -159,7 +162,7 @@ export const fixtureBundleAuthorityOptions = Object.freeze({
 export function fixtureReferenceResolver(
   ref: Readonly<Record<string, unknown>>,
   context: AttestationReferenceContext,
-) {
+): Extract<AttestationReferenceCheck, { readonly status: "verified" }> {
   const anchor = ref["anchor"] as Record<string, unknown>;
   const locator = anchor["locator"] as string;
   const inferredPhase = locator.includes(":payment-evidence:")
@@ -192,7 +195,10 @@ export function fixtureReferenceResolver(
       evidenceOutcome: context.expectedPhaseOutcome === "fail" ? "failure" as const : "success" as const,
     } : {}),
     ...(artifactType === "phase-evidence"
-      ? { signer: typeof ref["signer"] === "string" ? ref["signer"] : fixtureSigner().signer }
+      ? {
+        recordClass: "ordinary-terminal" as const,
+        signer: typeof ref["signer"] === "string" ? ref["signer"] : fixtureSigner().signer,
+      }
       : typeof ref["signer"] === "string" ? { signer: ref["signer"] } : {}),
   };
 }

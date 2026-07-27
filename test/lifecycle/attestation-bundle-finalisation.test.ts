@@ -152,11 +152,12 @@ describe("atomic DACS-5 lifecycle finalisation", () => {
     expect(new Set(finalised.copies.map((copy) => copy.bundleHash)).size).toBe(1);
     for (const copy of finalised.copies) {
       expect(JSON.parse(copy.canonicalJson)).toMatchObject({
-        faultBundleVersion: "1",
+        evidenceBoundFaultBundleVersion: "1",
         faultedParty: "none",
         outcome: "completed",
       });
       expect(JSON.parse(copy.canonicalJson).bundleVersion).toBeUndefined();
+      expect(JSON.parse(copy.canonicalJson).faultBundleVersion).toBeUndefined();
     }
     expect(bundles.verifySession(fixture.input.jobId)).toMatchObject({
       disposition: "unified", reputationEligibility: "eligible",
@@ -950,7 +951,7 @@ describe("atomic DACS-5 lifecycle finalisation", () => {
     const finalised = prepared.store.finalise(prepared.input);
     expect(finalised.copies).toHaveLength(3);
     const artifacts = finalised.copies.map((copy) => JSON.parse(copy.canonicalJson));
-    expect(artifacts[0]).toMatchObject({ faultBundleVersion: "1", outcome });
+    expect(artifacts[0]).toMatchObject({ evidenceBoundFaultBundleVersion: "1", outcome });
     expect(artifacts.every((artifact) => artifact.bundleVersion === undefined)).toBe(true);
     expect(new Set(artifacts.map((artifact) => artifact.faultedParty)).size).toBe(1);
     const seller = artifacts.find((artifact) => artifact.anchoredByRole === "seller")!;

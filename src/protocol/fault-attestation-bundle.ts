@@ -3,6 +3,10 @@ import { createPublicKey, verify as verifySignature } from "node:crypto";
 import { canonicalize, withoutFields } from "./canonical-json.ts";
 import { decodeComponentSignatureValue } from "./component-signature-codec.ts";
 import { sha256Hex } from "./hash.ts";
+import {
+  EVIDENCE_BOUND_FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN,
+  EVIDENCE_BOUND_FAULT_BUNDLE_POINTER_DOMAIN,
+} from "./evidence-bound-fault-bundle.ts";
 
 /**
  * DACS-5 §10.4 / §10.4.1 — the v0.3 `FaultAttestationBundle` production type and the
@@ -18,6 +22,10 @@ import { sha256Hex } from "./hash.ts";
 export const ATTESTATION_BUNDLE_SIGNATURE_DOMAIN = "dacs-bundle:v1:";
 export const FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN = "dacs-fault-bundle:v1:";
 export const FAULT_BUNDLE_POINTER_DOMAIN = "dacs-fault-bundle-pointer:v1:";
+export {
+  EVIDENCE_BOUND_FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN,
+  EVIDENCE_BOUND_FAULT_BUNDLE_POINTER_DOMAIN,
+};
 
 export type BundleFaultRole = "buyer" | "seller" | "orchestrator";
 export type BundleFaultedParty = BundleFaultRole | "none";
@@ -29,10 +37,13 @@ const ED25519_SPKI_PREFIX = Buffer.from("302a300506032b6570032100", "hex");
 
 export function validBundleTypeDiscriminator(bundle: unknown): boolean {
   if (!isObject(bundle)) return false;
-  const legacy = Object.hasOwn(bundle, "bundleVersion");
-  const fault = Object.hasOwn(bundle, "faultBundleVersion");
-  if (legacy === fault) return false;
-  return legacy ? bundle["bundleVersion"] === "1" : bundle["faultBundleVersion"] === "1";
+  const versions = ["bundleVersion", "faultBundleVersion", "evidenceBoundFaultBundleVersion"]
+    .filter((field) => Object.hasOwn(bundle, field));
+  return versions.length === 1 && bundle[versions[0]!] === "1";
+}
+
+export function isEvidenceBoundFaultAttestationBundle(bundle: unknown): boolean {
+  return isObject(bundle) && Object.hasOwn(bundle, "evidenceBoundFaultBundleVersion");
 }
 
 /**
@@ -40,7 +51,8 @@ export function validBundleTypeDiscriminator(bundle: unknown): boolean {
  * and never `bundleVersion`; the CORE §11.1.2 new-type refusal keys on exactly this.
  */
 export function isFaultAttestationBundle(bundle: unknown): boolean {
-  return isObject(bundle) && Object.hasOwn(bundle, "faultBundleVersion");
+  return isObject(bundle) && (Object.hasOwn(bundle, "faultBundleVersion")
+    || Object.hasOwn(bundle, "evidenceBoundFaultBundleVersion"));
 }
 
 /**
@@ -49,7 +61,9 @@ export function isFaultAttestationBundle(bundle: unknown): boolean {
  * as a signature over the other.
  */
 export function bundleSignatureDomain(bundle: unknown): string {
-  return isFaultAttestationBundle(bundle)
+  return isEvidenceBoundFaultAttestationBundle(bundle)
+    ? EVIDENCE_BOUND_FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN
+    : isFaultAttestationBundle(bundle)
     ? FAULT_ATTESTATION_BUNDLE_SIGNATURE_DOMAIN
     : ATTESTATION_BUNDLE_SIGNATURE_DOMAIN;
 }
@@ -202,14 +216,68 @@ export function resolveFaultBundleExtendedPointer(
   publicKeys: ReadonlyMap<string, Uint8Array>,
   admitDereferenced: FaultBundleDereferencedAdmission,
 ): FaultBundleExtendedPointerResolution {
+  return resolveAbsoluteFaultBundleExtendedPointer(
+    pointer,
+    dereferenced,
+    binding,
+    publicKeys,
+    admitDereferenced,
+    {
+      discriminator: "faultBundleVersion",
+      domain: FAULT_BUNDLE_POINTER_DOMAIN,
+      label: "FaultBundleExtendedPointer",
+      admitsBundle: (value) => isObject(value)
+        && Object.hasOwn(value, "faultBundleVersion")
+        && !Object.hasOwn(value, "evidenceBoundFaultBundleVersion"),
+    },
+  );
+}
+
+export function resolveEvidenceBoundFaultBundleExtendedPointer(
+  pointer: unknown,
+  dereferenced: unknown,
+  binding: Readonly<Record<string, unknown>>,
+  publicKeys: ReadonlyMap<string, Uint8Array>,
+  admitDereferenced: FaultBundleDereferencedAdmission,
+): FaultBundleExtendedPointerResolution {
+  return resolveAbsoluteFaultBundleExtendedPointer(
+    pointer,
+    dereferenced,
+    binding,
+    publicKeys,
+    admitDereferenced,
+    {
+      discriminator: "evidenceBoundFaultBundleVersion",
+      domain: EVIDENCE_BOUND_FAULT_BUNDLE_POINTER_DOMAIN,
+      label: "EvidenceBoundFaultBundleExtendedPointer",
+      admitsBundle: isEvidenceBoundFaultAttestationBundle,
+    },
+  );
+}
+
+function resolveAbsoluteFaultBundleExtendedPointer(
+  pointer: unknown,
+  dereferenced: unknown,
+  binding: Readonly<Record<string, unknown>>,
+  publicKeys: ReadonlyMap<string, Uint8Array>,
+  admitDereferenced: FaultBundleDereferencedAdmission,
+  type: Readonly<{
+    discriminator: "faultBundleVersion" | "evidenceBoundFaultBundleVersion";
+    domain: string;
+    label: string;
+    admitsBundle: (value: unknown) => boolean;
+  }>,
+): FaultBundleExtendedPointerResolution {
   if (!isObject(pointer)) {
     return { ok: false, reason: "pointer is not an object", recomputedHash: null };
   }
-  // The FAB pointer carries `faultBundleVersion` and never `bundleVersion` (mirrors §10.4.1).
-  if (pointer["faultBundleVersion"] !== "1" || Object.hasOwn(pointer, "bundleVersion")) {
+  const versionFields = ["bundleVersion", "faultBundleVersion", "evidenceBoundFaultBundleVersion"]
+    .filter((field) => Object.hasOwn(pointer, field));
+  if (versionFields.length !== 1 || versionFields[0] !== type.discriminator
+    || pointer[type.discriminator] !== "1") {
     return {
       ok: false,
-      reason: "not a FaultBundleExtendedPointer discriminator",
+      reason: `not a ${type.label} discriminator`,
       recomputedHash: null,
     };
   }
@@ -238,14 +306,14 @@ export function resolveFaultBundleExtendedPointer(
   }
   if (!validEd25519Signature(
     publicKeys.get(signature["signer"]),
-    `${FAULT_BUNDLE_POINTER_DOMAIN}${pointerHash}`,
+    `${type.domain}${pointerHash}`,
     signature["value"],
   )) {
     return { ok: false, reason: "pointer signature does not verify", recomputedHash: null };
   }
   if (!isObject(dereferenced) || !validBundleTypeDiscriminator(dereferenced)
-    || !isFaultAttestationBundle(dereferenced)) {
-    return { ok: false, reason: "dereferenced record is not a FaultAttestationBundle", recomputedHash: null };
+    || !type.admitsBundle(dereferenced)) {
+    return { ok: false, reason: `dereferenced record is not a matching ${type.label} bundle`, recomputedHash: null };
   }
   const permitted = faultedPartyPermitted(dereferenced);
   if (!permitted.ok) return { ok: false, reason: permitted.reason, recomputedHash: null };

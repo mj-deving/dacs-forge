@@ -8,13 +8,13 @@ import { canonicalize } from "../../protocol/canonical-json.ts";
 import { sha256Hex } from "../../protocol/hash.ts";
 import {
   bundleLogicalAddress,
-  signFaultAttestationBundleCopies,
+  signEvidenceBoundFaultAttestationBundleCopies,
   type BundlePartySigner,
   type BundleRole,
   type UnsignedAttestationBundle,
 } from "../../producer/attestation-bundle.ts";
 import {
-  outcomeClass,
+  isFaultAttestationBundle, outcomeClass,
   roleRelativeOutcome,
   type BundleFaultedParty,
 } from "../../protocol/fault-attestation-bundle.ts";
@@ -390,8 +390,8 @@ export class FixtureBundleStore {
       input.faultedParty,
     );
     const { bundleVersion: _legacyVersion, outcome: _legacyOutcome, ...shared } = input.bundle;
-    return signFaultAttestationBundleCopies(
-      { ...shared, faultBundleVersion: "1", faultedParty },
+    return signEvidenceBoundFaultAttestationBundleCopies(
+      { ...shared, evidenceBoundFaultBundleVersion: "1", faultedParty },
       outcomeClass(perspectiveOutcome),
       input.partySigners,
       input.anchorRoles,
@@ -794,6 +794,13 @@ export class FixtureBundleStore {
         const detail = "reason" in verified ? `: ${verified.reason}` : "";
         return Object.freeze({ status: "rejected" as const, reason: `SettlementEvidence semantics or lifecycle binding is invalid${detail}` });
       }
+      const recordClass = Object.hasOwn(value, "supersedesEvidenceRef")
+        ? "st8-resolved-success" as const
+        : value["outcome"] === "failure"
+          && (value["reason"] === "dest-revealed-source-unclaimed"
+            || value["reason"] === "tank-locked-unreleased")
+          ? "st8-expired-interim-failure" as const
+          : "ordinary-terminal" as const;
       return Object.freeze({
         status: "verified" as const,
         artifactType: "phase-evidence" as const,
@@ -804,7 +811,13 @@ export class FixtureBundleStore {
         phaseIndex: authority.phaseIndex,
         phaseKind: authority.phaseKind,
         evidenceOutcome: value["outcome"] as "success" | "failure",
+        recordClass,
         signer: verified.orchestrator,
+        ...(value["supersedesEvidenceRef"] !== null
+          && typeof value["supersedesEvidenceRef"] === "object"
+          && !Array.isArray(value["supersedesEvidenceRef"])
+          ? { supersedesEvidenceRef: value["supersedesEvidenceRef"] as Record<string, unknown> }
+          : {}),
       });
     } else if (persisted.artifactKind === "dacs-2-composite") {
       const row = this.#database.query<{
@@ -1570,7 +1583,7 @@ function expectedPersistedOutcome(
   role: BundleRole,
 ): string {
   const legacyOutcome = mappedTerminalOutcome(lifecycle, role);
-  if (!Object.hasOwn(bundle, "faultBundleVersion")) return legacyOutcome;
+  if (!isFaultAttestationBundle(bundle)) return legacyOutcome;
   if (typeof bundle["faultedParty"] !== "string") {
     throw new FixtureBundleIntegrityError("Persisted FaultAttestationBundle lacks faultedParty");
   }

@@ -7,8 +7,11 @@ import type { BundleOutcome, BundleRole } from "../producer/attestation-bundle.t
 import {
   bundleSignatureDomain,
   faultedPartyPermitted,
+  isEvidenceBoundFaultAttestationBundle,
+  isFaultAttestationBundle,
   validBundleTypeDiscriminator,
 } from "../protocol/fault-attestation-bundle.ts";
+import { evaluateEvidenceBoundSettlementSet } from "../protocol/evidence-bound-fault-bundle.ts";
 
 const MAX_ATTESTATION_BUNDLE_BYTES = 128 * 1024;
 
@@ -84,7 +87,10 @@ export type AttestationReferenceCheck =
     readonly phaseIndex?: number;
     readonly phaseKind?: string;
     readonly evidenceOutcome?: "success" | "failure";
+    readonly recordClass?: "ordinary-terminal" | "st8-resolved-success" | "st8-expired-interim-failure";
     readonly signer?: string;
+    readonly supersedesEvidenceRef?: Readonly<Record<string, unknown>>;
+    readonly supersedingEvidenceRef?: Readonly<Record<string, unknown>> | null;
   }
   | { readonly status: "absent" }
   | { readonly status: "rejected"; readonly reason: string }
@@ -281,7 +287,7 @@ export function verifyCanonicalAttestationBundleJson(
     if (requiresAgreement && artifact["agreementRef"] === undefined) {
       return rejected("agreement-binding", "Post-commit bundle lacks its authenticated Agreement reference");
     }
-    const isFaultBundle = Object.hasOwn(artifact, "faultBundleVersion");
+    const isFaultBundle = isFaultAttestationBundle(artifact);
     const outcomeErrorClasses = artifact["outcome"] === "failed-perm"
       ? new Set(isFaultBundle
         ? ["permanent", "transient", "counterparty", "settlement-atomicity"]
@@ -344,6 +350,10 @@ export function verifyCanonicalAttestationBundleJson(
     const references = collectAttestationReferences(artifact, jobId, role);
     const phaseEvidenceSigners = new Set<string>();
     const authenticatedSettlementPhases = new Map<number, string>();
+    const resolvedSettlementPhaseKeys: Record<string, string> = {};
+    const settlementRecordClasses: Record<string,
+      "ordinary-terminal" | "st8-resolved-success" | "st8-expired-interim-failure"> = {};
+    const settlementSupersedesEdges: Record<string, string> = {};
     const referenceAuthorities = new Map<string, string>();
     let referenceUncertainty: string | null = null;
     let settlementReferenceUncertainty: string | null = null;
@@ -389,7 +399,12 @@ export function verifyCanonicalAttestationBundleJson(
         ...(resolved.phaseIndex === undefined ? {} : { phaseIndex: resolved.phaseIndex }),
         ...(resolved.phaseKind === undefined ? {} : { phaseKind: resolved.phaseKind }),
         ...(resolved.evidenceOutcome === undefined ? {} : { evidenceOutcome: resolved.evidenceOutcome }),
+        ...(resolved.recordClass === undefined ? {} : { recordClass: resolved.recordClass }),
         ...(resolved.signer === undefined ? {} : { signer: resolved.signer }),
+        ...(resolved.supersedesEvidenceRef === undefined
+          ? {} : { supersedesEvidenceRef: resolved.supersedesEvidenceRef }),
+        ...(resolved.supersedingEvidenceRef === undefined
+          ? {} : { supersedingEvidenceRef: resolved.supersedingEvidenceRef }),
         ...(resolved.agreementListingRef === undefined ? {} : { agreementListingRef: resolved.agreementListingRef }),
         ...(resolved.agreementParties === undefined ? {} : { agreementParties: resolved.agreementParties }),
       });
@@ -420,6 +435,97 @@ export function verifyCanonicalAttestationBundleJson(
           return rejected("reference-resolution", "SettlementEvidence does not map uniquely to an authenticated phase");
         }
         authenticatedSettlementPhases.set(resolved.phaseIndex!, resolved.phaseKind!);
+        const phaseKey = `${resolved.phaseIndex!}:${resolved.phaseKind!}`;
+        resolvedSettlementPhaseKeys[referenceKey] = phaseKey;
+        if (isEvidenceBoundFaultAttestationBundle(artifact)) {
+          if (resolved.recordClass === undefined && (
+            resolved.phaseKind === "pay-cross-chain-htlc"
+            || resolved.phaseKind === "pay-cross-chain-liquidity-tank"
+          )) {
+            const reason = "Evidence-bound SettlementEvidence lacks authenticated record-class authority";
+            referenceUncertainty ??= reason;
+            settlementReferenceUncertainty ??= reason;
+          } else if (resolved.recordClass === undefined) {
+            settlementRecordClasses[referenceKey] = "ordinary-terminal";
+          } else if (!new Set([
+            "ordinary-terminal", "st8-resolved-success", "st8-expired-interim-failure",
+          ]).has(resolved.recordClass)) {
+            return rejected("settlement-evidence", "SettlementEvidence record-class authority is invalid");
+          } else {
+            settlementRecordClasses[referenceKey] = resolved.recordClass;
+            const st8Phase = resolved.phaseKind === "pay-cross-chain-htlc"
+              || resolved.phaseKind === "pay-cross-chain-liquidity-tank";
+            if ((resolved.recordClass === "st8-resolved-success"
+              && (!st8Phase || resolved.evidenceOutcome !== "success"))
+              || (resolved.recordClass === "st8-expired-interim-failure"
+                && (!st8Phase || resolved.evidenceOutcome !== "failure"))) {
+              return rejected("settlement-evidence", "ST-8 record class contradicts authenticated phase evidence");
+            }
+            if (resolved.recordClass === "st8-resolved-success") {
+              if (!isObject(resolved.supersedesEvidenceRef)) {
+                return rejected("settlement-evidence", "Resolved ST-8 evidence lacks its authenticated interim reference");
+              }
+              let predecessor: AttestationReferenceCheck;
+              try {
+                predecessor = options.resolveAttestationRef(resolved.supersedesEvidenceRef, {
+                  ...context,
+                  expectedPhaseOutcome: "fail",
+                });
+              } catch (error) {
+                const reason = `Superseded ST-8 evidence resolver failed: ${message(error)}`;
+                referenceUncertainty ??= reason;
+                settlementReferenceUncertainty ??= reason;
+                continue;
+              }
+              if (predecessor.status === "indeterminate") {
+                referenceUncertainty ??= predecessor.reason;
+                settlementReferenceUncertainty ??= predecessor.reason;
+                continue;
+              }
+              if (predecessor.status !== "verified") {
+                return rejected("settlement-evidence", "Resolved ST-8 evidence lacks an authenticated predecessor");
+              }
+              const predecessorAnchor = resolved.supersedesEvidenceRef["anchor"];
+              if (!isObject(predecessorAnchor)
+                || predecessor.artifactType !== "phase-evidence"
+                || predecessor.contentHash !== resolved.supersedesEvidenceRef["contentHash"]
+                || predecessor.anchorKind !== predecessorAnchor["kind"]
+                || predecessor.anchorLocator !== predecessorAnchor["locator"]
+                || predecessor.jobId !== jobId
+                || predecessor.phaseIndex !== resolved.phaseIndex
+                || predecessor.phaseKind !== resolved.phaseKind
+                || predecessor.evidenceOutcome !== "failure"
+                || predecessor.recordClass !== "st8-expired-interim-failure") {
+                return rejected("settlement-evidence", "Resolved ST-8 predecessor authority is inconsistent");
+              }
+              if (predecessor.supersedingEvidenceRef === undefined) {
+                const reason = "Superseded ST-8 evidence lacks authenticated successor authority";
+                referenceUncertainty ??= reason;
+                settlementReferenceUncertainty ??= reason;
+                continue;
+              }
+              if (predecessor.supersedingEvidenceRef === null
+                || consumerCanonicalize(predecessor.supersedingEvidenceRef) !== referenceKey) {
+                return rejected("settlement-evidence", "ST-8 predecessor does not bind back to its resolved successor");
+              }
+              settlementSupersedesEdges[referenceKey] = consumerCanonicalize(resolved.supersedesEvidenceRef);
+            } else if (resolved.recordClass === "st8-expired-interim-failure") {
+              if (resolved.supersedingEvidenceRef === undefined) {
+                const reason = "Expired ST-8 evidence lacks an authoritative successor-absence result";
+                referenceUncertainty ??= reason;
+                settlementReferenceUncertainty ??= reason;
+              } else if (resolved.supersedingEvidenceRef !== null) {
+                if (!isObject(resolved.supersedingEvidenceRef)) {
+                  return rejected("settlement-evidence", "ST-8 successor authority is invalid");
+                }
+                settlementSupersedesEdges[consumerCanonicalize(resolved.supersedingEvidenceRef)] = referenceKey;
+              }
+            } else if (resolved.supersedesEvidenceRef !== undefined
+              || resolved.supersedingEvidenceRef !== undefined) {
+              return rejected("settlement-evidence", "Ordinary evidence carries contradictory ST-8 authority");
+            }
+          }
+        }
       }
       if (resolved.signer !== undefined) {
         let canonicalSigner: string;
@@ -443,6 +549,31 @@ export function verifyCanonicalAttestationBundleJson(
     if (settlementReferenceUncertainty === null
       && consumerCanonicalize(authenticatedPhaseSet) !== consumerCanonicalize(expectedPhaseSet)) {
       return rejected("reference-resolution", "SettlementEvidence does not cover every executed phase exactly once");
+    }
+    if (isEvidenceBoundFaultAttestationBundle(artifact) && settlementReferenceUncertainty === null) {
+      const pointerMap: Record<string, string> = {};
+      for (const phase of phaseSummary) {
+        if (isSettlementEvidencePhase(phase["kind"] as string)
+          && phase["attestationRef"] !== undefined) {
+          pointerMap[`${phase["index"]}:${phase["kind"]}`] = consumerCanonicalize(phase["attestationRef"]);
+        }
+      }
+      const seb = evaluateEvidenceBoundSettlementSet({
+        expectedPhaseKeys: expectedPhaseSet.map((phase) => `${phase.index}:${phase.kind}`),
+        topLevelRefs: settlementReferenceKeys,
+        resolvedReferencePhaseKeys: resolvedSettlementPhaseKeys,
+        pointerMap,
+        recordClassByRef: settlementRecordClasses,
+        supersedesEdges: settlementSupersedesEdges,
+        unrelatedAuthorityDisposition: topLevelUncertainty !== null || referenceUncertainty !== null
+          ? "indeterminate" : "verified",
+      });
+      if (seb.disposition === "rejected") {
+        return rejected("settlement-evidence", `SEB-1..SEB-6: ${seb.reasonCode}`);
+      }
+      if (seb.disposition === "indeterminate") {
+        referenceUncertainty ??= "SEB-1..SEB-6 passed but unrelated authority is unavailable";
+      }
     }
     const buyerSeller = new Set([parties.get("buyer")!, parties.get("seller")!]);
     const thirdPartySigners = [...phaseEvidenceSigners].filter((signer) => !buyerSeller.has(signer));

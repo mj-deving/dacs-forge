@@ -95,6 +95,14 @@ The fixture handshake exercises:
 - buyer, seller, and orchestrator role-local DACS-5 bundle copies;
 - restart readback of persisted state and artifacts.
 
+The current experimental candidate path emits the distinct draft PR #290
+`EvidenceBoundFaultAttestationBundle`. It reuses the same lifecycle, artifact,
+anchor, and SQLite boundaries; only its discriminator, signature domain, pointer
+domain, and SEB-1..SEB-6 settlement-evidence exact-set validation differ. The
+portable fixture is additionally consumed by dacs-verify without importing or
+delegating Forge validity to that verifier. This adapter does not add a provider,
+key-custody, resolver, storage, or security platform.
+
 ## Persistence and recovery
 
 SQLite stores sessions, service runs and artifacts, fixture authorities, Listings,
