@@ -16,5 +16,7 @@ and release versions follow [Semantic Versioning](https://semver.org/).
   responses, verified artifact streaming, and deployment-scoped 256-bit capabilities.
 - Administrator and bilateral party-capability lifecycle with proof-of-possession,
   revocation, bounded renewal, offline recovery, and clone identity rotation.
+- Agreement-bound anonymous artifact disclosure requiring verified public delivery,
+  signed seller policy, current buyer consent, and exact artifact binding.
 
 No public release has been cut yet.

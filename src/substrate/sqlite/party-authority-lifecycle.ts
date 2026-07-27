@@ -162,6 +162,15 @@ export interface PartyAuthorityLifecycleOptions {
   readonly randomBytes?: (size: number) => Uint8Array;
 }
 
+export type DisclosureAuthorityResolution =
+  | Readonly<{
+    readonly disposition: "current";
+    readonly agreementHash: string;
+    readonly buyerKey: string;
+    readonly sellerKey: string;
+  }>
+  | Readonly<{ readonly disposition: "unavailable" }>;
+
 interface InstanceRow {
   readonly audience: string;
   readonly generation: bigint;
@@ -719,6 +728,32 @@ export class PartyAuthorityLifecycle {
     }).immediate();
   }
 
+  /** Effective bilateral agreement authority for anonymous-disclosure verification. */
+  resolveDisclosureAuthority(input: Readonly<{ readonly jobId: string }>): DisclosureAuthorityResolution {
+    this.#assertOpen();
+    let jobId: string;
+    try {
+      jobId = validatedField("jobId", input?.jobId);
+    } catch {
+      return Object.freeze({ disposition: "unavailable" });
+    }
+    const now = this.#safeNow();
+    const buyer = this.#resolvedAuthority(jobId, "buyer", now);
+    const seller = this.#resolvedAuthority(jobId, "seller", now);
+    if (buyer === null || seller === null || buyer.kind !== "agreement" || seller.kind !== "agreement"
+      || buyer.agreementHash === null || buyer.agreementHash !== seller.agreementHash
+      || buyer.key === seller.key || !operationAllowsArtifactRead(buyer.operations)
+      || !operationAllowsArtifactRead(seller.operations)) {
+      return Object.freeze({ disposition: "unavailable" });
+    }
+    return Object.freeze({
+      disposition: "current" as const,
+      agreementHash: buyer.agreementHash,
+      buyerKey: buyer.key,
+      sellerKey: seller.key,
+    });
+  }
+
   listAdministratorSessions(token: string): readonly string[] {
     this.#assertOpen();
     const now = this.#safeNow();
@@ -1196,6 +1231,10 @@ function requestIsCurrent(requestedAtMs: number, now: number): boolean {
   return Number.isSafeInteger(requestedAtMs) && requestedAtMs >= 0
     && requestedAtMs >= now - AUTHORITY_REQUEST_PAST_MS
     && requestedAtMs <= now + AUTHORITY_REQUEST_FUTURE_MS;
+}
+
+function operationAllowsArtifactRead(operations: readonly CapabilityOperation[] | null): boolean {
+  return operations === null || operations.includes("artifact:read");
 }
 
 function normalizeExchange(input: PartyCapabilityExchangeInput): PartyCapabilityExchangeInput {

@@ -48,6 +48,12 @@ describe("agreement-bound artifact authority", () => {
     const agreement = { hash: AGREEMENT, counterpartyKey: SELLER };
     const database = openDatabase(databasePath);
     const lifecycle = authority(database, current, agreement);
+    expect(lifecycle.resolveDisclosureAuthority({ jobId: JOB })).toEqual({
+      disposition: "current",
+      agreementHash: AGREEMENT,
+      buyerKey: OLD_BUYER,
+      sellerKey: SELLER,
+    });
     const old = issueParty(lifecycle, OLD_BUYER, NOW + 60_000, "allocation-old");
     expect(lifecycle.authorize(old.token, old.scope)).toBe(true);
     expect(lifecycle.authorize(old.token, {
@@ -57,6 +63,9 @@ describe("agreement-bound artifact authority", () => {
 
     current.delete(OLD_BUYER);
     expect(lifecycle.authorize(old.token, old.scope)).toBe(false);
+    expect(lifecycle.resolveDisclosureAuthority({ jobId: JOB })).toEqual({
+      disposition: "unavailable",
+    });
     current.add(NEW_BUYER);
     const unsigned: Omit<SessionAuthorityAmendment, "buyerProof" | "sellerProof"> = {
       agreementHash: AGREEMENT,
@@ -103,6 +112,12 @@ describe("agreement-bound artifact authority", () => {
       verifyAnchor: ({ agreementHash, anchor, digest, jobId }) => agreementHash === AGREEMENT
         && anchor === unsigned.anchor && digest === createHash("sha256").update(amendmentBytes).digest("hex")
         && jobId === JOB,
+    });
+    expect(lifecycle.resolveDisclosureAuthority({ jobId: JOB })).toEqual({
+      disposition: "current",
+      agreementHash: AGREEMENT,
+      buyerKey: NEW_BUYER,
+      sellerKey: SELLER,
     });
     current.add(OTHER_BUYER);
     const conflictingUnsigned = { ...unsigned, newKey: OTHER_BUYER };
@@ -183,6 +198,9 @@ describe("agreement-bound artifact authority", () => {
     `).run({ expiresAtMs: NOW - 1, jobId: JOB });
     current.add(OLD_BUYER);
     expect(restarted.authorize(replacement.token, replacement.scope)).toBe(false);
+    expect(restarted.resolveDisclosureAuthority({ jobId: JOB })).toEqual({
+      disposition: "unavailable",
+    });
     expect(restarted.allocatePartyChallenge(signedAllocation(
       OLD_BUYER,
       "allocation-after-amendment-expiry",

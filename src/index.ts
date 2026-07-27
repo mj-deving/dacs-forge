@@ -159,6 +159,27 @@ export {
   type SessionAdmissionHttpOptions,
 } from "./http/session-admission.ts";
 export {
+  PUBLIC_ARTIFACT_ROUTE,
+  PUBLIC_DISCLOSURE_CONSENT_DOMAIN,
+  PUBLIC_DELIVERY_POLICY_DOMAIN,
+  PublicArtifactDisclosureAuthority,
+  createPublicArtifactHttpHandler,
+  publicDisclosureConsentSigningBytes,
+  publicDeliveryPolicySigningBytes,
+  type AgreementDisclosureAuthority,
+  type AgreementDisclosureAuthorityResolution,
+  type PublicArtifactDisclosureAuthorityOptions,
+  type PublicArtifactDisclosureGrant,
+  type PublicArtifactHttpOptions,
+  type PublicArtifactRecord,
+  type PublicArtifactResolution,
+  type PublicDeliveryEvidenceAuthority,
+  type PublicDeliveryEvidenceResolution,
+  type SignedPublicDeliveryPolicy,
+  type SignedPublicDisclosureConsent,
+  type VerifiedPublicDelivery,
+} from "./http/public-artifact-disclosure.ts";
+export {
   FIXTURE_LIFECYCLE_RESTART_BOUNDARIES,
   fixtureLifecycleRestartBoundary,
   type FixtureLifecycleRestartBoundary,

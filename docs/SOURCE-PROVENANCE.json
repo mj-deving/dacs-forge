@@ -215,7 +215,7 @@
     },
     {
       "path": "src/index.ts",
-      "sha256": "915ddd6302db625487bdf83e0822693295275863913d08a2fb76ba853830e73b"
+      "sha256": "452a3ce5e38ae31a710090a3eccbeaa808ee1463c21ecb424755c05b68911228"
     },
     {
       "path": "src/lifecycle/fixture-attested-delivery-handler.ts",
@@ -567,7 +567,7 @@
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "4698ea4d8d0144691adcc49a3c9799997ae15a428508600d51aa291928154605"
+      "sha256": "e275b09cacd375050b008da3b54751c123673de69c5205cf1ae2aa872b39dbbd"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -1134,6 +1134,10 @@
       "sha256": "149c2005d31812ad4b3b7fc7fbc986a45f98a02ea34a8e427542853df1a62451"
     },
     {
+      "path": "src/http/public-artifact-disclosure.ts",
+      "sha256": "2fb5cf5491ed3a75c7de2dfca7aed4ec74fae2a54e77058496d4d5fed66d5d1a"
+    },
+    {
       "path": "src/substrate/authority-offline.ts",
       "sha256": "89ef5c9d1a9b15652edb3ff0e7bffcd97a99decbe57cdd01435dda975939525c"
     },
@@ -1143,11 +1147,15 @@
     },
     {
       "path": "src/substrate/sqlite/party-authority-lifecycle.ts",
-      "sha256": "d532ac8bd004185f258127d083aae71389c0432be6c5966d0ee6756037078432"
+      "sha256": "b1e8b7ad0e9a886909e1ed2448e4cc7f24766d214919f733df52cefb9fc1302a"
+    },
+    {
+      "path": "test/api/anonymous-route-policy.test.ts",
+      "sha256": "67731b2e809fa7ca2d22def491931bb014d2bcd48e9238bfebd13ba8b6bbfdb1"
     },
     {
       "path": "test/api/artifact-access.test.ts",
-      "sha256": "89425ce09a7eea63673c7fd1ede29f218f011f5eb187d9ebd58d53345adfa548"
+      "sha256": "988a6ce0dbcc988af79304d2f214efcdb75ed972291d2f855d39725acbc21a33"
     },
     {
       "path": "test/api/capability-negative-matrix.test.ts",
@@ -1185,7 +1193,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "01578a9910cf60553d513d06651dc07bee2d52295a5fea72aead8b35699384fb"
+      "sha256": "01d0b70fed344375e77450ee5554fd4db3a88c0bb391552574cc606ab6bf99de"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1209,7 +1217,7 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "30cb3766a7a9c300c5a8b054165d7dd4eeb80ac4c06ce0c5b111aad548c7852c"
+      "sha256": "068a456309c3e69a5620bb8bc6294fa4fb59c3ae9429976a015a08ee521d690a"
     },
     {
       "path": "docs/FORKING.md",

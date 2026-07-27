@@ -142,6 +142,9 @@ Implemented and locally exercised:
 - deployment- and audience-scoped administrator and bilateral party capabilities with
   proof-of-possession, amendment invalidation, last-administrator protection, offline
   recovery, and clone identity rotation.
+- anonymous artifact delivery only after verified `public` delivery evidence, a signed
+  agreement-bound seller policy, matching buyer consent, and current bilateral authority;
+  the adapter reuses caller-owned storage and key resolution rather than implementing them.
 
 Still open or explicitly outside the current claim:
 
