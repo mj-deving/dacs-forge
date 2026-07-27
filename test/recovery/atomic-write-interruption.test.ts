@@ -34,6 +34,30 @@ const FULL_HANDSHAKE: Driver = Object.freeze({
 });
 
 const DRIVER_OVERRIDES: Readonly<Record<string, Driver>> = Object.freeze({
+  "production-key.activate": {
+    file: "test/security/live-signer-provider.test.ts",
+    pattern: "exposes only a non-exporting handle-backed signing capability",
+  },
+  "production-key.retain-listing": {
+    file: "test/security/key-revocation-propagation.test.ts",
+    pattern: "retains one signed revocation binding",
+  },
+  "production-key.revoke-current": {
+    file: "test/security/key-revocation-propagation.test.ts",
+    pattern: "retains one signed revocation binding",
+  },
+  "production-key.activate-replacement": {
+    file: "test/security/key-revocation-propagation.test.ts",
+    pattern: "retains one signed revocation binding",
+  },
+  "production-key.publish-revocation": {
+    file: "test/security/key-revocation-propagation.test.ts",
+    pattern: "retains one signed revocation binding",
+  },
+  "production-key.pin-committed-session": {
+    file: "test/security/committed-session-key-pin.test.ts",
+    pattern: "survives restart and preserves only exact pre-revocation evidence",
+  },
   "listing.reserve-anchor": {
     file: "test/directory/publication-order.test.ts",
     pattern: "does not expose discovery until",

@@ -7,7 +7,7 @@ import {
 } from "../consumer/binding-verifier.ts";
 import { verifyCanonicalListingJson } from "../consumer/listing-verifier.ts";
 import {
-  assertFixtureSigningAuthority,
+  assertArtifactSigningAuthority,
   type ArtifactSigner,
   type FixtureSigningContext,
 } from "../producer/fixture-ed25519.ts";
@@ -162,7 +162,7 @@ export function createSignedListingRevocation(input: {
   if (!Number.isSafeInteger(input.revokedAt) || input.revokedAt < 0) {
     throw new TypeError("Revocation revokedAt must be a non-negative safe integer");
   }
-  assertFixtureSigningAuthority(input.signer, input.signingContext);
+  assertArtifactSigningAuthority(input.signer, input.signingContext);
   const unsigned = {
     listingId: input.listing.listingId,
     listingVersion: input.listing.listingVersion,

@@ -11,7 +11,8 @@ import {
   validatePayRailBindings,
 } from "../protocol/listing-schema.ts";
 import {
-  assertFixtureSigningAuthority,
+  assertArtifactSigningAuthority,
+  retainSignedListing,
   type ArtifactSigner,
   type FixtureSigningContext,
 } from "./fixture-ed25519.ts";
@@ -42,7 +43,7 @@ export function signListing(
   signer: ArtifactSigner,
   options: ListingSigningOptions,
 ): SignedListingResult {
-  assertFixtureSigningAuthority(signer, options);
+  assertArtifactSigningAuthority(signer, options);
   if (Object.hasOwn(input, "signature")) {
     throw new TypeError("Unsigned Listing must not contain signature");
   }
@@ -72,6 +73,11 @@ export function signListing(
   if (new TextEncoder().encode(canonicalJson).byteLength > MAX_LISTING_BYTES) {
     throw new TypeError(`Canonical signed Listing exceeds ${MAX_LISTING_BYTES} bytes`);
   }
+  retainSignedListing(signer, {
+    contentHash,
+    listingId: normalized["listingId"] as string,
+    listingVersion: normalized["listingVersion"] as number,
+  });
   return Object.freeze({
     listing: deepFreezeJson(JSON.parse(canonicalJson) as Record<string, unknown>),
     contentHash,

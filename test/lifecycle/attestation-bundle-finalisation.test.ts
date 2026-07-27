@@ -931,7 +931,7 @@ describe("atomic DACS-5 lifecycle finalisation", () => {
     const store = new FixtureBundleStore(database, {
       commitments: lifecycleCommitmentStore(database), deploymentMode: "fixture",
     });
-    expect(database.query<{ user_version: bigint }, []>("PRAGMA user_version").get()!.user_version).toBe(20n);
+    expect(database.query<{ user_version: bigint }, []>("PRAGMA user_version").get()!.user_version).toBe(21n);
     expect(store.verifySession(prepared.input.session.jobId)).toMatchObject({ disposition: "unified" });
     expect(store.finalise({
       ...prepared.input,

@@ -3,7 +3,7 @@ import { canonicalize, deepFreezeJson, withoutFields } from "../protocol/canonic
 import { canonicalizeClaimReference, sameClaimIdentity } from "../protocol/claim-reference.ts";
 import { sha256Hex } from "../protocol/hash.ts";
 import {
-  assertFixtureSigningAuthority,
+  assertArtifactSigningAuthority,
   type ArtifactSigner,
   type FixtureSigningContext,
 } from "./fixture-ed25519.ts";
@@ -30,7 +30,7 @@ export function signPerClaimIdentityBundle(
   signer: ArtifactSigner,
   context: FixtureSigningContext,
 ): SignedIdentityBundleResult {
-  assertFixtureSigningAuthority(signer, context);
+  assertArtifactSigningAuthority(signer, context);
   if (Object.hasOwn(input, "presentation")) {
     throw new TypeError("Unsigned IdentityBundle must not contain presentation");
   }

@@ -41,6 +41,7 @@ const DETACHED_JOB_DEPENDENCIES = Object.freeze([
   { column: "job_id", table: "fixture_settlement_consumptions" },
   { column: "job_id", table: "fixture_settlements" },
   { column: "job_id", table: "fixture_vet_records" },
+  { column: "job_id", table: "production_session_key_pins" },
 ]);
 
 const raw = new Database(path, { safeIntegers: true });

@@ -183,7 +183,7 @@
     },
     {
       "path": "src/directory/listing-lifecycle.ts",
-      "sha256": "045c7e24f6c7ae3b93cbeecc7025b47928d2d4287e11f1b7e1e9b08dd18e8cfe"
+      "sha256": "3e821a84455cb984c33336bbc70b083a37585a9e5377a97c630a695ab1fcecae"
     },
     {
       "path": "src/directory/listing-summary.ts",
@@ -203,7 +203,7 @@
     },
     {
       "path": "src/index.ts",
-      "sha256": "7d6cda527cae217f9e5ccf4c24506c1755fb6321047c8603cc4326ce85c8fa08"
+      "sha256": "4fb1bfe05e490dc32d813cb62e4bfef6d951580569f04f1bf319d695ccec1468"
     },
     {
       "path": "src/lifecycle/fixture-attested-delivery-handler.ts",
@@ -247,7 +247,7 @@
     },
     {
       "path": "src/producer/fixture-ed25519.ts",
-      "sha256": "2e8a1aea1bd239e8d4bd4621769ee2560e1f5e2d0572a5df47321d7221d88761"
+      "sha256": "b49c41f79c392654f295e9626b7cfe0be8dcf472c9769395daf0263e50ce9b87"
     },
     {
       "path": "src/producer/fixture-key-possession.ts",
@@ -255,11 +255,11 @@
     },
     {
       "path": "src/producer/identity-bundle.ts",
-      "sha256": "cb21b9a898bca099fb4ab629a59313921e40bf9563385292760488daca03736a"
+      "sha256": "5e0cdcfff6d91799db0f4c83f2c65e196e1b80b3f7bd1513548e61112752079d"
     },
     {
       "path": "src/producer/listing.ts",
-      "sha256": "2cadd88a11c20a9a544f36c3fc2ffec17e77a2e57ce1ac117d2e588af5d700a8"
+      "sha256": "d3ccb8b8c3f8eab95655f3256b1af5489a78070f5dabe3846872660a149ddde3"
     },
     {
       "path": "src/producer/settlement-evidence.ts",
@@ -351,11 +351,11 @@
     },
     {
       "path": "src/substrate/sqlite/atomic-write-registry.ts",
-      "sha256": "9ee09030b3a20339b25dcb0dec2d097879a857d474b0c8efdd03a1eaa45a60d4"
+      "sha256": "1e807f0ecc1e9f5282fad8a2ad7b28f2ae011bda2cc91865c58496612e682c8a"
     },
     {
       "path": "src/substrate/sqlite/database.ts",
-      "sha256": "216ed3990e8d706f9a1a376ecb4d9bc8d53d6d5d2b8e95b031b56c55c3b32930"
+      "sha256": "7e0b398cb5dcd370583a06ecb9417d8f6557d2eaaa5afcdc7711f1e62859d300"
     },
     {
       "path": "src/substrate/sqlite/fixture-authority-store.ts",
@@ -543,7 +543,7 @@
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "772e18a440d7be951a154e245bba73c12980b1905c024b18e723591af2c10583"
+      "sha256": "0951f142cc2f7493ee29ef5e4b0fa95563ac6b787a34463880c317b3a685bbd3"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -779,7 +779,7 @@
     },
     {
       "path": "test/lifecycle/attestation-bundle-finalisation.test.ts",
-      "sha256": "fc2e4cdbd223582e4f22e3a94807f1d2a7e5df36169630d74c8c40b1e1e40dc0"
+      "sha256": "5caa696ca8ba8e82c9033e22efc7d4a69bc08ec2591a4c26ec1f7062435b1db3"
     },
     {
       "path": "test/lifecycle/attested-delivery-integration.test.ts",
@@ -787,11 +787,11 @@
     },
     {
       "path": "test/lifecycle/commit-failure-stop.test.ts",
-      "sha256": "02a30199c87c7ef174dde5e88c8326f559ba6bf0ec9c3b4cefdc9bf3d3a0e6d1"
+      "sha256": "b97bc9853ef8c97b756884a169d947439026d043796c53962a48f6d5117e37f9"
     },
     {
       "path": "test/lifecycle/fixture-vet-store.test.ts",
-      "sha256": "e407a5b68d0474572dfe8ea57cf77e161ffbd7605761a68f70755195615258d4"
+      "sha256": "f329018c11b490f6d8ab390f4aa8c63ad3ee23c95fdb19f6a607386af55a1b0c"
     },
     {
       "path": "test/lifecycle/fixtures.ts",
@@ -871,11 +871,11 @@
     },
     {
       "path": "test/recovery/atomic-migration-interruption.test.ts",
-      "sha256": "d0efcb0318b1020845341e2aa0cb283dcdde35df3cec1859a1131281f6887609"
+      "sha256": "74d2b7dec301395bf1e4ddfdd0368395e675a9e0765cf8a4f5e49afd82d51d80"
     },
     {
       "path": "test/recovery/atomic-write-interruption.test.ts",
-      "sha256": "6e6975be144d036779604b104b1accf9d5b934215f2374ac2a433fa7601c3a3b"
+      "sha256": "7e95701968507e45f1b076a4ec2d629df2b25ab62e0dd6e43f67e3c3fc9b8fbb"
     },
     {
       "path": "test/recovery/atomic-write-registry.test.ts",
@@ -931,7 +931,7 @@
     },
     {
       "path": "test/substrate/sqlite.test.ts",
-      "sha256": "48d3a32e128f217bb4759fb1a1d79a694bcfff7a2cfc270c1170d4116f0bafdf"
+      "sha256": "9536aff4ed6467444e2a374cbcccb1d1d4e29887d7447280f54545b89ef81ba6"
     },
     {
       "path": "test/tools/source-provenance.test.ts",
@@ -943,7 +943,7 @@
     },
     {
       "path": "test/workers/atomic-migration-worker.ts",
-      "sha256": "e49bd952cd394db51646a790ba7211330417479222e0cc80ad49467e1f95191f"
+      "sha256": "a569b9b43daa62da0434b2357b4a77dcbc3ed7b0f5228767b231d56ef526078c"
     },
     {
       "path": "test/workers/atomic-write-api-worker.ts",
@@ -975,7 +975,7 @@
     },
     {
       "path": "test/workers/atomic-write-verifier.ts",
-      "sha256": "06ad1c7d0c7771dd25757fbfd728a422a19f8f489c72aceee95c699ad21815fc"
+      "sha256": "7b647cd79acec1c3ba039c72d957598eeb93361160d29f60ec367ee976a6d5a2"
     },
     {
       "path": "test/workers/concurrent-settlement-worker.ts",
@@ -1064,6 +1064,42 @@
     {
       "path": "vectors/dacs-standard-storage-program-fcbf804.json",
       "sha256": "5f8435fd56397db2c674f7fa615257953779bebc395add484d2674f67c5c47d0"
+    },
+    {
+      "path": "src/substrate/keys/production-key-lifecycle.ts",
+      "sha256": "2e44d012096fb8bafccea7f1286dcc12b6dad8352ec2bd247e5052f91c0034df"
+    },
+    {
+      "path": "test/fixtures/production-key-provider.ts",
+      "sha256": "8342b35d60d8d38a6ef2cc2561a1e1928b0a3a69166dd38e7ce1228ba4c56bdc"
+    },
+    {
+      "path": "test/security/committed-session-key-pin.test.ts",
+      "sha256": "a2fcbd007a6baf56adaef3b22c4ebb84c261303c15f19261643e82d4a3f80ddd"
+    },
+    {
+      "path": "test/security/fixture-key-live-rejection.test.ts",
+      "sha256": "ee41d7a9c53a95ab09bafa22341465564204c22f617d5a46f219e4798fde952f"
+    },
+    {
+      "path": "test/security/key-currentness.test.ts",
+      "sha256": "f2c8a4e91f1aeed0ea23d305a6c14ebd7f95f0c4b750508fc48c6ef125cc8c69"
+    },
+    {
+      "path": "test/security/key-revocation-propagation.test.ts",
+      "sha256": "ee94813e8185040a2abf301b23f53161c8323a14eebb559528c8c19d71d71124"
+    },
+    {
+      "path": "test/security/key-rotation-presentation.test.ts",
+      "sha256": "b8a933a55f4c6935145f144f06ced3dca0584b101352e22510c68b78b065c6ee"
+    },
+    {
+      "path": "test/security/live-signer-provider.test.ts",
+      "sha256": "fbf64e46341a11d96554390b9a488ab859201a7aab220afd113ebb5602dd2b0c"
+    },
+    {
+      "path": "test/security/post-revocation-signature.test.ts",
+      "sha256": "dbfd3ef76a26293207b3ddfde711d377f7b66e0964aff2f771db3d0ed0c2d124"
     }
   ],
   "packagingFiles": [

@@ -11,10 +11,79 @@ import { dirname, join, parse, resolve } from "node:path";
 
 export type DacsDatabase = Database;
 
-const SCHEMA_VERSION = 20;
+const SCHEMA_VERSION = 21;
 const WAL_RETRY_ATTEMPTS = 20;
 const WAL_RETRY_DELAY_MS = 25;
 const retrySignal = new Int32Array(new SharedArrayBuffer(4));
+
+const PRODUCTION_SIGNING_KEYS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS production_signing_keys (
+    key_claim TEXT PRIMARY KEY NOT NULL CHECK (
+      length(key_claim) = 68 AND key_claim GLOB 'key:*'
+    ),
+    provider_id TEXT NOT NULL,
+    key_handle TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (state IN ('current', 'revoked')),
+    activated_at INTEGER NOT NULL CHECK (activated_at >= 0),
+    revoked_at INTEGER CHECK (revoked_at >= activated_at),
+    UNIQUE (provider_id, key_handle),
+    CHECK ((state = 'current' AND revoked_at IS NULL)
+      OR (state = 'revoked' AND revoked_at IS NOT NULL))
+  ) STRICT
+`;
+
+const PRODUCTION_SIGNING_KEYS_CURRENT_INDEX = `
+  CREATE UNIQUE INDEX IF NOT EXISTS production_signing_keys_one_current
+    ON production_signing_keys(state) WHERE state = 'current'
+`;
+
+const PRODUCTION_KEY_LISTING_VERSIONS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS production_key_listing_versions (
+    key_claim TEXT NOT NULL REFERENCES production_signing_keys(key_claim) ON DELETE RESTRICT,
+    listing_id TEXT NOT NULL,
+    listing_version INTEGER NOT NULL CHECK (listing_version > 0),
+    listing_content_hash TEXT NOT NULL CHECK (
+      length(listing_content_hash) = 64
+      AND listing_content_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    PRIMARY KEY (key_claim, listing_id, listing_version)
+  ) STRICT
+`;
+
+const PRODUCTION_KEY_REVOCATIONS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS production_key_revocations (
+    key_claim TEXT NOT NULL REFERENCES production_signing_keys(key_claim) ON DELETE RESTRICT,
+    listing_id TEXT NOT NULL,
+    listing_version INTEGER NOT NULL CHECK (listing_version > 0),
+    listing_content_hash TEXT NOT NULL CHECK (
+      length(listing_content_hash) = 64
+      AND listing_content_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    replacement_key_claim TEXT NOT NULL
+      REFERENCES production_signing_keys(key_claim) ON DELETE RESTRICT,
+    revoked_at INTEGER NOT NULL CHECK (revoked_at >= 0),
+    revocation_content_hash TEXT NOT NULL UNIQUE CHECK (
+      length(revocation_content_hash) = 64
+      AND revocation_content_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    canonical_json TEXT NOT NULL,
+    PRIMARY KEY (key_claim, listing_id, listing_version),
+    FOREIGN KEY (key_claim, listing_id, listing_version)
+      REFERENCES production_key_listing_versions(key_claim, listing_id, listing_version)
+      ON DELETE RESTRICT
+  ) STRICT
+`;
+
+const PRODUCTION_SESSION_KEY_PINS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS production_session_key_pins (
+    job_id TEXT PRIMARY KEY NOT NULL,
+    agreement_hash TEXT NOT NULL CHECK (
+      length(agreement_hash) = 64 AND agreement_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    key_claim TEXT NOT NULL REFERENCES production_signing_keys(key_claim) ON DELETE RESTRICT,
+    committed_at INTEGER NOT NULL CHECK (committed_at >= 0)
+  ) STRICT
+`;
 
 const FIXTURE_LIFECYCLE_SCHEMA = `
   CREATE TABLE fixture_lifecycle_runs (
@@ -779,6 +848,13 @@ function migrate(database: Database): void {
       database.run(FIXTURE_LISTING_DISCOVERY_SCHEMA);
       database.run(FIXTURE_LISTING_REVOCATIONS_SCHEMA);
       database.run(FIXTURE_SESSION_LISTING_PINS_SCHEMA);
+    }
+    if (version < 21) {
+      database.run(PRODUCTION_SIGNING_KEYS_SCHEMA);
+      database.run(PRODUCTION_SIGNING_KEYS_CURRENT_INDEX);
+      database.run(PRODUCTION_KEY_LISTING_VERSIONS_SCHEMA);
+      database.run(PRODUCTION_KEY_REVOCATIONS_SCHEMA);
+      database.run(PRODUCTION_SESSION_KEY_PINS_SCHEMA);
     }
     database.run(`PRAGMA user_version = ${SCHEMA_VERSION}`);
   });

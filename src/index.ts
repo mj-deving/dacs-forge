@@ -190,11 +190,24 @@ export {
 } from "./protocol/vet.ts";
 export { paymentEvidenceLogicalAddress } from "./protocol/settlement-address.ts";
 export {
+  assertArtifactSigningAuthority,
   createFixtureEd25519Signer,
+  isRecognizedFixtureSignerClaim,
   type ArtifactSigner,
   type FixtureSignerOptions,
   type FixtureSigningContext,
+  type NonExportingEd25519Provider,
+  type SigningContext,
 } from "./producer/fixture-ed25519.ts";
+export {
+  ProductionKeyLifecycle,
+  initializeProductionSigning,
+  type Dacs2KeyCurrentnessResolver,
+  type KeyCurrentnessResolution,
+  type ProductionKeyRevocation,
+  type ProductionSigningStartupOptions,
+  type RetainedListingKeyBinding,
+} from "./substrate/keys/production-key-lifecycle.ts";
 export {
   signVerifyResult,
   type SignedVerifyResult,
