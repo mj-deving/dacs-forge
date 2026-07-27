@@ -34,6 +34,106 @@ const FULL_HANDSHAKE: Driver = Object.freeze({
 });
 
 const DRIVER_OVERRIDES: Readonly<Record<string, Driver>> = Object.freeze({
+  "party-authority.cleanup-challenges": {
+    file: "test/api/capability-proof-of-possession.test.ts",
+    pattern: "bootstraps digest-only custody",
+  },
+  "party-authority.allocate-challenge": {
+    file: "test/api/capability-proof-of-possession.test.ts",
+    pattern: "bootstraps digest-only custody",
+  },
+  "party-authority.cleanup-preparations": {
+    file: "test/api/capability-negative-matrix.test.ts",
+    pattern: "bounds and expires unconsumed capability preparations",
+  },
+  "party-authority.prepare-capability": {
+    file: "test/api/capability-negative-matrix.test.ts",
+    pattern: "bounds and expires unconsumed capability preparations",
+  },
+  "party-authority.consume-preparation": {
+    file: "test/api/capability-proof-of-possession.test.ts",
+    pattern: "bootstraps digest-only custody",
+  },
+  "party-authority.consume-challenge": {
+    file: "test/api/capability-proof-of-possession.test.ts",
+    pattern: "bootstraps digest-only custody",
+  },
+  "party-authority.issue-capability": {
+    file: "test/api/capability-proof-of-possession.test.ts",
+    pattern: "bootstraps digest-only custody",
+  },
+  "party-authority.reclaim-party-capabilities": {
+    file: "test/api/capability-proof-of-possession.test.ts",
+    pattern: "bootstraps digest-only custody",
+  },
+  "party-authority.revoke-capability": {
+    file: "test/api/capability-negative-matrix.test.ts",
+    pattern: "rotates atomically",
+  },
+  "party-authority.apply-amendment": {
+    file: "test/api/artifact-access.test.ts",
+    pattern: "restores only an anchored two-party amendment",
+  },
+  "party-authority.invalidate-amended-capabilities": {
+    file: "test/api/artifact-access.test.ts",
+    pattern: "restores only an anchored two-party amendment",
+  },
+  "party-authority.invalidate-amended-challenges": {
+    file: "test/api/artifact-access.test.ts",
+    pattern: "restores only an anchored two-party amendment",
+  },
+  "party-authority.bootstrap-instance": {
+    file: "test/cli/admin-bootstrap.test.ts",
+    pattern: "keeps the durable output",
+  },
+  "party-authority.insert-offline-administrator": {
+    file: "test/cli/admin-bootstrap.test.ts",
+    pattern: "keeps the durable output",
+  },
+  "party-authority.recovery-delete-admins": {
+    file: "test/cli/admin-recovery.test.ts",
+    pattern: "requires stopped service",
+  },
+  "party-authority.recovery-generation": {
+    file: "test/cli/admin-recovery.test.ts",
+    pattern: "requires stopped service",
+  },
+  "party-authority.consume-recovery": {
+    file: "test/cli/admin-recovery.test.ts",
+    pattern: "requires stopped service",
+  },
+  "party-authority.clone-delete-amendments": {
+    file: "test/api/capability-restart-proxy.test.ts",
+    pattern: "leaves exactly one clone administrator",
+  },
+  "party-authority.clone-delete-challenges": {
+    file: "test/api/capability-restart-proxy.test.ts",
+    pattern: "leaves exactly one clone administrator",
+  },
+  "party-authority.clone-delete-admission-challenges": {
+    file: "test/api/capability-restart-proxy.test.ts",
+    pattern: "leaves exactly one clone administrator",
+  },
+  "party-authority.clone-delete-preparations": {
+    file: "test/api/capability-restart-proxy.test.ts",
+    pattern: "leaves exactly one clone administrator",
+  },
+  "party-authority.clone-vacate-source": {
+    file: "test/api/capability-restart-proxy.test.ts",
+    pattern: "leaves exactly one clone administrator",
+  },
+  "party-authority.clone-create-instance": {
+    file: "test/api/capability-restart-proxy.test.ts",
+    pattern: "leaves exactly one clone administrator",
+  },
+  "party-authority.clone-revoke-capabilities": {
+    file: "test/api/capability-restart-proxy.test.ts",
+    pattern: "leaves exactly one clone administrator",
+  },
+  "party-authority.clone-delete-source": {
+    file: "test/api/capability-restart-proxy.test.ts",
+    pattern: "leaves exactly one clone administrator",
+  },
   "http-rate.cleanup": {
     file: "test/api/session-admission.test.ts",
     pattern: "enforces global concurrency and durable route rate before the handler",
@@ -631,7 +731,7 @@ describe("real-process atomic write interruption", () => {
       const committed = await killAndVerify(site.id, "post-commit", driver);
       const control = await runControl(site.id, driver);
 
-      if (site.transactionMode === "immediate") {
+      if (site.transactionMode !== "autocommit") {
         expect(after.snapshotHash).toBe(before.snapshotHash);
         expect(before.snapshotHash).toBe(control.oldSnapshotHash);
         expect(after.snapshotHash).toBe(control.oldSnapshotHash);
@@ -665,7 +765,7 @@ describe("real-process atomic write interruption", () => {
       expect(after.exactSnapshotHash).toBe(after.preKillExactSnapshotHash);
       expect(committed.exactSnapshotHash).toBe(committed.preKillExactSnapshotHash);
       expect(before.preOpen.schemaContractHash).toBe(control.beforeSchemaContractHash);
-      expect(after.preOpen.schemaContractHash).toBe(site.transactionMode === "immediate"
+      expect(after.preOpen.schemaContractHash).toBe(site.transactionMode !== "autocommit"
         ? control.beforeSchemaContractHash : control.afterSchemaContractHash);
       expect(committed.preOpen.schemaContractHash).toBe(control.afterSchemaContractHash);
       expect(before.schemaContractHash).toBe(before.preOpen.schemaContractHash);
@@ -890,7 +990,7 @@ async function readRawSnapshot(
 
 function sitePhaseIsTransactional(id: string, phase: Phase): boolean {
   if (phase === "post-commit") return false;
-  return expectedSite(id).transactionMode === "immediate";
+  return expectedSite(id).transactionMode !== "autocommit";
 }
 
 function siteFor(id: string) {

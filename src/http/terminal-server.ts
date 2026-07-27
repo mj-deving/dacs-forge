@@ -134,6 +134,154 @@ const SESSION_TERMINAL_SCHEMA: AnySchemaObject = {
   },
 };
 
+const CAPABILITY_OPERATION_SCHEMA: AnySchemaObject = {
+  type: "string",
+  minLength: 1,
+  maxLength: 4_096,
+};
+
+const CAPABILITY_SCOPE_BASE_PROPERTIES: Readonly<Record<string, AnySchemaObject>> = {
+  instanceId: { type: "string", minLength: 1, maxLength: 4_096 },
+  audience: { type: "string", minLength: 1, maxLength: 4_096 },
+  principal: { type: "string", minLength: 1, maxLength: 4_096 },
+  operations: {
+    type: "array",
+    minItems: 1,
+    maxItems: 64,
+    uniqueItems: true,
+    items: CAPABILITY_OPERATION_SCHEMA,
+  },
+  expiresAtMs: { type: "integer", minimum: 1 },
+};
+
+const ADMINISTRATOR_CAPABILITY_SCOPE_SCHEMA: AnySchemaObject = {
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "audience", "configuredKey", "expiresAtMs", "instanceId", "kind", "operations", "principal",
+  ],
+  properties: {
+    ...CAPABILITY_SCOPE_BASE_PROPERTIES,
+    kind: { const: "administrator" },
+    configuredKey: { type: "string", minLength: 1, maxLength: 4_096 },
+  },
+};
+
+const PARTY_CAPABILITY_SCOPE_SCHEMA: AnySchemaObject = {
+  type: "object",
+  additionalProperties: false,
+  required: [
+    "audience", "authority", "expiresAtMs", "instanceId", "jobId", "kind", "operations",
+    "principal", "role",
+  ],
+  properties: {
+    ...CAPABILITY_SCOPE_BASE_PROPERTIES,
+    kind: { const: "party" },
+    jobId: { type: "string", minLength: 1, maxLength: 4_096 },
+    role: { enum: ["buyer", "seller"] },
+    authority: {
+      type: "object",
+      additionalProperties: false,
+      required: ["key", "kind"],
+      properties: {
+        kind: { enum: ["admission", "agreement"] },
+        key: { type: "string", minLength: 1, maxLength: 4_096 },
+      },
+    },
+  },
+};
+
+const CAPABILITY_GRANT_SCHEMA: AnySchemaObject = {
+  type: "object",
+  additionalProperties: false,
+  required: ["scope", "token"],
+  properties: {
+    token: { type: "string", pattern: "^[0-9a-f]{64}$" },
+    scope: {
+      oneOf: [ADMINISTRATOR_CAPABILITY_SCOPE_SCHEMA, PARTY_CAPABILITY_SCOPE_SCHEMA],
+    },
+  },
+};
+
+const PARTY_CHALLENGE_TERMINAL_SCHEMA: AnySchemaObject = {
+  $id: "dacs-party-capability-challenge/v1",
+  type: "object",
+  additionalProperties: false,
+  required: ["challenge", "disposition", "schema"],
+  properties: {
+    schema: { const: "dacs-party-capability-challenge/v1" },
+    disposition: { enum: ["created", "replayed"] },
+    challenge: {
+      type: "object",
+      additionalProperties: false,
+      required: ["expiresAtMs", "issuedAtMs", "jobId", "nonce", "role"],
+      properties: {
+        expiresAtMs: { type: "integer", minimum: 1 },
+        issuedAtMs: { type: "integer", minimum: 0 },
+        jobId: { type: "string", minLength: 1, maxLength: 4_096 },
+        nonce: { type: "string", pattern: "^[0-9a-f]{32}$" },
+        role: { enum: ["buyer", "seller"] },
+      },
+    },
+  },
+};
+
+function capabilityTerminalSchema(id: string): AnySchemaObject {
+  return {
+    $id: id,
+    type: "object",
+    additionalProperties: false,
+    required: ["grant", "schema"],
+    properties: {
+      schema: { const: id },
+      grant: CAPABILITY_GRANT_SCHEMA,
+    },
+  };
+}
+
+const PARTY_CAPABILITY_TERMINAL_SCHEMA = capabilityTerminalSchema("dacs-party-capability/v1");
+const CAPABILITY_RENEWAL_TERMINAL_SCHEMA = capabilityTerminalSchema("dacs-capability-renewal/v1");
+const ADMINISTRATOR_ROTATION_TERMINAL_SCHEMA = capabilityTerminalSchema(
+  "dacs-administrator-rotation/v1",
+);
+
+const ADMINISTRATOR_SESSIONS_TERMINAL_SCHEMA: AnySchemaObject = {
+  $id: "dacs-administrator-sessions/v1",
+  type: "object",
+  additionalProperties: false,
+  required: ["schema", "sessions"],
+  properties: {
+    schema: { const: "dacs-administrator-sessions/v1" },
+    sessions: {
+      type: "array",
+      maxItems: 10_000,
+      items: { type: "string", minLength: 1, maxLength: 4_096 },
+    },
+  },
+};
+
+const CAPABILITY_REVOCATION_TERMINAL_SCHEMA: AnySchemaObject = {
+  $id: "dacs-capability-revocation/v1",
+  type: "object",
+  additionalProperties: false,
+  required: ["revoked", "schema"],
+  properties: {
+    schema: { const: "dacs-capability-revocation/v1" },
+    revoked: { const: true },
+  },
+};
+
+const CAPABILITY_REPLACEMENT_TERMINAL_SCHEMA: AnySchemaObject = {
+  $id: "dacs-capability-replacement/v1",
+  type: "object",
+  additionalProperties: false,
+  required: ["schema", "token"],
+  properties: {
+    schema: { const: "dacs-capability-replacement/v1" },
+    token: { type: "string", pattern: "^[0-9a-f]{64}$" },
+  },
+};
+
 /**
  * The doctor schemas are the one place a wire contract restates a type this service also owns
  * in TypeScript. They stay hand-written, because the wire shape must not silently follow an
@@ -249,6 +397,13 @@ const TERMINAL_SCHEMAS: readonly AnySchemaObject[] = Object.freeze([
   READINESS_TERMINAL_SCHEMA,
   SESSION_CHALLENGE_TERMINAL_SCHEMA,
   SESSION_TERMINAL_SCHEMA,
+  PARTY_CHALLENGE_TERMINAL_SCHEMA,
+  PARTY_CAPABILITY_TERMINAL_SCHEMA,
+  CAPABILITY_RENEWAL_TERMINAL_SCHEMA,
+  ADMINISTRATOR_ROTATION_TERMINAL_SCHEMA,
+  ADMINISTRATOR_SESSIONS_TERMINAL_SCHEMA,
+  CAPABILITY_REVOCATION_TERMINAL_SCHEMA,
+  CAPABILITY_REPLACEMENT_TERMINAL_SCHEMA,
   DOCTOR_TERMINAL_SCHEMA,
   ERROR_TERMINAL_SCHEMA,
 ]);

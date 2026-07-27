@@ -1,4 +1,10 @@
 export {
+  AUTHORITY_USAGE,
+  runAuthorityCli,
+  type AuthorityCliAdapter,
+  type AuthorityCliIO,
+} from "./cli/authority.ts";
+export {
   CanonicalizationError,
   canonicalize,
   deepFreezeJson,
@@ -83,6 +89,48 @@ export {
   type PartyCapabilityScope,
 } from "./http/capability-authority.ts";
 export {
+  PartyAuthorityLifecycle,
+  AdministratorSessionLimitError,
+  CapabilityPreparationLimitError,
+  administratorRotationSigningBytes,
+  capabilityRenewalSigningBytes,
+  capabilityRevocationSigningBytes,
+  partyCapabilityExchangeSigningBytes,
+  partyChallengeAllocationSigningBytes,
+  sessionAuthorityAmendmentSigningBytes,
+  type AuthorityProofVerifier,
+  type PartyAuthorityLifecycleOptions,
+  type PartyAuthorityResolution,
+  type PartyAuthorityResolver,
+  type PartyCapabilityExchangeInput,
+  type PartyCapabilityExchangeResult,
+  type PartyChallengeAllocationInput,
+  type PartyChallengeAllocationResult,
+  type PartyChallengeRecord,
+  type SessionAuthorityAmendment,
+  type SessionAuthorityAmendmentVerifier,
+} from "./substrate/sqlite/party-authority-lifecycle.ts";
+export {
+  acquireAuthorityServiceLease,
+  authorityBootstrapSigningBytes,
+  authorityRecoverySigningBytes,
+  authorityStoreBinding,
+  cloneRotationSigningBytes,
+  completeAuthorityBootstrap,
+  prepareAuthorityBootstrap,
+  readAuthorityCapabilityOutput,
+  recoverAdministrator,
+  rotateCloneAuthority,
+  type AuthorityBootstrapCompletion,
+  type AuthorityBootstrapRequest,
+  type AuthorityFileStage,
+  type AuthorityRecoveryCompletion,
+  type AuthorityRecoveryRequest,
+  type AuthorityServiceLease,
+  type CloneRotationRequest,
+  type OfflineAuthorityOptions,
+} from "./substrate/authority-offline.ts";
+export {
   HttpResourceGuards,
   boundedArtifactResponse,
   type BoundedArtifactResponseOptions,
@@ -91,6 +139,17 @@ export {
   type HttpResourceGuardOptions,
   type HttpResourceLimit,
 } from "./http/resource-guards.ts";
+export {
+  ADMINISTRATOR_ROTATE_ROUTE,
+  ADMINISTRATOR_SESSIONS_ROUTE,
+  CAPABILITY_REPLACEMENT_ROUTE,
+  CAPABILITY_RENEW_ROUTE,
+  CAPABILITY_REVOKE_ROUTE,
+  PARTY_CHALLENGE_ROUTE,
+  PARTY_EXCHANGE_ROUTE,
+  createPartyAuthorityHttpHandler,
+  type PartyAuthorityHttpOptions,
+} from "./http/party-authority.ts";
 export {
   SESSION_CHALLENGE_ROUTE,
   SESSION_CREATE_ROUTE,

@@ -490,7 +490,7 @@ describe("fixture bilateral Vet store", () => {
 
     database = openLifecycleDatabase(path);
     sessions = lifecycleSessionStore(database);
-    expect(database.query<{ user_version: bigint }, []>("PRAGMA user_version").get()!.user_version).toBe(22n);
+    expect(database.query<{ user_version: bigint }, []>("PRAGMA user_version").get()!.user_version).toBe(24n);
     expect(sessions.get(session.jobId)).toEqual(session);
     const store = new FixtureVetStore(database, "fixture");
     expect(store.run(vetInput(session, "buyer")).overallDecision).toBe("pass");
@@ -509,7 +509,7 @@ describe("fixture bilateral Vet store", () => {
     database.close();
 
     database = openLifecycleDatabase(path);
-    expect(database.query<{ user_version: bigint }, []>("PRAGMA user_version").get()!.user_version).toBe(22n);
+    expect(database.query<{ user_version: bigint }, []>("PRAGMA user_version").get()!.user_version).toBe(24n);
     expect(new FixtureVetStore(database, "fixture").run(vetInput(session, "buyer")).overallDecision).toBe("pass");
     database.close();
   });

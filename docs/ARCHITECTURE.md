@@ -139,8 +139,9 @@ Implemented and locally exercised:
   surfaces, provenance checks, and mutation calibration.
 - protected session challenge/admission routes with pre-work body, concurrency, and durable
   rate guards; bounded terminal responses and verified-length immutable artifact streaming;
-- a deployment- and audience-scoped 256-bit capability primitive for the separately owned
-  administrator/party lifecycle.
+- deployment- and audience-scoped administrator and bilateral party capabilities with
+  proof-of-possession, amendment invalidation, last-administrator protection, offline
+  recovery, and clone identity rotation.
 
 Still open or explicitly outside the current claim:
 

@@ -43,9 +43,16 @@ describe("versioned terminal results", () => {
       expect(id).toMatch(TERMINAL_SCHEMA_PATTERN);
     }
     expect([...TERMINAL_SCHEMA_IDS].sort()).toEqual([
+      "dacs-administrator-rotation/v1",
+      "dacs-administrator-sessions/v1",
+      "dacs-capability-renewal/v1",
+      "dacs-capability-replacement/v1",
+      "dacs-capability-revocation/v1",
       "dacs-doctor/v1",
       "dacs-health/v1",
       "dacs-http-error/v1",
+      "dacs-party-capability-challenge/v1",
+      "dacs-party-capability/v1",
       "dacs-readiness/v1",
       "dacs-session-challenge/v1",
       "dacs-session/v1",

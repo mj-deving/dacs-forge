@@ -14,5 +14,7 @@ and release versions follow [Semantic Versioning](https://semver.org/).
 - Public security, contribution, provenance, forking, governance, and versioning contracts.
 - Protected session-admission HTTP boundaries with durable rate limits, bounded bodies and
   responses, verified artifact streaming, and deployment-scoped 256-bit capabilities.
+- Administrator and bilateral party-capability lifecycle with proof-of-possession,
+  revocation, bounded renewal, offline recovery, and clone identity rotation.
 
 No public release has been cut yet.

@@ -301,7 +301,7 @@ describe("exclusive schema migration interruption", () => {
     expect(observed.length).toBeGreaterThan(0);
     expect(observed.every(({ inTransaction, transactionMode }) => inTransaction && transactionMode === "exclusive")).toBe(true);
     expect(observed.map(({ index }) => index)).toEqual(observed.map((_, index) => index));
-    expect(observed.at(-1)?.sql).toBe("PRAGMA user_version = 22");
+    expect(observed.at(-1)?.sql).toBe("PRAGMA user_version = 24");
     expect(control.commitJournalMode).toBe(scenario.id === "fresh" ? "delete" : "wal");
     expect(control.finalJournalMode).toBe("wal");
 
@@ -333,7 +333,7 @@ describe("exclusive schema migration interruption", () => {
       expect(after.verification.preOpen.exactSnapshotHash).toBe(setupCheckpoint.exactSnapshotHash);
       expect(before.verification.preOpen.exactTableHashes).toEqual(setupCheckpoint.exactTableHashes);
       expect(after.verification.preOpen.exactTableHashes).toEqual(setupCheckpoint.exactTableHashes);
-      expect(committed.verification.preOpen.schemaVersion).toBe(22);
+      expect(committed.verification.preOpen.schemaVersion).toBe(24);
       expect(committed.verification.preOpen.tableCount).toBeGreaterThan(0);
       expect(before.verification.preOpen.schemaContractHash).toBe(before.preKill.schemaContractHash);
       expect(after.verification.preOpen.schemaContractHash).toBe(after.preKill.schemaContractHash);
@@ -493,7 +493,7 @@ async function runRolledBackMigrationCompletionProbe(): Promise<{
       DACS_MIGRATION_MODE: "observe",
       DACS_MIGRATION_PROBE_API: "run",
       DACS_MIGRATION_PROBE_ROLLBACK: "1",
-      DACS_MIGRATION_PROBE_SQL: "PRAGMA user_version = 22",
+      DACS_MIGRATION_PROBE_SQL: "PRAGMA user_version = 24",
       DACS_MIGRATION_PROBE_POST_SQL: "PRAGMA journal_mode = WAL",
     },
     stdout: "pipe",

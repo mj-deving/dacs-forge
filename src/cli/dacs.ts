@@ -9,6 +9,7 @@ import {
   serializeDoctorReport,
   type DoctorReport,
 } from "../readiness/doctor.ts";
+import { runAuthorityCli } from "./authority.ts";
 
 export interface CliIO {
   readonly stdout: (value: string) => void;
@@ -25,6 +26,7 @@ export const USAGE = `Usage:
   dacs --help
   dacs --version
   dacs doctor [--json] [--no-input] [--no-color] [--evidence-mode <fixture|local-chain|live>]
+  dacs authority <bootstrap|recover|clone-rotate> [options]
 `;
 
 const intrinsicGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -247,6 +249,9 @@ export async function runCli(
     if (snapshot.length === 1 && snapshot[0] === "--version") {
       writeLine(writers.stdout, doctorPackageVersion());
       return 0;
+    }
+    if (snapshot[0] === "authority") {
+      return runAuthorityCli(tail(snapshot), writers);
     }
     if (snapshot[0] !== "doctor") {
       throw new UsageError(snapshot.length === 0

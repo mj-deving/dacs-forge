@@ -1,6 +1,6 @@
 export type AtomicWriteOperation = "delete" | "insert" | "update";
 
-export type AtomicWriteTransactionMode = "autocommit" | "immediate";
+export type AtomicWriteTransactionMode = "autocommit" | "exclusive" | "immediate";
 
 export interface AtomicWriteSite {
   readonly boundary: string;
@@ -26,6 +26,31 @@ const SITE_ROWS = [
   ["admission.record-consumption", "session-admission", "insert", "SessionStore.#admitTransaction", "src/substrate/sqlite/session-store.ts", "admission_consumptions"],
   ["http-rate.cleanup", "http-rate-limit", "delete", "HttpResourceGuards.#consumeRateTransaction", "src/http/resource-guards.ts", "http_rate_buckets"],
   ["http-rate.consume", "http-rate-limit", "insert", "HttpResourceGuards.#consumeRateTransaction", "src/http/resource-guards.ts", "http_rate_buckets"],
+  ["party-authority.cleanup-challenges", "party-challenge-cleanup", "delete", "PartyAuthorityLifecycle.allocatePartyChallenge", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_authority_challenges"],
+  ["party-authority.allocate-challenge", "party-challenge-allocation", "insert", "PartyAuthorityLifecycle.allocatePartyChallenge", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_authority_challenges"],
+  ["party-authority.cleanup-preparations", "party-capability-preparation-cleanup", "delete", "PartyAuthorityLifecycle.prepareCapabilityReplacement", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_capability_preparations"],
+  ["party-authority.prepare-capability", "party-capability-preparation", "insert", "PartyAuthorityLifecycle.prepareCapabilityReplacement", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_capability_preparations"],
+  ["party-authority.consume-preparation", "party-capability-consumption", "delete", "PartyAuthorityLifecycle.#consumePrepared", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_capability_preparations"],
+  ["party-authority.consume-challenge", "party-capability-exchange", "update", "PartyAuthorityLifecycle.#exchangeTransaction", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_authority_challenges"],
+  ["party-authority.reclaim-party-capabilities", "party-capability-reclamation", "delete", "PartyAuthorityLifecycle.#insertGrantRow", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_capabilities"],
+  ["party-authority.issue-capability", "party-capability-issuance", "insert", "PartyAuthorityLifecycle.#insertGrantRow", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_capabilities"],
+  ["party-authority.revoke-capability", "party-capability-revocation", "update", "PartyAuthorityLifecycle.#revokeDigest", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_capabilities"],
+  ["party-authority.apply-amendment", "party-authority-amendment", "insert", "PartyAuthorityLifecycle.applySessionAmendment", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_authority_amendments"],
+  ["party-authority.invalidate-amended-capabilities", "party-authority-amendment", "update", "PartyAuthorityLifecycle.applySessionAmendment", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_capabilities"],
+  ["party-authority.invalidate-amended-challenges", "party-authority-amendment", "update", "PartyAuthorityLifecycle.applySessionAmendment", "src/substrate/sqlite/party-authority-lifecycle.ts", "party_authority_challenges"],
+  ["party-authority.bootstrap-instance", "party-authority-bootstrap", "insert", "OfflineAuthorityStore.bootstrap", "src/substrate/authority-offline.ts", "party_authority_instances"],
+  ["party-authority.recovery-delete-admins", "party-authority-recovery", "delete", "OfflineAuthorityStore.recover", "src/substrate/authority-offline.ts", "party_capabilities"],
+  ["party-authority.recovery-generation", "party-authority-recovery", "update", "OfflineAuthorityStore.recover", "src/substrate/authority-offline.ts", "party_authority_instances"],
+  ["party-authority.consume-recovery", "party-authority-recovery", "insert", "OfflineAuthorityStore.recover", "src/substrate/authority-offline.ts", "party_authority_recovery_replays"],
+  ["party-authority.clone-delete-amendments", "party-authority-clone-rotation", "delete", "OfflineAuthorityStore.rotateClone", "src/substrate/authority-offline.ts", "party_authority_amendments"],
+  ["party-authority.clone-delete-challenges", "party-authority-clone-rotation", "delete", "OfflineAuthorityStore.rotateClone", "src/substrate/authority-offline.ts", "party_authority_challenges"],
+  ["party-authority.clone-delete-admission-challenges", "party-authority-clone-rotation", "delete", "OfflineAuthorityStore.rotateClone", "src/substrate/authority-offline.ts", "admission_challenges"],
+  ["party-authority.clone-delete-preparations", "party-authority-clone-rotation", "delete", "OfflineAuthorityStore.rotateClone", "src/substrate/authority-offline.ts", "party_capability_preparations"],
+  ["party-authority.clone-vacate-source", "party-authority-clone-rotation", "update", "OfflineAuthorityStore.rotateClone", "src/substrate/authority-offline.ts", "party_authority_instances"],
+  ["party-authority.clone-create-instance", "party-authority-clone-rotation", "insert", "OfflineAuthorityStore.rotateClone", "src/substrate/authority-offline.ts", "party_authority_instances"],
+  ["party-authority.clone-revoke-capabilities", "party-authority-clone-rotation", "update", "OfflineAuthorityStore.rotateClone", "src/substrate/authority-offline.ts", "party_capabilities"],
+  ["party-authority.clone-delete-source", "party-authority-clone-rotation", "delete", "OfflineAuthorityStore.rotateClone", "src/substrate/authority-offline.ts", "party_authority_instances"],
+  ["party-authority.insert-offline-administrator", "party-authority-offline-administrator", "insert", "OfflineAuthorityStore.#insertAdministrator", "src/substrate/authority-offline.ts", "party_capabilities"],
   ["production-key.activate", "production-key-activation", "insert", "ProductionKeyLifecycle.activateInitialKey", "src/substrate/keys/production-key-lifecycle.ts", "production_signing_keys"],
   ["production-key.retain-listing", "production-key-listing-retention", "insert", "ProductionKeyLifecycle.#registerRetainedListing", "src/substrate/keys/production-key-lifecycle.ts", "production_key_listing_versions"],
   ["production-key.revoke-current", "production-key-rotation", "update", "ProductionKeyLifecycle.rotate", "src/substrate/keys/production-key-lifecycle.ts", "production_signing_keys"],
@@ -89,6 +114,22 @@ const AUTOCOMMIT_SITE_IDS: ReadonlySet<string> = new Set([
   "lifecycle.expire-pause",
 ]);
 
+const EXCLUSIVE_SITE_IDS: ReadonlySet<string> = new Set([
+  "party-authority.bootstrap-instance",
+  "party-authority.recovery-delete-admins",
+  "party-authority.recovery-generation",
+  "party-authority.consume-recovery",
+  "party-authority.clone-delete-amendments",
+  "party-authority.clone-delete-challenges",
+  "party-authority.clone-delete-admission-challenges",
+  "party-authority.clone-delete-preparations",
+  "party-authority.clone-vacate-source",
+  "party-authority.clone-create-instance",
+  "party-authority.clone-revoke-capabilities",
+  "party-authority.clone-delete-source",
+  "party-authority.insert-offline-administrator",
+]);
+
 export const ATOMIC_WRITE_SITES: readonly AtomicWriteSite[] = Object.freeze(SITE_ROWS.map(
   ([id, boundary, operation, owner, source, table]) => Object.freeze({
     boundary,
@@ -97,6 +138,7 @@ export const ATOMIC_WRITE_SITES: readonly AtomicWriteSite[] = Object.freeze(SITE
     owner,
     source,
     table,
-    transactionMode: AUTOCOMMIT_SITE_IDS.has(id) ? "autocommit" as const : "immediate" as const,
+    transactionMode: AUTOCOMMIT_SITE_IDS.has(id) ? "autocommit" as const
+      : EXCLUSIVE_SITE_IDS.has(id) ? "exclusive" as const : "immediate" as const,
   }),
 ));

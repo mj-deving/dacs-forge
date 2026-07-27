@@ -11,7 +11,7 @@ import { dirname, join, parse, resolve } from "node:path";
 
 export type DacsDatabase = Database;
 
-const SCHEMA_VERSION = 22;
+const SCHEMA_VERSION = 24;
 const WAL_RETRY_ATTEMPTS = 20;
 const WAL_RETRY_DELAY_MS = 25;
 const retrySignal = new Int32Array(new SharedArrayBuffer(4));
@@ -92,6 +92,132 @@ const HTTP_RATE_BUCKETS_SCHEMA = `
     window_start_ms INTEGER NOT NULL CHECK (window_start_ms >= 0),
     request_count INTEGER NOT NULL CHECK (request_count > 0),
     PRIMARY KEY (scope, window_ms, window_start_ms)
+  ) STRICT
+`;
+
+const PARTY_AUTHORITY_INSTANCES_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS party_authority_instances (
+    instance_id TEXT PRIMARY KEY NOT NULL,
+    audience TEXT NOT NULL,
+    recovery_key TEXT NOT NULL,
+    generation INTEGER NOT NULL CHECK (generation > 0),
+    initialized_at_ms INTEGER NOT NULL CHECK (initialized_at_ms >= 0),
+    UNIQUE (audience)
+  ) STRICT
+`;
+
+const PARTY_CAPABILITIES_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS party_capabilities (
+    capability_digest TEXT PRIMARY KEY NOT NULL CHECK (
+      length(capability_digest) = 64 AND capability_digest NOT GLOB '*[^0-9a-f]*'
+    ),
+    instance_id TEXT NOT NULL REFERENCES party_authority_instances(instance_id) ON DELETE RESTRICT,
+    audience TEXT NOT NULL,
+    kind TEXT NOT NULL CHECK (kind IN ('administrator', 'party')),
+    principal TEXT NOT NULL,
+    operations_json TEXT NOT NULL,
+    expires_at_ms INTEGER NOT NULL CHECK (expires_at_ms > 0),
+    configured_key TEXT,
+    job_id TEXT,
+    role TEXT CHECK (role IN ('buyer', 'seller')),
+    authority_kind TEXT CHECK (authority_kind IN ('admission', 'agreement')),
+    authority_key TEXT,
+    agreement_hash TEXT CHECK (
+      agreement_hash IS NULL OR (
+        length(agreement_hash) = 64 AND agreement_hash NOT GLOB '*[^0-9a-f]*'
+      )
+    ),
+    state TEXT NOT NULL CHECK (state IN ('active', 'revoked')),
+    issued_at_ms INTEGER NOT NULL CHECK (issued_at_ms >= 0),
+    revoked_at_ms INTEGER CHECK (revoked_at_ms >= issued_at_ms),
+    generation INTEGER NOT NULL CHECK (generation > 0),
+    CHECK (
+      (kind = 'administrator' AND configured_key IS NOT NULL AND job_id IS NULL
+        AND role IS NULL AND authority_kind IS NULL AND authority_key IS NULL
+        AND agreement_hash IS NULL)
+      OR
+      (kind = 'party' AND configured_key IS NULL AND job_id IS NOT NULL
+        AND role IS NOT NULL AND authority_kind IS NOT NULL AND authority_key IS NOT NULL
+        AND ((authority_kind = 'admission' AND agreement_hash IS NULL)
+          OR (authority_kind = 'agreement' AND agreement_hash IS NOT NULL)))
+    ),
+    CHECK ((state = 'active' AND revoked_at_ms IS NULL)
+      OR (state = 'revoked' AND revoked_at_ms IS NOT NULL))
+  ) STRICT
+`;
+
+const PARTY_AUTHORITY_CHALLENGES_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS party_authority_challenges (
+    nonce TEXT PRIMARY KEY NOT NULL CHECK (
+      length(nonce) = 32 AND nonce NOT GLOB '*[^0-9a-f]*'
+    ),
+    instance_id TEXT NOT NULL REFERENCES party_authority_instances(instance_id) ON DELETE RESTRICT,
+    audience TEXT NOT NULL,
+    principal TEXT NOT NULL,
+    job_id TEXT NOT NULL,
+    role TEXT NOT NULL CHECK (role IN ('buyer', 'seller')),
+    operations_json TEXT NOT NULL,
+    authority_kind TEXT NOT NULL CHECK (authority_kind IN ('admission', 'agreement')),
+    authority_key TEXT NOT NULL,
+    agreement_hash TEXT,
+    client_nonce TEXT NOT NULL CHECK (
+      length(client_nonce) = 32 AND client_nonce NOT GLOB '*[^0-9a-f]*'
+    ),
+    client_idempotency_key TEXT NOT NULL,
+    allocation_fingerprint TEXT NOT NULL CHECK (
+      length(allocation_fingerprint) = 64 AND allocation_fingerprint NOT GLOB '*[^0-9a-f]*'
+    ),
+    requested_at_ms INTEGER NOT NULL CHECK (requested_at_ms >= 0),
+    issued_at_ms INTEGER NOT NULL CHECK (issued_at_ms >= 0),
+    expires_at_ms INTEGER NOT NULL CHECK (expires_at_ms > issued_at_ms),
+    retain_until_ms INTEGER NOT NULL CHECK (retain_until_ms >= expires_at_ms),
+    consumed_at_ms INTEGER CHECK (consumed_at_ms >= issued_at_ms),
+    generation INTEGER NOT NULL CHECK (generation > 0),
+    UNIQUE (instance_id, audience, principal, client_nonce),
+    UNIQUE (instance_id, audience, principal, client_idempotency_key)
+  ) STRICT
+`;
+
+const PARTY_AUTHORITY_RECOVERY_REPLAYS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS party_authority_recovery_replays (
+    proof_digest TEXT PRIMARY KEY NOT NULL CHECK (
+      length(proof_digest) = 64 AND proof_digest NOT GLOB '*[^0-9a-f]*'
+    ),
+    instance_id TEXT NOT NULL,
+    generation INTEGER NOT NULL CHECK (generation > 0),
+    consumed_at_ms INTEGER NOT NULL CHECK (consumed_at_ms >= 0)
+  ) STRICT
+`;
+
+const PARTY_AUTHORITY_AMENDMENTS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS party_authority_amendments (
+    job_id TEXT NOT NULL,
+    role TEXT NOT NULL CHECK (role IN ('buyer', 'seller')),
+    agreement_hash TEXT NOT NULL CHECK (
+      length(agreement_hash) = 64 AND agreement_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    old_key TEXT NOT NULL,
+    new_key TEXT NOT NULL,
+    operations_json TEXT NOT NULL,
+    expires_at_ms INTEGER NOT NULL CHECK (expires_at_ms > 0),
+    anchor TEXT NOT NULL,
+    amendment_digest TEXT NOT NULL UNIQUE CHECK (
+      length(amendment_digest) = 64 AND amendment_digest NOT GLOB '*[^0-9a-f]*'
+    ),
+    applied_at_ms INTEGER NOT NULL CHECK (applied_at_ms >= 0),
+    PRIMARY KEY (job_id, role)
+  ) STRICT
+`;
+
+const PARTY_CAPABILITY_PREPARATIONS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS party_capability_preparations (
+    capability_digest TEXT PRIMARY KEY NOT NULL CHECK (
+      length(capability_digest) = 64 AND capability_digest NOT GLOB '*[^0-9a-f]*'
+    ),
+    instance_id TEXT NOT NULL REFERENCES party_authority_instances(instance_id) ON DELETE RESTRICT,
+    audience TEXT NOT NULL,
+    created_at_ms INTEGER NOT NULL CHECK (created_at_ms >= 0),
+    expires_at_ms INTEGER NOT NULL CHECK (expires_at_ms > created_at_ms)
   ) STRICT
 `;
 
@@ -867,6 +993,14 @@ function migrate(database: Database): void {
       database.run(PRODUCTION_SESSION_KEY_PINS_SCHEMA);
     }
     if (version < 22) database.run(HTTP_RATE_BUCKETS_SCHEMA);
+    if (version < 23) {
+      database.run(PARTY_AUTHORITY_INSTANCES_SCHEMA);
+      database.run(PARTY_CAPABILITIES_SCHEMA);
+      database.run(PARTY_AUTHORITY_CHALLENGES_SCHEMA);
+      database.run(PARTY_AUTHORITY_RECOVERY_REPLAYS_SCHEMA);
+      database.run(PARTY_AUTHORITY_AMENDMENTS_SCHEMA);
+    }
+    if (version < 24) database.run(PARTY_CAPABILITY_PREPARATIONS_SCHEMA);
     database.run(`PRAGMA user_version = ${SCHEMA_VERSION}`);
   });
   apply.exclusive();
