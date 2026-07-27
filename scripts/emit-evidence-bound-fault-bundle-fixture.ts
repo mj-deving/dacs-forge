@@ -1,5 +1,5 @@
-import { mkdir } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
+import { mkdir, mkdtemp, rename, rm, writeFile } from "node:fs/promises";
+import { basename, dirname, join, resolve } from "node:path";
 
 import { canonicalize } from "../src/protocol/canonical-json.ts";
 import { sha256Hex } from "../src/protocol/hash.ts";
@@ -123,8 +123,16 @@ const fixture = {
 };
 const canonicalFixture = canonicalize(fixture);
 const output = resolve(process.argv[outputArg + 1]!);
-await mkdir(dirname(output), { recursive: true });
-await Bun.write(output, `${JSON.stringify({
+const outputDirectory = dirname(output);
+await mkdir(outputDirectory, { recursive: true });
+const temporaryDirectory = await mkdtemp(join(outputDirectory, `.${basename(output)}.`));
+const temporaryOutput = join(temporaryDirectory, basename(output));
+try {
+  await writeFile(temporaryOutput, `${JSON.stringify({
   ...fixture,
   fixtureHash: sha256Hex(canonicalFixture),
-}, null, 2)}\n`);
+  }, null, 2)}\n`, { mode: 0o644 });
+  await rename(temporaryOutput, output);
+} finally {
+  await rm(temporaryDirectory, { recursive: true, force: true });
+}

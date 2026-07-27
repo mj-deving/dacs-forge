@@ -96,7 +96,7 @@
     },
     {
       "path": "scripts/emit-evidence-bound-fault-bundle-fixture.ts",
-      "sha256": "d1042fcc77a1dcc1ab00d4df46a73902726831e4256bb62db53b9d5d7a9e2182"
+      "sha256": "88400928a629e8461bb7f0bd454cfc28563f8ad61c47633c6530bd45b0780bb4"
     },
     {
       "path": "src/cli/dacs.ts",
@@ -392,7 +392,7 @@
     },
     {
       "path": "src/substrate/sqlite/fixture-bundle.ts",
-      "sha256": "3c5489ce53bc78236d3c29e04ac7a8baa458c7c805387a11e551b13592d74eb9"
+      "sha256": "c0e3c1689233d1b8ded9c5bce94863f8a59082d25bbc7005b1dab7402a4dad44"
     },
     {
       "path": "src/substrate/sqlite/fixture-commitment.ts",

@@ -801,6 +801,12 @@ export class FixtureBundleStore {
             || value["reason"] === "tank-locked-unreleased")
           ? "st8-expired-interim-failure" as const
           : "ordinary-terminal" as const;
+      const supersedingEvidenceRef = recordClass === "st8-expired-interim-failure"
+        ? authority.supersedingEvidenceRef
+        : undefined;
+      if (recordClass === "st8-expired-interim-failure" && supersedingEvidenceRef === undefined) {
+        throw new FixtureBundleIntegrityError("Persisted ST-8 predecessor lacks successor authority");
+      }
       return Object.freeze({
         status: "verified" as const,
         artifactType: "phase-evidence" as const,
@@ -818,6 +824,7 @@ export class FixtureBundleStore {
           && !Array.isArray(value["supersedesEvidenceRef"])
           ? { supersedesEvidenceRef: value["supersedesEvidenceRef"] as Record<string, unknown> }
           : {}),
+        ...(supersedingEvidenceRef === undefined ? {} : { supersedingEvidenceRef }),
       });
     } else if (persisted.artifactKind === "dacs-2-composite") {
       const row = this.#database.query<{
@@ -1144,11 +1151,12 @@ export class FixtureBundleStore {
         || delivery.phaseKind !== lifecycle.deliveryPhaseKind))) {
       throw new FixtureBundleIntegrityError("Referenced evidence phase wrappers differ from the lifecycle plan");
     }
-    const phase = [
+    const phases = [
       ...settlements,
       ...(terminal === null ? [] : [terminal]),
       ...(delivery === null ? [] : [delivery]),
-    ].find((entry) => {
+    ];
+    const phase = phases.find((entry) => {
       const anchor = entry.attestationRef["anchor"] as Record<string, unknown> | undefined;
       return anchor?.["kind"] === "storage-program" && anchor["locator"] === locator;
     });
@@ -1163,7 +1171,56 @@ export class FixtureBundleStore {
       phaseIndex: phase.phaseIndex,
       phaseKind,
       signer: phase.authorityClaim,
+      ...(isExpiredSt8Evidence(evidence)
+        ? { supersedingEvidenceRef: this.#findPersistedSt8Successor(jobId, phase, phases) }
+        : {}),
     });
+  }
+
+  #findPersistedSt8Successor(
+    jobId: string,
+    predecessor: ReturnType<typeof parseEvidence>,
+    phases: readonly ReturnType<typeof parseEvidence>[],
+  ): Readonly<Record<string, unknown>> | null {
+    const predecessorKey = canonicalize(predecessor.attestationRef);
+    let successor: Readonly<Record<string, unknown>> | null = null;
+    for (const phase of phases) {
+      if (phase.phaseIndex !== predecessor.phaseIndex || phase.phaseKind !== predecessor.phaseKind
+        || canonicalize(phase.attestationRef) === predecessorKey) continue;
+      const anchor = phase.attestationRef["anchor"] as Record<string, unknown> | undefined;
+      const locator = anchor?.["locator"];
+      const contentHash = phase.attestationRef["contentHash"];
+      if (anchor?.["kind"] !== "storage-program" || typeof locator !== "string"
+        || typeof contentHash !== "string") continue;
+      const row = this.#database.query<{
+        artifactContentHash: string | null; artifactKind: string; contentHash: string;
+      }, { locator: string }>(`
+        SELECT artifact_content_hash AS artifactContentHash, artifact_kind AS artifactKind,
+          content_hash AS contentHash FROM fixture_anchors WHERE logical_address = $locator
+      `).get({ locator });
+      if (row === null || row.artifactKind !== "dacs-4-evidence"
+        || row.contentHash !== contentHash || row.artifactContentHash === null) continue;
+      const artifact = this.#artifacts.get(row.artifactContentHash);
+      if (artifact === null || !artifact.kinds.includes("dacs-4-evidence")) continue;
+      const evidence = parsePersistedObject(artifact.canonicalJson, "Superseding SettlementEvidence artifact");
+      if (!Object.hasOwn(evidence, "supersedesEvidenceRef")
+        || canonicalize(evidence["supersedesEvidenceRef"]) !== predecessorKey) continue;
+      const verified = this.#verifyFixtureSettlementEvidence(locator, artifact.canonicalJson, contentHash, {
+        jobId,
+        phaseIndex: phase.phaseIndex,
+        phaseKind: phase.phaseKind,
+        signer: phase.authorityClaim,
+      });
+      if (verified.disposition !== "verified" || verified.logicalAddress !== locator
+        || verified.evidenceHash !== contentHash || verified.orchestrator !== phase.authorityClaim) {
+        throw new FixtureBundleIntegrityError("Persisted ST-8 successor authority is invalid");
+      }
+      if (successor !== null && canonicalize(successor) !== canonicalize(phase.attestationRef)) {
+        throw new FixtureBundleIntegrityError("Persisted ST-8 predecessor has multiple successors");
+      }
+      successor = phase.attestationRef;
+    }
+    return successor;
   }
 
   #assertFinalisationChronology(
@@ -1447,6 +1504,11 @@ function parseEvidence(value: string | null, label: string) {
     authorityClaim,
     attestationRef: attestationRef as Record<string, unknown>,
   });
+}
+function isExpiredSt8Evidence(evidence: Readonly<Record<string, unknown>>): boolean {
+  return evidence["outcome"] === "failure"
+    && (evidence["reason"] === "dest-revealed-source-unclaimed"
+      || evidence["reason"] === "tank-locked-unreleased");
 }
 function exactKeys(value: Readonly<Record<string, unknown>>, expected: readonly string[]): boolean {
   const expectedSet = new Set(expected);
