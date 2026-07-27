@@ -34,6 +34,14 @@ const FULL_HANDSHAKE: Driver = Object.freeze({
 });
 
 const DRIVER_OVERRIDES: Readonly<Record<string, Driver>> = Object.freeze({
+  "http-rate.cleanup": {
+    file: "test/api/session-admission.test.ts",
+    pattern: "enforces global concurrency and durable route rate before the handler",
+  },
+  "http-rate.consume": {
+    file: "test/api/session-admission.test.ts",
+    pattern: "enforces global concurrency and durable route rate before the handler",
+  },
   "production-key.activate": {
     file: "test/security/live-signer-provider.test.ts",
     pattern: "exposes only a non-exporting handle-backed signing capability",

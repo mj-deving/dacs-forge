@@ -75,6 +75,65 @@ const READINESS_TERMINAL_SCHEMA: AnySchemaObject = {
   },
 };
 
+const SESSION_CHALLENGE_TERMINAL_SCHEMA: AnySchemaObject = {
+  $id: "dacs-session-challenge/v1",
+  type: "object",
+  additionalProperties: false,
+  required: ["schema", "disposition", "challenge"],
+  properties: {
+    schema: { const: "dacs-session-challenge/v1" },
+    disposition: { enum: ["created", "replayed"] },
+    challenge: {
+      type: "object",
+      additionalProperties: false,
+      required: [
+        "instanceId", "audience", "principal", "jobId", "evidenceMode",
+        "nonce", "issuedAtMs", "expiresAtMs",
+      ],
+      properties: {
+        instanceId: { type: "string", minLength: 1, maxLength: 4_096 },
+        audience: { type: "string", minLength: 1, maxLength: 4_096 },
+        principal: { type: "string", minLength: 1, maxLength: 4_096 },
+        jobId: { type: "string", pattern: "^[0-7][0-9A-HJKMNP-TV-Z]{25}$" },
+        evidenceMode: { enum: ["fixture", "local-chain", "live"] },
+        nonce: { type: "string", pattern: "^[0-9a-f]{32}$" },
+        issuedAtMs: { type: "integer", minimum: 0 },
+        expiresAtMs: { type: "integer", minimum: 1 },
+      },
+    },
+  },
+};
+
+const SESSION_TERMINAL_SCHEMA: AnySchemaObject = {
+  $id: "dacs-session/v1",
+  type: "object",
+  additionalProperties: false,
+  required: ["schema", "disposition", "session"],
+  properties: {
+    schema: { const: "dacs-session/v1" },
+    disposition: { enum: ["created"] },
+    session: {
+      type: "object",
+      additionalProperties: false,
+      required: [
+        "instanceId", "audience", "jobId", "evidenceMode", "requestHash",
+        "admissionFingerprint", "status", "version", "createdAt",
+      ],
+      properties: {
+        instanceId: { type: "string", minLength: 1, maxLength: 4_096 },
+        audience: { type: "string", minLength: 1, maxLength: 4_096 },
+        jobId: { type: "string", pattern: "^[0-7][0-9A-HJKMNP-TV-Z]{25}$" },
+        evidenceMode: { enum: ["fixture", "local-chain", "live"] },
+        requestHash: { type: "string", pattern: "^[0-9a-f]{64}$" },
+        admissionFingerprint: { type: "string", pattern: "^[0-9a-f]{64}$" },
+        status: { enum: ["admitted"] },
+        version: { type: "string", pattern: "^\\d+$" },
+        createdAt: { type: "string", pattern: TIMESTAMP_PATTERN },
+      },
+    },
+  },
+};
+
 /**
  * The doctor schemas are the one place a wire contract restates a type this service also owns
  * in TypeScript. They stay hand-written, because the wire shape must not silently follow an
@@ -161,10 +220,14 @@ const DOCTOR_TERMINAL_SCHEMA: AnySchemaObject = {
  * than admit it as a valid versioned terminal result.
  */
 const HTTP_ERROR_CODES = Object.freeze([
+  "busy",
+  "conflict",
   "internal-error",
   "method-not-allowed",
   "misdirected-request",
   "not-found",
+  "payload-too-large",
+  "rate-limited",
   "schema-violation",
   "unauthorized",
 ] as const);
@@ -184,6 +247,8 @@ const ERROR_TERMINAL_SCHEMA: AnySchemaObject = {
 const TERMINAL_SCHEMAS: readonly AnySchemaObject[] = Object.freeze([
   HEALTH_TERMINAL_SCHEMA,
   READINESS_TERMINAL_SCHEMA,
+  SESSION_CHALLENGE_TERMINAL_SCHEMA,
+  SESSION_TERMINAL_SCHEMA,
   DOCTOR_TERMINAL_SCHEMA,
   ERROR_TERMINAL_SCHEMA,
 ]);
@@ -296,6 +361,20 @@ export function terminalJsonResponse(
   status: number,
   extraHeaders?: Readonly<Record<string, string>>,
 ): Response {
+  return boundedTerminalJsonResponse(payload, status, MAX_TERMINAL_BODY_BYTES, extraHeaders);
+}
+
+/** Build a terminal JSON response under a route-specific byte budget. */
+export function boundedTerminalJsonResponse(
+  payload: unknown,
+  status: number,
+  maxBodyBytes: number,
+  extraHeaders?: Readonly<Record<string, string>>,
+): Response {
+  if (!Number.isSafeInteger(maxBodyBytes) || maxBodyBytes < 1
+    || maxBodyBytes > MAX_TERMINAL_BODY_BYTES) {
+    return terminalErrorResponse(500, "internal-error");
+  }
   let body: string | undefined;
   try {
     body = JSON.stringify(payload);
@@ -306,7 +385,7 @@ export function terminalJsonResponse(
   // so an emitter that measured the payload alone would declare a document in budget and have the
   // same document refused one frame later, at the same constant, for the trailing byte it added.
   if (body === undefined
-    || Buffer.byteLength(`${body}\n`, "utf8") > MAX_TERMINAL_BODY_BYTES) {
+    || Buffer.byteLength(`${body}\n`, "utf8") > maxBodyBytes) {
     return terminalErrorResponse(500, "internal-error");
   }
   const validation = validateTerminalBody(body);

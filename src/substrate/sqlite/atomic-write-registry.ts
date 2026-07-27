@@ -24,6 +24,8 @@ const SITE_ROWS = [
   ["admission.consume-challenge", "session-admission", "update", "SessionStore.#admitTransaction", "src/substrate/sqlite/session-store.ts", "admission_challenges"],
   ["admission.create-session", "session-admission", "insert", "SessionStore.#admitTransaction", "src/substrate/sqlite/session-store.ts", "sessions"],
   ["admission.record-consumption", "session-admission", "insert", "SessionStore.#admitTransaction", "src/substrate/sqlite/session-store.ts", "admission_consumptions"],
+  ["http-rate.cleanup", "http-rate-limit", "delete", "HttpResourceGuards.#consumeRateTransaction", "src/http/resource-guards.ts", "http_rate_buckets"],
+  ["http-rate.consume", "http-rate-limit", "insert", "HttpResourceGuards.#consumeRateTransaction", "src/http/resource-guards.ts", "http_rate_buckets"],
   ["production-key.activate", "production-key-activation", "insert", "ProductionKeyLifecycle.activateInitialKey", "src/substrate/keys/production-key-lifecycle.ts", "production_signing_keys"],
   ["production-key.retain-listing", "production-key-listing-retention", "insert", "ProductionKeyLifecycle.#registerRetainedListing", "src/substrate/keys/production-key-lifecycle.ts", "production_key_listing_versions"],
   ["production-key.revoke-current", "production-key-rotation", "update", "ProductionKeyLifecycle.rotate", "src/substrate/keys/production-key-lifecycle.ts", "production_signing_keys"],

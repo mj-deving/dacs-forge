@@ -47,6 +47,8 @@ describe("versioned terminal results", () => {
       "dacs-health/v1",
       "dacs-http-error/v1",
       "dacs-readiness/v1",
+      "dacs-session-challenge/v1",
+      "dacs-session/v1",
     ]);
   });
 

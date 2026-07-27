@@ -137,6 +137,10 @@ Implemented and locally exercised:
 - the no-spend fixture protocol lifecycle and role-local DACS-5 bundles;
 - local Listing lifecycle, Directory summary compatibility, doctor/readiness/HTTP
   surfaces, provenance checks, and mutation calibration.
+- protected session challenge/admission routes with pre-work body, concurrency, and durable
+  rate guards; bounded terminal responses and verified-length immutable artifact streaming;
+- a deployment- and audience-scoped 256-bit capability primitive for the separately owned
+  administrator/party lifecycle.
 
 Still open or explicitly outside the current claim:
 

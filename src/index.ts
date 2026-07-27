@@ -74,6 +74,32 @@ export {
   type RunningReadinessServer,
 } from "./http/readiness-server.ts";
 export {
+  CapabilityAuthority,
+  type AdministratorCapabilityScope,
+  type CapabilityAuthorityOptions,
+  type CapabilityGrant,
+  type CapabilityOperation,
+  type CapabilityScope,
+  type PartyCapabilityScope,
+} from "./http/capability-authority.ts";
+export {
+  HttpResourceGuards,
+  boundedArtifactResponse,
+  type BoundedArtifactResponseOptions,
+  type GuardedHttpHandler,
+  type HttpRateLimit,
+  type HttpResourceGuardOptions,
+  type HttpResourceLimit,
+} from "./http/resource-guards.ts";
+export {
+  SESSION_CHALLENGE_ROUTE,
+  SESSION_CREATE_ROUTE,
+  createSessionAdmissionHttpHandler,
+  type FixtureAdministratorAdmission,
+  type FixtureAdministratorAuthorizationRequest,
+  type SessionAdmissionHttpOptions,
+} from "./http/session-admission.ts";
+export {
   FIXTURE_LIFECYCLE_RESTART_BOUNDARIES,
   fixtureLifecycleRestartBoundary,
   type FixtureLifecycleRestartBoundary,

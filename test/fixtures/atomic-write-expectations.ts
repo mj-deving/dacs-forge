@@ -21,6 +21,8 @@ export const EXPECTED_ATOMIC_WRITE_SITES: Readonly<Record<string, ExpectedAtomic
   "admission.consume-challenge": expected("session-admission", "SessionStore.#admitTransaction", "immediate", "session-store.ts:470"),
   "admission.create-session": expected("session-admission", "SessionStore.#admitTransaction", "immediate", "session-store.ts:520"),
   "admission.record-consumption": expected("session-admission", "SessionStore.#admitTransaction", "immediate", "session-store.ts:534"),
+  "http-rate.cleanup": expected("http-rate-limit", "HttpResourceGuards.#consumeRateTransaction", "immediate", "resource-guards.ts:157"),
+  "http-rate.consume": expected("http-rate-limit", "HttpResourceGuards.#consumeRateTransaction", "immediate", "resource-guards.ts:167"),
   "production-key.activate": expected("production-key-activation", "ProductionKeyLifecycle.activateInitialKey", "immediate", "production-key-lifecycle.ts:164"),
   "production-key.retain-listing": expected("production-key-listing-retention", "ProductionKeyLifecycle.#registerRetainedListing", "immediate", "production-key-lifecycle.ts:210"),
   "production-key.revoke-current": expected("production-key-rotation", "ProductionKeyLifecycle.rotate", "immediate", "production-key-lifecycle.ts:269"),

@@ -194,16 +194,28 @@
       "sha256": "b82e9252ea7af2dcb410598475c4c072e2c24699884b990444a3c55e28a4af4d"
     },
     {
+      "path": "src/http/capability-authority.ts",
+      "sha256": "cd78aaf5de4682484f5111dd8176a2c3b277f09250011cbf0bb4623874a27ee3"
+    },
+    {
       "path": "src/http/readiness-server.ts",
       "sha256": "2444ef32d72d900e48f93e4ad914706ff8f9a41b580745f2b43cae3459af112e"
     },
     {
+      "path": "src/http/resource-guards.ts",
+      "sha256": "ae6364bdb5b9d7685afca76589989eab4a2595d081effa508ca799d484a857f3"
+    },
+    {
+      "path": "src/http/session-admission.ts",
+      "sha256": "1351729bf196b100fcb024ca0b133c79883e4f72c596650690d9e140de6301c3"
+    },
+    {
       "path": "src/http/terminal-server.ts",
-      "sha256": "799bf8b286a06f2330b9996496e671dcaaa7ac3f406b86700e8ff13a7f1069be"
+      "sha256": "e1ddee70ac46e0dc829b25eb31425593c3dc86ab5d6863e22a7bc68c82fda3b3"
     },
     {
       "path": "src/index.ts",
-      "sha256": "4fb1bfe05e490dc32d813cb62e4bfef6d951580569f04f1bf319d695ccec1468"
+      "sha256": "ed9049d6df18ffc96301ead915f239bf954ced3f686f9e3e136ff3a17ef415bc"
     },
     {
       "path": "src/lifecycle/fixture-attested-delivery-handler.ts",
@@ -351,11 +363,11 @@
     },
     {
       "path": "src/substrate/sqlite/atomic-write-registry.ts",
-      "sha256": "1e807f0ecc1e9f5282fad8a2ad7b28f2ae011bda2cc91865c58496612e682c8a"
+      "sha256": "7cb39050fd13b4f71625d48e2a961be4d4bece156f62b614faf6d00d2cb85d01"
     },
     {
       "path": "src/substrate/sqlite/database.ts",
-      "sha256": "7e0b398cb5dcd370583a06ecb9417d8f6557d2eaaa5afcdc7711f1e62859d300"
+      "sha256": "9e827aa59dd16456261afd6ea861601026e6ac87deee7e70155f491b2cca29f4"
     },
     {
       "path": "src/substrate/sqlite/fixture-authority-store.ts",
@@ -410,8 +422,20 @@
       "sha256": "f07ae6ba0cd435288f0b73c7bec981f2e4daf5a1318e3d5278df5dbb92fb4d1c"
     },
     {
+      "path": "test/api/capability-scope.test.ts",
+      "sha256": "6a985cac100dec1b8084630705cb1dc87686a05240a2ac8b86fafd47db33c2a8"
+    },
+    {
+      "path": "test/api/external-session-admission.test.ts",
+      "sha256": "33227cb2cc2442a85c7e8f6a1aba5dc5f9144c4b473b9102b43ce8d0bb69ddcc"
+    },
+    {
+      "path": "test/api/session-admission.test.ts",
+      "sha256": "01c644470cff505aaf4069d60d9aa59b734eff50a00585156f8fed68138b6285"
+    },
+    {
       "path": "test/api/terminal-results.test.ts",
-      "sha256": "61aefea555b70a29adc60649b9f5fec8164ec4627f63eb507a1f83526803ad9f"
+      "sha256": "7b80af551073c2c4e52812c2bdb69c6177a8a177a0031d203dbc505f94077652"
     },
     {
       "path": "test/cli/binding-readiness.test.ts",
@@ -543,7 +567,7 @@
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "0951f142cc2f7493ee29ef5e4b0fa95563ac6b787a34463880c317b3a685bbd3"
+      "sha256": "8f067d4384173463cc284239724aee3c35998b8403022a19ebae2c641a632bf3"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -779,7 +803,7 @@
     },
     {
       "path": "test/lifecycle/attestation-bundle-finalisation.test.ts",
-      "sha256": "5caa696ca8ba8e82c9033e22efc7d4a69bc08ec2591a4c26ec1f7062435b1db3"
+      "sha256": "e771962564a2f78bdc8252c3cd8536cdb90f5e32c13d3585deca6cbf173c009b"
     },
     {
       "path": "test/lifecycle/attested-delivery-integration.test.ts",
@@ -787,11 +811,11 @@
     },
     {
       "path": "test/lifecycle/commit-failure-stop.test.ts",
-      "sha256": "b97bc9853ef8c97b756884a169d947439026d043796c53962a48f6d5117e37f9"
+      "sha256": "bb666b381268c6b9c0f8b0b7b84947e8f388b570d695d687a35d6f14ad50e3ed"
     },
     {
       "path": "test/lifecycle/fixture-vet-store.test.ts",
-      "sha256": "f329018c11b490f6d8ab390f4aa8c63ad3ee23c95fdb19f6a607386af55a1b0c"
+      "sha256": "3c86e3e609642340f6d09256bc2625f81452e397c05a77083851a1f12f636e62"
     },
     {
       "path": "test/lifecycle/fixtures.ts",
@@ -871,11 +895,11 @@
     },
     {
       "path": "test/recovery/atomic-migration-interruption.test.ts",
-      "sha256": "74d2b7dec301395bf1e4ddfdd0368395e675a9e0765cf8a4f5e49afd82d51d80"
+      "sha256": "09881348d00ac22444f3ca3f345561e35233c2e2ae30b1281360b2000428a268"
     },
     {
       "path": "test/recovery/atomic-write-interruption.test.ts",
-      "sha256": "7e95701968507e45f1b076a4ec2d629df2b25ab62e0dd6e43f67e3c3fc9b8fbb"
+      "sha256": "0bbe43874015f280cbbd725bb77e303504055e1e65f9dca112aa96aad1b1de08"
     },
     {
       "path": "test/recovery/atomic-write-registry.test.ts",
@@ -931,7 +955,7 @@
     },
     {
       "path": "test/substrate/sqlite.test.ts",
-      "sha256": "9536aff4ed6467444e2a374cbcccb1d1d4e29887d7447280f54545b89ef81ba6"
+      "sha256": "95313a57e9666a53fad5529b528d1cce52c606211878204397f59246a30e0268"
     },
     {
       "path": "test/tools/source-provenance.test.ts",
@@ -943,7 +967,7 @@
     },
     {
       "path": "test/workers/atomic-migration-worker.ts",
-      "sha256": "a569b9b43daa62da0434b2357b4a77dcbc3ed7b0f5228767b231d56ef526078c"
+      "sha256": "0b2d547b79c5470ac56f5f4bc219cb72fa4de34424021d5e57cb6f609b0682e2"
     },
     {
       "path": "test/workers/atomic-write-api-worker.ts",
@@ -1109,7 +1133,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "b1b0a32fe98d3a89f2284fff6533bc035637a82ac6ec773e841e60c10dafc949"
+      "sha256": "2b1f393a7d8d5e285c42c0b39422ed0e356e38e9279dd89249426a3bbb5a0337"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1133,7 +1157,7 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "24d6ca3f10801a086a3d92ef6d88f349d282cd908cb9e5f36844fee4287c582f"
+      "sha256": "10b89f4288150c0e4dae7d977842f83dbca8cd96dff027594d3a7e7ea2e6cb37"
     },
     {
       "path": "docs/FORKING.md",

@@ -11,7 +11,7 @@ import { dirname, join, parse, resolve } from "node:path";
 
 export type DacsDatabase = Database;
 
-const SCHEMA_VERSION = 21;
+const SCHEMA_VERSION = 22;
 const WAL_RETRY_ATTEMPTS = 20;
 const WAL_RETRY_DELAY_MS = 25;
 const retrySignal = new Int32Array(new SharedArrayBuffer(4));
@@ -82,6 +82,16 @@ const PRODUCTION_SESSION_KEY_PINS_SCHEMA = `
     ),
     key_claim TEXT NOT NULL REFERENCES production_signing_keys(key_claim) ON DELETE RESTRICT,
     committed_at INTEGER NOT NULL CHECK (committed_at >= 0)
+  ) STRICT
+`;
+
+const HTTP_RATE_BUCKETS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS http_rate_buckets (
+    scope TEXT NOT NULL,
+    window_ms INTEGER NOT NULL CHECK (window_ms > 0),
+    window_start_ms INTEGER NOT NULL CHECK (window_start_ms >= 0),
+    request_count INTEGER NOT NULL CHECK (request_count > 0),
+    PRIMARY KEY (scope, window_ms, window_start_ms)
   ) STRICT
 `;
 
@@ -856,6 +866,7 @@ function migrate(database: Database): void {
       database.run(PRODUCTION_KEY_REVOCATIONS_SCHEMA);
       database.run(PRODUCTION_SESSION_KEY_PINS_SCHEMA);
     }
+    if (version < 22) database.run(HTTP_RATE_BUCKETS_SCHEMA);
     database.run(`PRAGMA user_version = ${SCHEMA_VERSION}`);
   });
   apply.exclusive();

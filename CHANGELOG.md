@@ -12,5 +12,7 @@ and release versions follow [Semantic Versioning](https://semver.org/).
 - Initial fixture/no-spend reference substrate and service-agent extension surface.
 - Producer, consumer, lifecycle, persistence, conformance, and adversarial test rig.
 - Public security, contribution, provenance, forking, governance, and versioning contracts.
+- Protected session-admission HTTP boundaries with durable rate limits, bounded bodies and
+  responses, verified artifact streaming, and deployment-scoped 256-bit capabilities.
 
 No public release has been cut yet.
