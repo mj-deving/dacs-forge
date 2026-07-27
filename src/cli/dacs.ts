@@ -10,6 +10,7 @@ import {
   type DoctorReport,
 } from "../readiness/doctor.ts";
 import { runAuthorityCli } from "./authority.ts";
+import { runRegistrationCli } from "./registration.ts";
 
 export interface CliIO {
   readonly stdout: (value: string) => void;
@@ -27,6 +28,7 @@ export const USAGE = `Usage:
   dacs --version
   dacs doctor [--json] [--no-input] [--no-color] [--evidence-mode <fixture|local-chain|live>]
   dacs authority <bootstrap|recover|clone-rotate> [options]
+  dacs register --input <absolute-json-file> --adapter <absolute-module>
 `;
 
 const intrinsicGetOwnPropertyDescriptor = Object.getOwnPropertyDescriptor;
@@ -252,6 +254,9 @@ export async function runCli(
     }
     if (snapshot[0] === "authority") {
       return runAuthorityCli(tail(snapshot), writers);
+    }
+    if (snapshot[0] === "register") {
+      return runRegistrationCli(tail(snapshot), writers);
     }
     if (snapshot[0] !== "doctor") {
       throw new UsageError(snapshot.length === 0

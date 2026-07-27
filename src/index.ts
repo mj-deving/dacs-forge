@@ -1,4 +1,9 @@
 export {
+  REGISTRATION_USAGE,
+  runRegistrationCli,
+  type RegistrationCliIO,
+} from "./cli/registration.ts";
+export {
   AUTHORITY_USAGE,
   runAuthorityCli,
   type AuthorityCliAdapter,

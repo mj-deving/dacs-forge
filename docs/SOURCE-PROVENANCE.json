@@ -95,7 +95,11 @@
     },
     {
       "path": "src/cli/dacs.ts",
-      "sha256": "544791ca709a31bc9bc4b46d07a5c9b41b6d88b2d80b97caa3f8dd0d4ae9a462"
+      "sha256": "ff78b2bfe05449209a20cef329c2a9b901b311d38be57937f96cb71cd6afca32"
+    },
+    {
+      "path": "src/cli/registration.ts",
+      "sha256": "74e4d897a2aebbe73257a524f1a3a7260e91144908dc72df07c5aee329ca6ca3"
     },
     {
       "path": "src/compat/legacy-listing.ts",
@@ -190,6 +194,10 @@
       "sha256": "24dd97c1a3c8e968f0840d22d7df4083521f784ff405dcf4e6bda4ef080333bb"
     },
     {
+      "path": "src/directory/registration-command.ts",
+      "sha256": "f842e8f2afaa5290e9b0543e376af37da671e7ef5c64d484c1447ead91063b30"
+    },
+    {
       "path": "src/http/bind-policy.ts",
       "sha256": "b82e9252ea7af2dcb410598475c4c072e2c24699884b990444a3c55e28a4af4d"
     },
@@ -215,7 +223,7 @@
     },
     {
       "path": "src/index.ts",
-      "sha256": "452a3ce5e38ae31a710090a3eccbeaa808ee1463c21ecb424755c05b68911228"
+      "sha256": "2ccbcd98f308b63e1141e05e56dcd7d55d9445b84b35e4a8b9a3daa25282a8d8"
     },
     {
       "path": "src/lifecycle/fixture-attested-delivery-handler.ts",
@@ -452,6 +460,10 @@
     {
       "path": "test/cli/doctor.test.ts",
       "sha256": "99f85ff77a17f5172dd6b5baf44b41f2783162b2b01aa540ffb40e597592a782"
+    },
+    {
+      "path": "test/cli/registration-gate.test.ts",
+      "sha256": "04e73b59ea2094160db529761742c036346cf5d126aaf75400ac4477462adc42"
     },
     {
       "path": "test/compat/legacy-listing.test.ts",
@@ -1193,7 +1205,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "01d0b70fed344375e77450ee5554fd4db3a88c0bb391552574cc606ab6bf99de"
+      "sha256": "4e1fea34bb81dda09518b800a70340a6d5538f1ef34535746304573cc9ce6448"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1217,7 +1229,7 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "068a456309c3e69a5620bb8bc6294fa4fb59c3ae9429976a015a08ee521d690a"
+      "sha256": "c3f939dc2e83da2c0db09ed88b44899063c0d5ca9410749b1e38ae68f32a2827"
     },
     {
       "path": "docs/FORKING.md",

@@ -18,5 +18,7 @@ and release versions follow [Semantic Versioning](https://semver.org/).
   revocation, bounded renewal, offline recovery, and clone identity rotation.
 - Agreement-bound anonymous artifact disclosure requiring verified public delivery,
   signed seller policy, current buyer consent, and exact artifact binding.
+- Explicit fixture/no-spend Directory registration after operator authorization,
+  independent anchor verification, and exact post-registration read-back.
 
 No public release has been cut yet.

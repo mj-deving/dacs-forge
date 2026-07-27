@@ -109,9 +109,12 @@ The local `ListingLifecycle` verifies and stores immutable signed Listing versio
 and signed withdrawals under fixture authority. Forge also validates a pinned DACS
 Directory `ListingSummary` shape and can report Directory schema drift.
 
-There is no supported live registration or publication command in this prototype.
-Directory registration is a separate operator action, live binding remains gated,
-and no default development command publishes, anchors, or transfers value.
+`dacs register` is a separate explicit operator action. It consumes an injected
+adapter that must explicitly declare fixture/no-spend execution mode, verifies exact current operator scope and independently
+reads the anchored Listing bytes before submission, then reports success only after
+an exact Directory read-back. Startup, self-test, Doctor, and the default fixture
+lifecycle do not load a registration adapter or invoke registration. Live Directory
+binding remains gated; no supported command supplies a live client or credentials.
 
 ## Trust boundary
 
