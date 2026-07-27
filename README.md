@@ -69,6 +69,28 @@ provenance, runs strict TypeScript validation, and executes the full test suite,
 including pinned DACS vectors, independent canonicalization runs, adversarial
 protocol probes, recovery tests, and cross-process SQLite tests.
 
+### Local container fixture
+
+The container is a local prototype artifact. It starts only after the fork-owned
+service runtime and complete no-spend fixture handshake pass inside the image.
+It has no live-mode command, runs as a non-root user, and needs no outbound
+network for the lifecycle.
+
+```sh
+docker build --pull -t dacs-forge:fixture-local .
+docker run --rm --network none --read-only \
+  --tmpfs /runtime:rw,noexec,nosuid,nodev,uid=1000,gid=1000,mode=0700 \
+  dacs-forge:fixture-local self-test
+docker compose up --build --wait
+docker compose down
+```
+
+The Compose service uses the same image entrypoint and health contract as
+`docker run`. No image is published by these commands. Image provenance,
+distribution, SBOM, and vulnerability qualification remain separate release
+gates. Run `bun run verify:container` for the clean local build, offline
+self-test, non-root/health/shutdown probes, and Docker run/Compose equivalence.
+
 ## Build a service agent
 
 Fork-owned customization is intentionally narrow:

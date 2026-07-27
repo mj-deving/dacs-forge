@@ -1,0 +1,10 @@
+.git
+.github
+.beads
+node_modules
+dist
+coverage
+evidence
+*.sqlite
+*.sqlite-*
+*.log

@@ -21,5 +21,10 @@
     "target": "ES2024",
     "types": ["bun"]
   },
-  "include": ["src/**/*.ts", "test/**/*.ts"]
+  "include": [
+    "scripts/container-fixture-runtime.ts",
+    "scripts/verify-container-fixture.ts",
+    "src/**/*.ts",
+    "test/**/*.ts"
+  ]
 }

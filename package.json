@@ -26,10 +26,13 @@
   "scripts": {
     "build": "bun build ./src/index.ts --outdir ./dist --target bun --packages external",
     "check": "bun run verify:provenance && bun run typecheck && bun test",
+    "container:self-test": "bun run ./scripts/container-fixture-runtime.ts self-test",
+    "container:serve": "bun run ./scripts/container-fixture-runtime.ts serve",
     "mutation:calibrate": "bun scripts/calibrate-mutation-runner.ts --calibration-only",
     "mutation:check": "bun scripts/calibrate-mutation-runner.ts",
     "test": "bun test --timeout 10000",
     "typecheck": "tsc --noEmit",
+    "verify:container": "bun run ./scripts/verify-container-fixture.ts",
     "verify:provenance": "bun tools/verify-source-provenance.ts"
   },
   "devDependencies": {

@@ -1,0 +1,11 @@
+services:
+  forge:
+    build:
+      context: .
+    image: ${DACS_FORGE_IMAGE:-dacs-forge:fixture-local}
+    init: true
+    network_mode: none
+    read_only: true
+    tmpfs:
+      - /runtime:rw,noexec,nosuid,nodev,uid=1000,gid=1000,mode=0700
+    stop_grace_period: 5s

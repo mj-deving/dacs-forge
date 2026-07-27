@@ -1040,7 +1040,7 @@
     },
     {
       "path": "tsconfig.json",
-      "sha256": "305dfcd2576c7187ee5305dc6cfd8c4540970ac2c02bd45a95b47036cf27c284"
+      "sha256": "f091f6045c25e3325ccfacbf74c756339346192941af1324b4a0c1b6307b0360"
     },
     {
       "path": "vectors/community-directory/provenance.json",
@@ -1213,9 +1213,25 @@
     {
       "path": "test/workers/authority-offline-crash-worker.ts",
       "sha256": "4a1c3bc895b5cbce37aa22e2ec028f70793455a8a77301f8c04d3c71455a1dac"
+    },
+    {
+      "path": "scripts/container-fixture-runtime.ts",
+      "sha256": "ca0237afc25fe9257fee2011e6a019215b9342efb6a2a4255d912c9d60611e1d"
+    },
+    {
+      "path": "scripts/verify-container-fixture.ts",
+      "sha256": "6cdbfe3dda0b78206364ce5f3c2cfeddd3c7e3e6f134c7eeb48452fdec9fb8f1"
+    },
+    {
+      "path": "test/container/fixture-runtime.test.ts",
+      "sha256": "fc7acae0973adeba54e4380824967190d2ce288ee11cfe4a36bb7725037fb9ea"
     }
   ],
   "packagingFiles": [
+    {
+      "path": ".dockerignore",
+      "sha256": "d5c5b1502ffc54e0cff2782bcd4564b12a9212b7ef3224b17637b85441b948a9"
+    },
     {
       "path": ".github/workflows/ci.yml",
       "sha256": "9dea3b28d93f220e57b3b3e98ca973626f7e2dd5f1671d50057593224c50d935"
@@ -1223,6 +1239,10 @@
     {
       "path": "CHANGELOG.md",
       "sha256": "c2c5e0a94622c7a2d9bb202469ace76cddda5736aa7b04f7a08e9ca78505a11f"
+    },
+    {
+      "path": "Dockerfile",
+      "sha256": "ad315fbc5edb6be609f5e375daea92b69736421b489a349133ef60c0a97b1934"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1234,7 +1254,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "570409b9a2fb884e4f219fb5b9e5bf0ba538353ce29d858f31aa1ce2ae890592"
+      "sha256": "d488b0b3b5b970e594adf59a28edaf3279c4bd0247aed336a74e0b0f5609d621"
     },
     {
       "path": "SECURITY.md",
@@ -1274,7 +1294,11 @@
     },
     {
       "path": "package.json",
-      "sha256": "95f42c976d0d42275f794ace5bc015fcfea4339da5b8c5a8dbac7df65f0c7667"
+      "sha256": "4a4be4e16961ef77fa4bba3d28b5a7fd27fbb2a53e890570e7a32eb909e996e2"
+    },
+    {
+      "path": "compose.yaml",
+      "sha256": "b276ea6d0882af37aa0250ba5712d26c2f4d0e55fcbc9db141b6d2a679f13329"
     },
     {
       "path": "tools/verify-source-provenance.ts",
