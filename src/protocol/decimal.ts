@@ -30,6 +30,25 @@ export function multiplyCanonicalDecimalByInteger(value: string, multiplier: str
   return formatCanonicalDecimal(decimal.coefficient * BigInt(multiplier), decimal.scale);
 }
 
+export function ceilCanonicalDecimalToInteger(value: string): string {
+  const decimal = parseCanonicalDecimal(value);
+  if (decimal.scale === 0) return decimal.coefficient.toString();
+  const divisor = 10n ** BigInt(decimal.scale);
+  const whole = decimal.coefficient / divisor;
+  return (decimal.coefficient % divisor === 0n ? whole : whole + 1n).toString();
+}
+
+export function computeMeteredTotal(
+  unitPriceAmount: string,
+  quantity: string,
+  minimumTotalAmount?: string,
+): string {
+  const product = multiplyCanonicalDecimalByInteger(unitPriceAmount, quantity);
+  if (minimumTotalAmount === undefined) return product;
+  parseCanonicalDecimal(minimumTotalAmount);
+  return compareCanonicalDecimals(minimumTotalAmount, product) > 0 ? minimumTotalAmount : product;
+}
+
 export function negotiableBoundsHalfUp(
   center: string,
   minPct: number,

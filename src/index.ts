@@ -26,6 +26,8 @@ export {
 } from "./protocol/component-signature-codec.ts";
 export {
   compareCanonicalDecimals,
+  ceilCanonicalDecimalToInteger,
+  computeMeteredTotal,
   isCanonicalNonNegativeDecimal,
   isCanonicalPositiveDecimal,
   multiplyCanonicalDecimalByInteger,

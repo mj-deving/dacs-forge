@@ -18,8 +18,8 @@
   "scaffoldCommit": "a4ba4b88f4ad8cc33a65a89b4423643fb6797682",
   "upstreamPins": {
     "dacsStandard": {
-      "main": "2ff69b7f1fa13440a64cc865bd3f7e5fce6d34d2",
-      "next": "9a1ca624e8cc68361cff35c85a919cd72ba25199"
+      "main": "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091",
+      "next": "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091"
     },
     "community": {
       "main": "f2fd2145cddfd12ecaa32da2b953e859ec3fd8c3",
@@ -31,7 +31,8 @@
       "ad48d16c25a810a6420b4d4cc9b9d8d6d38908c4",
       "fcbf804dcc53184726eed4385d794a0fdbbe00cc",
       "9a1ca624e8cc68361cff35c85a919cd72ba25199",
-      "2567c6c357d3fd28f75034b920258f2fd7da20d7"
+      "2567c6c357d3fd28f75034b920258f2fd7da20d7",
+      "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091"
     ]
   },
   "excludedCategories": [
@@ -116,7 +117,7 @@
     },
     {
       "path": "src/consumer/agreement-verifier.ts",
-      "sha256": "e386ebeb22a97e2a9a2a1572c13a8375ede85dc8f5944d42dd9531f0b49e0115"
+      "sha256": "21dddf01ccd0c0187c7ff49322533214fbe430245fc0bb8d6b8d2b8b7549d6f2"
     },
     {
       "path": "src/consumer/attestation-bundle-verifier.ts",
@@ -228,7 +229,7 @@
     },
     {
       "path": "src/index.ts",
-      "sha256": "1c9e522aa80cda32c808965fbc98c044f8285d488cedcebd28d43a24a3b8f440"
+      "sha256": "8622be894c1e96566f9fbcd91219fabf2b99cdb9d63061f892885a9701d9828b"
     },
     {
       "path": "src/lifecycle/fixture-attested-delivery-handler.ts",
@@ -316,7 +317,7 @@
     },
     {
       "path": "src/protocol/decimal.ts",
-      "sha256": "f1b3fd73870be84b57fdc98e8b058934a04d0d678a7e0e08c4cc1c21d71547fd"
+      "sha256": "7988f0d66118af19f9f4052185ea09c274dd23a720d3f4a33860159b2d06ef47"
     },
     {
       "path": "src/protocol/directory-summary-schema.ts",
@@ -501,6 +502,10 @@
     {
       "path": "test/conformance/evidence-bound-fault-bundle-vectors.test.ts",
       "sha256": "30e597830a00ecfa55d4e52d65ad9e22776ea454c731ed0df9df6b20ba15c7bc"
+    },
+    {
+      "path": "test/conformance/metered-pricing.test.ts",
+      "sha256": "a7493188672554bd3a33e09b51be9849f1f115510a8ba7b0979bdd1bed42be03"
     },
     {
       "path": "test/conformance/delivery-content.test.ts",
@@ -1073,6 +1078,10 @@
     {
       "path": "vectors/dacs-standard-listing-preserve-unknown-c4ace08.json",
       "sha256": "7dbe60aa89d44321a3bb04661b1d71fc15bc84501b76f23b486a05cb905f91bd"
+    },
+    {
+      "path": "vectors/dacs-standard-metered-pricing-4bb9e48.json",
+      "sha256": "36ec8725d058062ab6dfefe79a8b0c7c97b33be3c614b6073f392647c05d4009"
     },
     {
       "path": "vectors/dacs-standard-pr248/bundle-binding-v0.1.json",

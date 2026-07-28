@@ -5,9 +5,9 @@ import {
 } from "../protocol/component-signature-codec.ts";
 import {
   compareCanonicalDecimals,
+  computeMeteredTotal,
   isCanonicalNonNegativeDecimal,
   isCanonicalPositiveDecimal,
-  multiplyCanonicalDecimalByInteger,
   negotiableBoundsHalfUp,
 } from "../protocol/decimal.ts";
 import {
@@ -491,9 +491,11 @@ function validatePrice(
       if (quantity === null
         || typeof quantity["quantity"] !== "string" || !QUANTITY.test(quantity["quantity"])
         || quantity["unit"] !== pricing["unit"]) return { reason: "Agreement metered quantity violates MTR-4" };
-      const computed = multiplyCanonicalDecimalByInteger(unitPrice["amount"], quantity["quantity"]);
-      const minimumWins = minTotal !== null && compareCanonicalDecimals(minTotal["amount"] as string, computed) > 0;
-      const total = minimumWins ? minTotal?.["amount"] as string : computed;
+      const total = computeMeteredTotal(
+        unitPrice["amount"] as string,
+        quantity["quantity"] as string,
+        minTotal?.["amount"] as string | undefined,
+      );
       return amount === total && sameOptionalUnit(price, unitPrice)
         ? null : { reason: "Agreement metered total or unit violates MTR-4" };
     }
