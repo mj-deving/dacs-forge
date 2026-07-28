@@ -23,6 +23,8 @@
   },
   "include": [
     "scripts/container-fixture-runtime.ts",
+    "scripts/container-supply-chain.ts",
+    "scripts/lint-dockerfile-bases.ts",
     "scripts/verify-container-fixture.ts",
     "src/**/*.ts",
     "test/**/*.ts"

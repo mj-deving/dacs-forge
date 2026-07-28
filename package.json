@@ -28,11 +28,13 @@
     "check": "bun run verify:provenance && bun run typecheck && bun test",
     "container:self-test": "bun run ./scripts/container-fixture-runtime.ts self-test",
     "container:serve": "bun run ./scripts/container-fixture-runtime.ts serve",
+    "container:supply-chain": "mkdir -p dist/container-supply-chain && docker build --pull --no-cache --provenance=mode=min --metadata-file dist/container-supply-chain/build-metadata.json --tag dacs-forge:supply-chain-candidate . && bun run ./scripts/container-supply-chain.ts qualify --image dacs-forge:supply-chain-candidate --output dist/container-supply-chain",
     "mutation:calibrate": "bun scripts/calibrate-mutation-runner.ts --calibration-only",
     "mutation:check": "bun scripts/calibrate-mutation-runner.ts",
     "test": "bun test --timeout 10000",
     "typecheck": "tsc --noEmit",
     "verify:container": "bun run ./scripts/verify-container-fixture.ts",
+    "verify:dockerfile-bases": "bun run ./scripts/lint-dockerfile-bases.ts",
     "verify:provenance": "bun tools/verify-source-provenance.ts"
   },
   "devDependencies": {

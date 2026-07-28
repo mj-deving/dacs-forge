@@ -1044,8 +1044,28 @@
       "sha256": "94537a0d289069380253322cee135a9bbdbe0b9b39089cf352a3edc53d153217"
     },
     {
+      "path": "release/vulnerability-dispositions.json",
+      "sha256": "7b29e43f4496dd700d2ee0146c31b32a466baf9002224c073ad3b5a486758400"
+    },
+    {
+      "path": "schemas/vulnerability-dispositions.schema.json",
+      "sha256": "c1a971932041eb88d8fedd06a3aa106eac93a22c6dc01930d7f6c8bc6f765013"
+    },
+    {
+      "path": "scripts/container-supply-chain.ts",
+      "sha256": "8e6538c82d15c2fd1fa6f6520e8582d76cbda41ed2bb370d2534e7c061a6a97b"
+    },
+    {
+      "path": "scripts/lint-dockerfile-bases.ts",
+      "sha256": "7a4a2845303fc93cb27118ab58219ff3a92349f0e42621dd515b21a4c5dcd031"
+    },
+    {
+      "path": "test/container/supply-chain.test.ts",
+      "sha256": "585d8be853eaca275c98157f39566f3aff35ebbe3c323d220338b7058410800e"
+    },
+    {
       "path": "tsconfig.json",
-      "sha256": "f091f6045c25e3325ccfacbf74c756339346192941af1324b4a0c1b6307b0360"
+      "sha256": "f1a6642e06cb54d7c153380d929f9cd802c2075ff36b1ba6face72bc47334ad5"
     },
     {
       "path": "vectors/community-directory/provenance.json",
@@ -1247,11 +1267,11 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "c2c5e0a94622c7a2d9bb202469ace76cddda5736aa7b04f7a08e9ca78505a11f"
+      "sha256": "a89d4599898e29a54d3de4189ebc336cd3a0c2c47c89e244f62c7a68cd29e7eb"
     },
     {
       "path": "Dockerfile",
-      "sha256": "ad315fbc5edb6be609f5e375daea92b69736421b489a349133ef60c0a97b1934"
+      "sha256": "d3abb279c06f9f67070fdc8f6cfdc80309092c68885c064f83b6a2b7ab3f8349"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1263,7 +1283,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "d488b0b3b5b970e594adf59a28edaf3279c4bd0247aed336a74e0b0f5609d621"
+      "sha256": "1fd3fa8993ec6564c1256919ab314056526e0d4d58ebbea4379531627ba7c5d1"
     },
     {
       "path": "SECURITY.md",
@@ -1291,7 +1311,7 @@
     },
     {
       "path": "docs/PROVENANCE.md",
-      "sha256": "c3de00c8197bed54a29030e9fea62a48f960f289b8fe5092bd11296febd9d100"
+      "sha256": "dc821461c8b32d25c302e27bff680a60514057c8daeec98bbb2fc2248bacee16"
     },
     {
       "path": "docs/SERVICE-CONTRACT.md",
@@ -1303,7 +1323,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "4a4be4e16961ef77fa4bba3d28b5a7fd27fbb2a53e890570e7a32eb909e996e2"
+      "sha256": "be02a388e5d62b1dac6bfb5e8a1b1008b0d8d4579c6fb3f03d1482bc40a57a09"
     },
     {
       "path": "compose.yaml",

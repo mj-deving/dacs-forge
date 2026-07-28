@@ -20,6 +20,8 @@ and release versions follow [Semantic Versioning](https://semver.org/).
   signed seller policy, current buyer consent, and exact artifact binding.
 - Explicit fixture/no-spend Directory registration after operator authorization,
   independent anchor verification, and exact post-registration read-back.
+- Local digest-pinned container supply-chain qualification with Syft SPDX output,
+  fresh Trivy evidence, zero-Critical policy, and bounded High dispositions.
 - Experimental draft PR #290 evidence-bound fault bundle production, persistence,
   SEB-1..SEB-6 validation, distinct pointer/signature domains, and independent
   dacs-verify cross-check fixture; no released-conformance claim.

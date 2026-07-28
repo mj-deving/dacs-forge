@@ -23,8 +23,8 @@ bundle copies. Restart, replay, mutation, concurrency, migration, authority, and
 failure-path tests are first-class release evidence.
 
 It does **not** currently claim live Demos anchoring, live payment rails, external
-attestation authority, release-qualified HTTP/CLI/container operation, accepted
-external-rig qualification, reputation eligibility, or steward designation.
+attestation authority, a supported release, accepted external-rig qualification,
+reputation eligibility, or steward designation.
 
 ## The 90-second model
 
@@ -86,10 +86,17 @@ docker compose down
 ```
 
 The Compose service uses the same image entrypoint and health contract as
-`docker run`. No image is published by these commands. Image provenance,
-distribution, SBOM, and vulnerability qualification remain separate release
-gates. Run `bun run verify:container` for the clean local build, offline
-self-test, non-root/health/shutdown probes, and Docker run/Compose equivalence.
+`docker run`. No image is published by these commands. Run `bun run
+verify:container` for the clean local build, offline self-test,
+non-root/health/shutdown probes, and Docker run/Compose equivalence.
+
+With Syft, Trivy, and Docker's containerd image store installed, `bun run
+container:supply-chain` builds a fresh local candidate, emits BuildKit, SPDX,
+and scanner evidence under the ignored `dist/` directory, and verifies the
+exact final/base digests, fresh vulnerability database, zero Critical findings,
+and bounded High dispositions. It does not push an image. Distribution-only
+signature and SLSA checks remain explicitly not applicable until a release
+actually distributes one.
 
 ## Build a service agent
 

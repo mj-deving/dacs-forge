@@ -12,6 +12,17 @@ candidate commit.
 Copied and projected upstream vectors retain their source licenses and exact
 path/commit mapping in [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md).
 
+## Local container supply-chain evidence
+
+`bun run container:supply-chain` emits an ignored local evidence bundle rather
+than committing scanner databases or generated SBOMs. Its manifest binds the
+Docker final and base digests, Syft SPDX plus source metadata, Trivy report plus
+database bytes and update time, and the reviewed High-vulnerability disposition
+file. The verifier fails on a tag-only base, digest or artifact substitution,
+database age over 24 hours, any Critical finding, or missing/invalid/expired High
+disposition. Durable evidence records the qualifier's manifest SHA-256 outside
+that manifest. No image distribution or signing service is implied.
+
 ## Normative source
 
 - DACS-Standard commit: `ad48d16c25a810a6420b4d4cc9b9d8d6d38908c4`
