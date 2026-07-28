@@ -25,6 +25,8 @@
     "scripts/container-fixture-runtime.ts",
     "scripts/container-supply-chain.ts",
     "scripts/lint-dockerfile-bases.ts",
+    "scripts/scan-critical-placeholders.ts",
+    "scripts/verify-exemplar-diff.ts",
     "scripts/verify-container-fixture.ts",
     "src/**/*.ts",
     "test/**/*.ts"

@@ -96,6 +96,18 @@ service/handler.ts
 service/fixtures/**
 ```
 
+For the reference exemplar, keep a clean checkout at the exact trusted base and
+run its verifier and scanner against the separate committed exemplar checkout:
+
+```sh
+bun run verify:exemplar-diff -- --repository "$exemplar_checkout" --base "$fork_base" --tip "$exemplar_tip"
+bun run scan:critical -- --repository "$exemplar_checkout" --base "$fork_base" --tip "$exemplar_tip"
+```
+
+Both commands refuse to run unless their own checkout is clean and exactly at
+`$fork_base`. Verifier, scanner, policy, and regression bytes are therefore
+outside the exemplar delta and cannot qualify themselves as extension changes.
+
 The provenance gate intentionally allows those extension bytes to differ without
 editing `docs/SOURCE-PROVENANCE.json`. It still fails closed on substrate drift,
 undeclared tracked paths, missing required extension files, unsafe paths, duplicate

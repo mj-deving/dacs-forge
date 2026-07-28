@@ -33,6 +33,8 @@
     "mutation:check": "bun scripts/calibrate-mutation-runner.ts",
     "test": "bun test --timeout 10000",
     "typecheck": "tsc --noEmit",
+    "scan:critical": "bun run ./scripts/scan-critical-placeholders.ts",
+    "verify:exemplar-diff": "bun run ./scripts/verify-exemplar-diff.ts",
     "verify:container": "bun run ./scripts/verify-container-fixture.ts",
     "verify:dockerfile-bases": "bun run ./scripts/lint-dockerfile-bases.ts",
     "verify:provenance": "bun tools/verify-source-provenance.ts"

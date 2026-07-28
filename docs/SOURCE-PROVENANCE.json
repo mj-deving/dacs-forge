@@ -1065,7 +1065,7 @@
     },
     {
       "path": "tsconfig.json",
-      "sha256": "f1a6642e06cb54d7c153380d929f9cd802c2075ff36b1ba6face72bc47334ad5"
+      "sha256": "37f8d04a719b3db1e0cefbc692748cbcf1ef781eb6bb8f402a43db6f4fda7816"
     },
     {
       "path": "vectors/community-directory/provenance.json",
@@ -1254,6 +1254,22 @@
     {
       "path": "test/container/fixture-runtime.test.ts",
       "sha256": "fc7acae0973adeba54e4380824967190d2ce288ee11cfe4a36bb7725037fb9ea"
+    },
+    {
+      "path": "scripts/scan-critical-placeholders.ts",
+      "sha256": "9eb46db69fad1c2d6746dabf9ed5da08e7c1b7f712d473424b3905e8f28316b6"
+    },
+    {
+      "path": "scripts/verify-exemplar-diff.ts",
+      "sha256": "9cf726e74139d5184195783438169bc40c0aba0600c4927aee384ad458f614d2"
+    },
+    {
+      "path": "test/exemplar/extension-boundary.test.ts",
+      "sha256": "8b3d55a3f1cd0cefc5fddb02375d5822d5f8c9ae360fe1059496b3a3efa39a3a"
+    },
+    {
+      "path": "tools/exemplar-policy.ts",
+      "sha256": "a057438baed78152ba49d37f70b8e4baa830909d57acf2c72080525dc52d5839"
     }
   ],
   "packagingFiles": [
@@ -1299,7 +1315,7 @@
     },
     {
       "path": "docs/FORKING.md",
-      "sha256": "c9cabf522ce332a5ef49c36371bbaa57681ccec87424f31df21114ff1f95d64c"
+      "sha256": "67eadb85009a734c20eb78c7a3cea0247597e30323da7995a5573f3693f4fbc1"
     },
     {
       "path": "docs/HARDENING.md",
@@ -1323,7 +1339,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "be02a388e5d62b1dac6bfb5e8a1b1008b0d8d4579c6fb3f03d1482bc40a57a09"
+      "sha256": "a680e4dc51fe82e1ee4a4d1ae74b4339dd9c42e18fed057c551e3d79aaba40d7"
     },
     {
       "path": "compose.yaml",
