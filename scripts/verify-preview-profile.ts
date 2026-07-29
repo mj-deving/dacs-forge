@@ -7,24 +7,51 @@ import packageMetadata from "../package.json";
 
 const DACS_RELEASE_COMMIT = "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091";
 const COMMUNITY_DIRECTORY_COMMIT = "634caef4b952838281c8c602402e657d41074703";
-const PUBLIC_BASE_COMMIT = "8a18849f932621c38795f4358560b07326dd9ad3";
+const PRIOR_PUBLIC_PREVIEW_COMMIT = "7b964e79d48e6863892140780cea2b26db764439";
+const PRIOR_PUBLIC_PREVIEW_TAG = "v0.1.0-preview.1";
 
 type JsonObject = Readonly<Record<string, unknown>>;
 
 function expectedProfile(version: string): JsonObject {
   const tag = `v${version}`;
   return {
-    schema: "dacs-forge-preview-profile/v1",
+    schema: "dacs-forge-preview-profile/v2",
     version,
     tag,
     maturity: "unsupported-final-preview",
     supported: false,
     repository: "https://github.com/mj-deving/dacs-forge",
-    priorPublicAuthority: PUBLIC_BASE_COMMIT,
+    priorPublicAuthority: PRIOR_PUBLIC_PREVIEW_COMMIT,
     sourceBinding: {
       kind: "git-tag-and-live-readback",
       requiredRef: `refs/tags/${tag}`,
       candidateCommitAuthority: "approval-envelope",
+    },
+    releaseImmutability: {
+      required: true,
+      activationScope: "future-releases-only",
+      activationRequest: {
+        method: "PUT",
+        endpoint: "/repos/mj-deving/dacs-forge/immutable-releases",
+        apiVersion: "2026-03-10",
+        authentication: "repository-administration-write",
+        expectedStatus: 204,
+      },
+      readbackRequest: {
+        method: "GET",
+        endpoint: "/repos/mj-deving/dacs-forge/immutable-releases",
+        apiVersion: "2026-03-10",
+        authentication: "repository-administration-read",
+        expectedStatus: 200,
+        expectedBody: { enabled: true, enforced_by_owner: false },
+      },
+      publicationMode: "draft-then-publish",
+      verificationCommand: `gh release verify ${tag} --repo mj-deving/dacs-forge`,
+      predecessor: {
+        tag: PRIOR_PUBLIC_PREVIEW_TAG,
+        commit: PRIOR_PUBLIC_PREVIEW_COMMIT,
+        releaseImmutable: false,
+      },
     },
     pins: {
       dacsStandard: { tag: "v0.4", commit: DACS_RELEASE_COMMIT },
@@ -109,14 +136,14 @@ export function verifyPreviewRepository(root: string): Readonly<{
 }> {
   const candidateCommit = git(root, ["rev-parse", "--verify", "HEAD"]);
   if (!/^[0-9a-f]{40}$/.test(candidateCommit)) throw new Error("Preview candidate commit is invalid");
-  git(root, ["merge-base", "--is-ancestor", PUBLIC_BASE_COMMIT, candidateCommit]);
+  git(root, ["merge-base", "--is-ancestor", PRIOR_PUBLIC_PREVIEW_COMMIT, candidateCommit]);
   if (git(root, ["status", "--porcelain=v1", "--untracked-files=all"]) !== "") {
     throw new Error("Preview candidate worktree is not clean");
   }
   return Object.freeze({
     schema: "dacs-forge-preview-repository-verification/v1",
     candidateCommit,
-    priorPublicAuthority: PUBLIC_BASE_COMMIT,
+    priorPublicAuthority: PRIOR_PUBLIC_PREVIEW_COMMIT,
   });
 }
 

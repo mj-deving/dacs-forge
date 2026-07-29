@@ -7,6 +7,27 @@ and release versions follow [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## [0.1.0-preview.2] - 2026-07-29
+
+Replacement unsupported final Preview candidate. It retains the complete
+`preview.1` product behavior, removes reference-service field coupling from the
+extension qualification rig, and requires GitHub release immutability before
+draft publication. No Product Seal, production, registration, live-value,
+certification, or steward-endorsement claim.
+
+### Fixed
+
+- Derive generic service-runtime test types and vectors from the configured
+  extension fixture instead of the reference JSON-transform schema.
+- Make receipt-signature mutation change decoded signature bytes reliably.
+
+### Release integrity
+
+- Preserve `v0.1.0-preview.1` as historical non-immutable provenance.
+- Require repository release immutability, draft-to-publish release creation,
+  exact tag/commit/CI/clone readback, and successful `gh release verify` for
+  `v0.1.0-preview.2`.
+
 ## [0.1.0-preview.1] - 2026-07-29
 
 Unsupported final Preview for the first Product Seal upgrade probe. Fixture/no-spend

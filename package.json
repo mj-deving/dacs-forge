@@ -1,6 +1,6 @@
 {
   "name": "dacs-forge",
-  "version": "0.1.0-preview.1",
+  "version": "0.1.0-preview.2",
   "description": "Deterministic no-spend DACS service and conformance substrate for extension-only service implementations.",
   "private": true,
   "license": "MIT",

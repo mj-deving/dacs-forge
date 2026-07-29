@@ -74,8 +74,8 @@ describe("final Preview candidate profile", () => {
   test("binds version, tag, released DACS, Community, capability, and rig authority", () => {
     expect(verifyPreviewProfile(profile, packageMetadata, provenance)).toEqual({
       schema: "dacs-forge-preview-profile-verification/v1",
-      version: "0.1.0-preview.1",
-      tag: "v0.1.0-preview.1",
+      version: "0.1.0-preview.2",
+      tag: "v0.1.0-preview.2",
       dacsCommit: "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091",
       communityCommit: "634caef4b952838281c8c602402e657d41074703",
     });
@@ -88,6 +88,13 @@ describe("final Preview candidate profile", () => {
       [["pins", "dacsStandard", "commit"], "0".repeat(40)],
       [["capabilities", "livePayment"], "implemented"],
       [["rig", "commands"], []],
+      [["releaseImmutability", "activationRequest", "method"], "POST"],
+      [["releaseImmutability", "activationRequest", "expectedStatus"], 200],
+      [["releaseImmutability", "readbackRequest", "apiVersion"], "latest"],
+      [["releaseImmutability", "readbackRequest", "expectedBody", "enabled"], false],
+      [["releaseImmutability", "readbackRequest", "expectedBody", "enforced_by_owner"], true],
+      [["releaseImmutability", "publicationMode"], "direct-publish"],
+      [["releaseImmutability", "predecessor", "releaseImmutable"], true],
       [["claims", "productSeal"], true],
     ] as const) {
       const changed = structuredClone(profile) as MutableJsonObject;

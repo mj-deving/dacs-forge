@@ -137,7 +137,7 @@
     },
     {
       "path": "scripts/verify-preview-profile.ts",
-      "sha256": "b417d9fde66fe8b7703c8e45521cce7fc3583dc86b761daa3bdd29f98017f14a"
+      "sha256": "34a56bb3d5124f206fb90b580a73fb77a4c1394687198d86aadf0877a0849a25"
     },
     {
       "path": "scripts/verify-public-export.ts",
@@ -573,11 +573,11 @@
     },
     {
       "path": "test/cli/doctor-bin.test.ts",
-      "sha256": "7d6389aafdf0fc65f065ce5b0e31a092d2d36a1be4a0d76d2b4979c75f58203a"
+      "sha256": "725a81d24bcfec463d5bffc942b00cfe7196639a7bc01081961b965e74ad653c"
     },
     {
       "path": "test/cli/doctor.test.ts",
-      "sha256": "14bd61abab09cb46da02153fd6b2e4f8385a1847c984e5622900ff3b47cbb7d2"
+      "sha256": "206b9fcf539a74cc6432a3c3a9074bdae0f8b5dd3099a7dfafa96e11929441c1"
     },
     {
       "path": "test/cli/registration-gate.test.ts",
@@ -649,7 +649,7 @@
     },
     {
       "path": "test/container/fixture-runtime.test.ts",
-      "sha256": "37f695229283db0a93e27f9fb8e502abface7bb6fdb322b23993046ef76b3ba2"
+      "sha256": "3e3399c36ca8e38d2ab4c4ad172a4b4c3a8aeb89813488beae8ff749b5de17bf"
     },
     {
       "path": "test/container/supply-chain.test.ts",
@@ -949,7 +949,7 @@
     },
     {
       "path": "test/http/readiness-server.test.ts",
-      "sha256": "345f4c9a40448ca25894bc61a3079eb893d3d88480e38cd658b6a6caeb16b172"
+      "sha256": "4dbef18172300a5f27fbba334068b85b944f46184a72a3e2d869f08b0a0dc8bb"
     },
     {
       "path": "test/integration/cohort-root-exports.test.ts",
@@ -1077,7 +1077,7 @@
     },
     {
       "path": "test/release/preview-candidate.test.ts",
-      "sha256": "db1060e0abbedf7b967c7a5a118f9d2adb629cd50a20ec9f5e7dc6c62d8b3459"
+      "sha256": "1b86f6c61872169366ddf7b9d8ca8d6689f15fc6a2aac92bef26b90f364d8e07"
     },
     {
       "path": "test/runtime/active-write-shutdown.test.ts",
@@ -1315,7 +1315,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "fae9b13919701b3b4b2b7a71a2cbbfa3be280ddf85d3614fabb48068ebcc9904"
+      "sha256": "84c2d9132aae4c502c9879f36d64ada39933c9500ff640a54fa94adcab44d77a"
     },
     {
       "path": "compose.yaml",
@@ -1355,7 +1355,7 @@
     },
     {
       "path": "docs/VERSIONING.md",
-      "sha256": "69455b7a426e50d7a37d440d1ccacc1f9713ca4d19154b63f285dde71c6d87d9"
+      "sha256": "ed4e02cae5422f2c4fccc881ee4d72df36f678ce9349739cfba44ce3305bf43d"
     },
     {
       "path": "GOVERNANCE.md",
@@ -1363,7 +1363,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "c2d5a26661a4771d3eb8159ef90e49b12a411a87376b13492b28a8fe6c2323e9"
+      "sha256": "aceb1ea180e50de9df47554832cb6891eb1092bbefbc655d713d7dae158ea72a"
     },
     {
       "path": "README.md",
@@ -1371,7 +1371,7 @@
     },
     {
       "path": "release/preview-profile.json",
-      "sha256": "4b5670a00d86c08eafe0523be6bcd91001da1e98334bb67a904eedce3cfbfc40"
+      "sha256": "61f43e59149d42340582aad6635d8a096381334955a684859abc18e18ea42126"
     },
     {
       "path": "SECURITY.md",
