@@ -54,7 +54,7 @@ function parseFlags(args: readonly string[]): Record<string, string> {
       || value.startsWith("--")) throw new RegistrationCliUsageError("Registration flags require values");
     const key = name.slice(2);
     if (!/^[a-z]+$/.test(key) || Object.hasOwn(flags, key)) {
-      throw new RegistrationCliUsageError(`Invalid or repeated registration flag: ${name}`);
+      throw new RegistrationCliUsageError("Invalid or repeated registration flag");
     }
     flags[key] = value;
   }

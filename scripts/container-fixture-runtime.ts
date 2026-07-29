@@ -3,9 +3,11 @@
 import { startReadinessServer } from "../src/http/readiness-server.ts";
 
 const HEALTH_URL = "http://127.0.0.1:3000/healthz";
+const BOUNDARY_MARKER_PATTERN = /^sentinel-[a-z0-9-]{1,32}-[0-9a-f]{32}$/;
 const PROOF_TESTS = Object.freeze([
   "test/runtime/service-runtime.test.ts",
   "test/e2e/full-handshake.test.ts",
+  "test/security/secret-boundary.test.ts",
 ]);
 
 export interface ContainerFixtureReceipt {
@@ -69,6 +71,10 @@ export function normalizeHealthDocument(value: unknown): Readonly<Record<string,
 }
 
 async function runFixtureProof(): Promise<void> {
+  const boundaryMarker = Bun.env["DACS_FORGE_SECRET_SENTINEL"];
+  if (typeof boundaryMarker !== "string" || !BOUNDARY_MARKER_PATTERN.test(boundaryMarker)) {
+    throw new Error("Container fixture proof requires a valid boundary marker");
+  }
   const process = Bun.spawn([
     "bun",
     "test",
@@ -79,6 +85,7 @@ async function runFixtureProof(): Promise<void> {
     cwd: "/app",
     env: {
       DACS_EVIDENCE_MODE: "fixture",
+      DACS_FORGE_SECRET_SENTINEL: boundaryMarker,
       HOME: "/runtime",
       PATH: Bun.env["PATH"] ?? "/usr/local/bin:/usr/bin:/bin",
       TMPDIR: "/runtime",

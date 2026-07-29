@@ -110,7 +110,7 @@ function parseFlags(args: readonly string[]): Record<string, string> {
       || value.startsWith("--")) throw new AuthorityCliUsageError("Authority flags require values");
     const key = name.slice(2);
     if (!/^[a-z]+$/.test(key) || Object.hasOwn(flags, key)) {
-      throw new AuthorityCliUsageError(`Invalid or repeated authority flag: ${name}`);
+      throw new AuthorityCliUsageError("Invalid or repeated authority flag");
     }
     flags[key] = value;
   }

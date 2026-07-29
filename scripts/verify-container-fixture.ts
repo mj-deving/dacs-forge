@@ -10,7 +10,13 @@ const runContainer = `dacs-forge-run-${suffix}`;
 const composeProject = `dacsforge${process.pid}`;
 const path = Bun.env["PATH"] ?? "/usr/local/bin:/usr/bin:/bin";
 const home = Bun.env["HOME"] ?? "/tmp";
-const baseEnvironment = Object.freeze({ HOME: home, PATH: path });
+const boundaryMarker = Bun.env["DACS_FORGE_SECRET_SENTINEL"];
+const boundaryMarkerPattern = /^sentinel-[a-z0-9-]{1,32}-[0-9a-f]{32}$/;
+const baseEnvironment = Object.freeze({
+  HOME: home,
+  PATH: path,
+  ...(boundaryMarker === undefined ? {} : { DACS_FORGE_SECRET_SENTINEL: boundaryMarker }),
+});
 const composeEnvironment = Object.freeze({
   ...baseEnvironment,
   DACS_FORGE_IMAGE: image,
@@ -29,9 +35,8 @@ function command(args: readonly string[], options: CommandOptions = {}): string 
     stdout: "pipe",
   });
   const stdout = result.stdout.toString("utf8");
-  const stderr = result.stderr.toString("utf8");
   if (result.exitCode !== 0 && !options.allowFailure) {
-    throw new Error(`${args.join(" ")} failed (${result.exitCode})\n${stdout}${stderr}`);
+    throw new Error(`${args.join(" ")} failed (${result.exitCode})`);
   }
   return stdout;
 }
@@ -53,6 +58,7 @@ export function parseContainerFixtureReceipt(output: string): ContainerFixtureRe
     tests: [
       "test/runtime/service-runtime.test.ts",
       "test/e2e/full-handshake.test.ts",
+      "test/security/secret-boundary.test.ts",
     ],
     effects: {
       analytics: 0,
@@ -101,7 +107,7 @@ async function waitHealthy(container: string): Promise<void> {
   for (let attempt = 0; attempt < 60; attempt += 1) {
     const state = command(["docker", "inspect", "--format", "{{.State.Health.Status}}", container]).trim();
     if (state === "healthy") return;
-    if (state === "unhealthy") throw new Error(`Container became unhealthy\n${command(["docker", "logs", container])}`);
+    if (state === "unhealthy") throw new Error("Container became unhealthy");
     await Bun.sleep(500);
   }
   throw new Error("Container did not become healthy within 30 seconds");
@@ -119,6 +125,9 @@ function composeDown(allowFailure = false): void {
 }
 
 async function verify(): Promise<void> {
+  if (typeof boundaryMarker !== "string" || !boundaryMarkerPattern.test(boundaryMarker)) {
+    throw new Error("Container fixture verification requires a valid boundary marker");
+  }
   command(["docker", "version", "--format", "{{.Server.Version}}"]);
   const composeVersion = command(["docker", "compose", "version", "--short"]).trim();
   const startedAt = performance.now();
@@ -127,6 +136,7 @@ async function verify(): Promise<void> {
   const selfTestStartedAt = performance.now();
   const selfTestReceipt = parseContainerFixtureReceipt(command([
     "docker", "run", "--rm",
+    "--env", "DACS_FORGE_SECRET_SENTINEL",
     "--network", "none",
     "--read-only",
     "--tmpfs", "/runtime:rw,noexec,nosuid,nodev,uid=1000,gid=1000,mode=0700",
@@ -136,6 +146,7 @@ async function verify(): Promise<void> {
 
   command([
     "docker", "run", "--detach", "--name", runContainer,
+    "--env", "DACS_FORGE_SECRET_SENTINEL",
     "--network", "none",
     "--read-only",
     "--tmpfs", "/runtime:rw,noexec,nosuid,nodev,uid=1000,gid=1000,mode=0700",

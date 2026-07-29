@@ -15,6 +15,7 @@ describe("container fixture runtime contract", () => {
       tests: [
         "test/runtime/service-runtime.test.ts",
         "test/e2e/full-handshake.test.ts",
+        "test/security/secret-boundary.test.ts",
       ],
       effects: {
         analytics: 0,
@@ -61,6 +62,27 @@ describe("container fixture runtime contract", () => {
   test("refuses unknown commands without starting a runtime", async () => {
     expect(await main(["publish"])).toBe(2);
     expect(await main([])).toBe(2);
+  });
+
+  test("refuses a missing or path-unsafe external boundary marker", async () => {
+    const previous = process.env["DACS_FORGE_SECRET_SENTINEL"];
+    try {
+      for (const marker of [undefined, `sentinel-${"x".repeat(33)}-${"a".repeat(32)}`]) {
+        if (marker === undefined) delete process.env["DACS_FORGE_SECRET_SENTINEL"];
+        else process.env["DACS_FORGE_SECRET_SENTINEL"] = marker;
+        let diagnostic = "";
+        try {
+          await main(["self-test"]);
+        } catch (error) {
+          diagnostic = error instanceof Error ? error.message : "non-error failure";
+        }
+        expect(diagnostic.includes("requires a valid boundary marker")).toBe(true);
+        if (marker !== undefined) expect(diagnostic.includes(marker)).toBe(false);
+      }
+    } finally {
+      if (previous === undefined) delete process.env["DACS_FORGE_SECRET_SENTINEL"];
+      else process.env["DACS_FORGE_SECRET_SENTINEL"] = previous;
+    }
   });
 
   test("requires the exact complete fixture receipt", () => {

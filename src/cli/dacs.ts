@@ -214,7 +214,7 @@ function parseDoctorArgs(args: readonly string[]): {
     } else if (arg === "--help" || arg === "-h") {
       throw new UsageError(trimEnd(USAGE));
     } else {
-      throw new UsageError(`Unknown option: ${arg}`);
+      throw new UsageError("Unknown doctor option");
     }
   }
   return intrinsicFreeze({ json, evidenceMode });
@@ -260,7 +260,7 @@ export async function runCli(
     }
     if (snapshot[0] !== "doctor") {
       throw new UsageError(snapshot.length === 0
-        ? "A command is required" : `Unknown command: ${snapshot[0]}`);
+        ? "A command is required" : "Unknown command");
     }
     const parsed = parseDoctorArgs(tail(snapshot));
     const report = runDoctor({ evidenceMode: parsed.evidenceMode });

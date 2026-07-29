@@ -3,6 +3,8 @@ services:
     build:
       context: .
     image: ${DACS_FORGE_IMAGE:-dacs-forge:fixture-local}
+    environment:
+      - DACS_FORGE_SECRET_SENTINEL
     init: true
     network_mode: none
     read_only: true

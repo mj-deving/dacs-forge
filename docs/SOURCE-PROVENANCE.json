@@ -105,7 +105,7 @@
     },
     {
       "path": "scripts/container-fixture-runtime.ts",
-      "sha256": "ca0237afc25fe9257fee2011e6a019215b9342efb6a2a4255d912c9d60611e1d"
+      "sha256": "1161ae648feb4babd920662a41048f73d252e4345ac6d6493268972c53fa8e81"
     },
     {
       "path": "scripts/container-supply-chain.ts",
@@ -124,8 +124,12 @@
       "sha256": "9eb46db69fad1c2d6746dabf9ed5da08e7c1b7f712d473424b3905e8f28316b6"
     },
     {
+      "path": "scripts/scan-secret-sentinel.ts",
+      "sha256": "6c02f8276e09ae2891c6dea4065922663ce92299ccef8e0e77c6bbd4e46e3b00"
+    },
+    {
       "path": "scripts/verify-container-fixture.ts",
-      "sha256": "6cdbfe3dda0b78206364ce5f3c2cfeddd3c7e3e6f134c7eeb48452fdec9fb8f1"
+      "sha256": "035c5066c3e4e424e29b0bf3312ea81b47faf7ddd12d7ffe6b2f606fc262c335"
     },
     {
       "path": "scripts/verify-exemplar-diff.ts",
@@ -133,15 +137,15 @@
     },
     {
       "path": "src/cli/authority.ts",
-      "sha256": "ab80515edebceeb420110960fcca656ed8a5e3bd4011108fb067d84609f20ded"
+      "sha256": "c49b8de52210eab60a583bc395a29a307efa2d7e9bcd75e5f062bf125f366097"
     },
     {
       "path": "src/cli/dacs.ts",
-      "sha256": "ff78b2bfe05449209a20cef329c2a9b901b311d38be57937f96cb71cd6afca32"
+      "sha256": "04948b04413a9a8587c4f2fbdaa1f8639544ab9bf746a91962c7875f6b557022"
     },
     {
       "path": "src/cli/registration.ts",
-      "sha256": "74e4d897a2aebbe73257a524f1a3a7260e91144908dc72df07c5aee329ca6ca3"
+      "sha256": "f206410b980a80238d548ceac3df9a83d3bb5b2e95767da210e29aa61e407de9"
     },
     {
       "path": "src/compat/legacy-listing.ts",
@@ -637,7 +641,7 @@
     },
     {
       "path": "test/container/fixture-runtime.test.ts",
-      "sha256": "fc7acae0973adeba54e4380824967190d2ce288ee11cfe4a36bb7725037fb9ea"
+      "sha256": "4d78c9c5d1f617ff54eb9e806ce052d895ce827d9cc7eeff4b6c1ceae5c62989"
     },
     {
       "path": "test/container/supply-chain.test.ts",
@@ -1108,6 +1112,10 @@
       "sha256": "b63a70cb4f6e676f267b4bb49a1dfac41b736645b5b0c7d7b5153045d4228194"
     },
     {
+      "path": "test/security/secret-boundary.test.ts",
+      "sha256": "590c4c05ee5061a6d66f64aa8f3230614052f0a1111514c2cc3e46ebbd5366a6"
+    },
+    {
       "path": "test/security/post-revocation-signature.test.ts",
       "sha256": "dbfd3ef76a26293207b3ddfde711d377f7b66e0964aff2f771db3d0ed0c2d124"
     },
@@ -1323,7 +1331,7 @@
     },
     {
       "path": "compose.yaml",
-      "sha256": "b276ea6d0882af37aa0250ba5712d26c2f4d0e55fcbc9db141b6d2a679f13329"
+      "sha256": "7e7eaf80b4e3252964d861ba7d21f8e97c26aaca0180b06d620dc7f946a0ab9d"
     },
     {
       "path": "docs/ARCHITECTURE.md",
