@@ -38,6 +38,38 @@ function withTrackedFiles(files: Readonly<Record<string, string>>, run: (root: s
   }
 }
 
+function git(root: string, args: readonly string[]): string {
+  const result = spawnSync("git", args, { cwd: root, encoding: "utf8" });
+  if (result.status !== 0) throw new Error(`fixture git command failed: ${args[0] ?? "unknown"}`);
+  return result.stdout.trim();
+}
+
+function withDeletedHistoryFile(
+  path: string,
+  contents: string,
+  commitMessage: string,
+  run: (root: string, base: string) => void,
+): void {
+  const root = mkdtempSync(join(tmpdir(), "dacs-forge-public-history-"));
+  try {
+    git(root, ["init", "--quiet"]);
+    writeFileSync(resolve(root, "README.md"), "public base\n");
+    git(root, ["add", "."]);
+    git(root, ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "--quiet", "-m", "base"]);
+    const base = git(root, ["rev-parse", "HEAD"]);
+    mkdirSync(resolve(root, path, ".."), { recursive: true });
+    writeFileSync(resolve(root, path), contents);
+    git(root, ["add", "."]);
+    git(root, ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "--quiet", "-m", commitMessage]);
+    rmSync(resolve(root, path));
+    git(root, ["add", "-u"]);
+    git(root, ["-c", "user.name=Fixture", "-c", "user.email=fixture@example.invalid", "commit", "--quiet", "-m", "remove temporary file"]);
+    run(root, base);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
+}
+
 describe("final Preview candidate profile", () => {
   test("binds version, tag, released DACS, Community, capability, and rig authority", () => {
     expect(verifyPreviewProfile(profile, packageMetadata, provenance)).toEqual({
@@ -69,8 +101,9 @@ describe("public export boundary", () => {
   test("accepts regular tracked public source files", () => {
     withTrackedFiles({ "README.md": "public source\n", "src/index.ts": "export const value = 1;\n" }, (root) => {
       expect(verifyPublicExport(root)).toMatchObject({
-        schema: "dacs-forge-public-export-verification/v1",
+        schema: "dacs-forge-public-export-verification/v2",
         trackedFiles: 2,
+        history: null,
       });
     });
   });
@@ -82,6 +115,20 @@ describe("public export boundary", () => {
     const localPath = ["/", "home", "/", "mj", "/", "projects", "/", "private"].join("");
     withTrackedFiles({ "README.md": `${localPath}\n` }, (root) => {
       expect(() => verifyPublicExport(root)).toThrow("local-home-path");
+    });
+  });
+
+  test("rejects private paths, blob bytes, and messages deleted before the candidate tree", () => {
+    withDeletedHistoryFile("ISA.md", "temporary control\n", "temporary control", (root, base) => {
+      expect(() => verifyPublicExport(root, base)).toThrow("forbidden path");
+    });
+    const localPath = ["/", "home", "/", "mj", "/", "projects", "/", "private"].join("");
+    withDeletedHistoryFile("notes.txt", `${localPath}\n`, "temporary note", (root, base) => {
+      expect(() => verifyPublicExport(root, base)).toThrow("history blob");
+    });
+    const privateMessage = ["goal", "_thread_id", " copied"].join("");
+    withDeletedHistoryFile("notes.txt", "temporary note\n", privateMessage, (root, base) => {
+      expect(() => verifyPublicExport(root, base)).toThrow("commit");
     });
   });
 });
