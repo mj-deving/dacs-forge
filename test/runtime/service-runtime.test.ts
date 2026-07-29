@@ -3,11 +3,7 @@ import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { serviceContract } from "../../service/service.config.ts";
-import {
-  handler,
-  type ReferenceTransformInput,
-  type ReferenceTransformOutput,
-} from "../../service/handler.ts";
+import { handler } from "../../service/handler.ts";
 import { BASIC_FIXTURE } from "../../service/fixtures/basic.ts";
 import { verifyWorkProductReceiptJson } from "../../src/consumer/work-product-receipt-verifier.ts";
 import { canonicalize } from "../../src/protocol/canonical-json.ts";
@@ -29,6 +25,8 @@ import { fixtureSigner } from "../fixtures/reference-listing.ts";
 import { createFixtureEd25519Signer } from "../../src/producer/fixture-ed25519.ts";
 
 const directories: string[] = [];
+type FixtureInput = Parameters<typeof handler>[0];
+type FixtureOutput = Awaited<ReturnType<typeof handler>>;
 
 afterEach(async () => {
   await Promise.all(directories.splice(0).map((path) => rm(path, { force: true, recursive: true })));
@@ -38,7 +36,7 @@ describe("builder-owned service runtime", () => {
   test("rejects invalid input before invoking the handler or persisting artifacts", async () => {
     const database = await openTestDatabase();
     let invocations = 0;
-    const contract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const contract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
       handler: (input, context) => {
         invocations += 1;
@@ -46,16 +44,9 @@ describe("builder-owned service runtime", () => {
       },
     });
     const runtime = serviceRuntime(database, { contract });
-    const invalidInputs = [
-      { document: { alpha: "one" } },
-      { document: { alpha: "one" }, select: [], extra: true },
-      { document: { alpha: 1 }, select: ["alpha"] },
-      { document: { alpha: Number.NaN }, select: ["alpha"] },
-    ];
-
-    for (const input of invalidInputs) {
+    for (const input of BASIC_FIXTURE.invalidInputs) {
       const error = await capture(runtime.run({
-        input: input as unknown as ReferenceTransformInput,
+        input: input as unknown as FixtureInput,
         jobId: BASIC_FIXTURE.jobId,
         seed: BASIC_FIXTURE.seed,
       }));
@@ -70,12 +61,11 @@ describe("builder-owned service runtime", () => {
   test("passes only the frozen documented request and context to builder code", async () => {
     const database = await openTestDatabase();
     let observedContext: readonly string[] = [];
-    const contract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const contract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
       handler: (input, context) => {
         expect(Object.isFrozen(input)).toBe(true);
-        expect(Object.isFrozen(input.document)).toBe(true);
-        expect(Object.isFrozen(input.select)).toBe(true);
+        expectJsonFrozen(input);
         expect(Object.isFrozen(context)).toBe(true);
         observedContext = Object.keys(context).sort();
         return handler(input, context);
@@ -150,13 +140,15 @@ describe("builder-owned service runtime", () => {
       seller: fixtureSigner().signer,
     });
 
-    const changedOutput = canonicalize({ ...result.output, selected: { alpha: "changed" } });
+    const changedOutput = canonicalize({ changed: true, original: result.output });
     expect(verifyWorkProductReceiptJson(receiptJson, inputJson, changedOutput).disposition)
       .toBe("rejected");
     const badSignature = structuredClone(result.receipt) as unknown as {
       signature: { value: string };
     };
-    badSignature.signature.value = `${badSignature.signature.value.slice(0, -2)}AA`;
+    const signatureBytes = Buffer.from(badSignature.signature.value, "base64url");
+    signatureBytes[0] = signatureBytes[0]! ^ 1;
+    badSignature.signature.value = signatureBytes.toString("base64url");
     expect(verifyWorkProductReceiptJson(
       canonicalize(badSignature), inputJson, outputJson,
     )).toMatchObject({ disposition: "rejected", stage: "signature" });
@@ -186,9 +178,9 @@ describe("builder-owned service runtime", () => {
 
   test("rejects invalid handler output without persisting a partial work product", async () => {
     const database = await openTestDatabase();
-    const contract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const contract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
-      handler: () => ({ selected: {} }) as unknown as ReferenceTransformOutput,
+      handler: () => BASIC_FIXTURE.invalidOutput as unknown as FixtureOutput,
     });
     const error = await capture(serviceRuntime(database, { contract }).run({
       input: BASIC_FIXTURE.input,
@@ -206,7 +198,7 @@ describe("builder-owned service runtime", () => {
   test("requires an admitted, mode-matching session before handler execution", async () => {
     const database = await openTestDatabase();
     let invocations = 0;
-    const contract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const contract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
       handler: (input, context) => {
         invocations += 1;
@@ -239,19 +231,15 @@ describe("builder-owned service runtime", () => {
   test("binds handler execution to the exact input hash signed at admission", async () => {
     const database = await openTestDatabase();
     let invocations = 0;
-    const contract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const contract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
       handler: (input, context) => {
         invocations += 1;
         return handler(input, context);
       },
     });
-    const changedInput = {
-      document: { alpha: "changed", beta: "two" },
-      select: BASIC_FIXTURE.input.select,
-    };
     const error = await capture(serviceRuntime(database, { contract }).run({
-      input: changedInput,
+      input: BASIC_FIXTURE.alternateInput,
       jobId: BASIC_FIXTURE.jobId,
       seed: BASIC_FIXTURE.seed,
     }));
@@ -265,7 +253,7 @@ describe("builder-owned service runtime", () => {
   test("binds output-affecting fixture seed to the admitted request hash", async () => {
     const database = await openTestDatabase();
     let invocations = 0;
-    const contract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const contract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
       handler: (input, context) => {
         invocations += 1;
@@ -284,27 +272,23 @@ describe("builder-owned service runtime", () => {
     database.close();
   });
 
-  test("treats prototype-named selections as missing unless explicitly owned", async () => {
-    const database = await openTestDatabase();
-    const input: ReferenceTransformInput = {
-      document: {},
-      select: ["toString", "__proto__"],
-    };
-    const runtime = serviceRuntime(database, {
-      sessionStore: sessionLookup(
-        "fixture",
-        serviceRequestHash(serviceContract, input, BASIC_FIXTURE.seed),
-      ),
-    });
-    const result = await runtime.run({
-      input,
-      jobId: BASIC_FIXTURE.jobId,
-      seed: BASIC_FIXTURE.seed,
-    });
-
-    expect(result.output.selected).toEqual({});
-    expect(result.output.missing).toEqual(["__proto__", "toString"]);
-    database.close();
+  test("executes extension-owned service behavior vectors", async () => {
+    for (const vector of BASIC_FIXTURE.behaviorVectors) {
+      const database = await openTestDatabase();
+      const runtime = serviceRuntime(database, {
+        sessionStore: sessionLookup(
+          "fixture",
+          serviceRequestHash(serviceContract, vector.input, BASIC_FIXTURE.seed),
+        ),
+      });
+      const result = await runtime.run({
+        input: vector.input,
+        jobId: BASIC_FIXTURE.jobId,
+        seed: BASIC_FIXTURE.seed,
+      });
+      expect(result.output).toEqual(vector.output);
+      database.close();
+    }
   });
 
   test("replays the original receipt without re-running the handler or clock", async () => {
@@ -312,7 +296,7 @@ describe("builder-owned service runtime", () => {
     let invocations = 0;
     let clockCalls = 0;
     let entropyCalls = 0;
-    const contract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const contract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
       handler: (input, context) => {
         invocations += 1;
@@ -415,7 +399,7 @@ describe("builder-owned service runtime", () => {
     let reportEntered = (): void => {};
     const gate = new Promise<void>((resolve) => { releaseHandler = resolve; });
     const entered = new Promise<void>((resolve) => { reportEntered = resolve; });
-    const contract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const contract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
       handler: async (input, context) => {
         invocations += 1;
@@ -457,7 +441,7 @@ describe("builder-owned service runtime", () => {
   test("releases an ordinary failed handler claim for an explicit retry", async () => {
     const database = await openTestDatabase();
     let invocations = 0;
-    const contract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const contract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
       handler: (input, context) => {
         invocations += 1;
@@ -485,7 +469,7 @@ describe("builder-owned service runtime", () => {
   test("rejects an admitted request after service contract version drift", async () => {
     const database = await openTestDatabase();
     let invocations = 0;
-    const changedContract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const changedContract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
       service: { ...serviceContract.service, version: "1.0.1" },
       handler: (input, context) => {
@@ -535,20 +519,34 @@ describe("builder-owned service runtime", () => {
 
   test("registers standard JSON Schema formats and rejects unknown ones at startup", async () => {
     const database = await openTestDatabase();
-    const outputSchema = structuredClone(serviceContract.output.schema) as Record<string, unknown>;
-    const outputProperties = outputSchema["properties"] as Record<string, Record<string, unknown>>;
-    outputProperties["seed"] = { ...outputProperties["seed"], format: "date-time" };
-    const formattedContract = defineServiceContract<ReferenceTransformInput, ReferenceTransformOutput>({
+    const outputSchema = {
+      $id: "urn:dacs:forge:runtime-format-probe",
+      type: "object",
+      additionalProperties: false,
+      properties: {
+        value: { type: "string", format: "date-time" },
+      },
+      required: ["value"],
+    };
+    const formattedContract = defineServiceContract<FixtureInput, FixtureOutput>({
       ...serviceContract,
-      output: { ...serviceContract.output, schema: outputSchema },
+      output: {
+        ...serviceContract.output,
+        id: outputSchema.$id,
+        schema: outputSchema,
+      },
     });
     expect(() => serviceRuntime(database, { contract: formattedContract })).not.toThrow();
 
-    outputProperties["seed"] = { ...outputProperties["seed"], format: "unknown-format" };
-    const unknownFormatContract = defineServiceContract<
-      ReferenceTransformInput,
-      ReferenceTransformOutput
-    >({ ...serviceContract, output: { ...serviceContract.output, schema: outputSchema } });
+    outputSchema.properties.value = { type: "string", format: "unknown-format" };
+    const unknownFormatContract = defineServiceContract<FixtureInput, FixtureOutput>({
+      ...serviceContract,
+      output: {
+        ...serviceContract.output,
+        id: outputSchema.$id,
+        schema: outputSchema,
+      },
+    });
     expect(() => serviceRuntime(database, { contract: unknownFormatContract }))
       .toThrow(/unknown format/);
     database.close();
@@ -669,10 +667,10 @@ async function openTestDatabase(): Promise<DacsDatabase> {
 function serviceRuntime(
   database: DacsDatabase,
   overrides: Partial<ConstructorParameters<typeof ServiceRuntime<
-    ReferenceTransformInput,
-    ReferenceTransformOutput
+    FixtureInput,
+    FixtureOutput
   >>[0]> = {},
-): ServiceRuntime<ReferenceTransformInput, ReferenceTransformOutput> {
+): ServiceRuntime<FixtureInput, FixtureOutput> {
   database.query<never, Record<string, string>>(`
     INSERT INTO sessions (
       instance_id, audience, job_id, evidence_mode, admission_fingerprint,
@@ -697,6 +695,12 @@ function serviceRuntime(
     signer: fixtureSigner(),
     ...overrides,
   });
+}
+
+function expectJsonFrozen(value: unknown): void {
+  if (value === null || typeof value !== "object") return;
+  expect(Object.isFrozen(value)).toBe(true);
+  for (const child of Object.values(value)) expectJsonFrozen(child);
 }
 
 function sessionLookup(

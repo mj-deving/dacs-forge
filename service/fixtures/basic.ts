@@ -8,6 +8,31 @@ export const BASIC_FIXTURE = Object.freeze({
     document: Object.freeze({ alpha: "one", beta: "two" }),
     select: Object.freeze(["beta", "missing", "alpha"]),
   }) satisfies ReferenceTransformInput,
+  alternateInput: Object.freeze({
+    document: Object.freeze({ alpha: "changed", beta: "two" }),
+    select: Object.freeze(["beta", "missing", "alpha"]),
+  }) satisfies ReferenceTransformInput,
+  invalidInputs: Object.freeze([
+    Object.freeze({ document: Object.freeze({ alpha: "one" }) }),
+    Object.freeze({ document: Object.freeze({ alpha: "one" }), select: Object.freeze([]), extra: true }),
+    Object.freeze({ document: Object.freeze({ alpha: 1 }), select: Object.freeze(["alpha"]) }),
+    Object.freeze({ document: Object.freeze({ alpha: Number.NaN }), select: Object.freeze(["alpha"]) }),
+  ]),
+  invalidOutput: null,
+  behaviorVectors: Object.freeze([
+    Object.freeze({
+      input: Object.freeze({
+        document: Object.freeze({}),
+        select: Object.freeze(["toString", "__proto__"]),
+      }) satisfies ReferenceTransformInput,
+      output: Object.freeze({
+        evidenceMode: "fixture" as const,
+        missing: Object.freeze(["__proto__", "toString"]),
+        selected: Object.freeze({}),
+        seed: "reference-json-transform-v1",
+      }) satisfies ReferenceTransformOutput,
+    }),
+  ]),
   output: Object.freeze({
     evidenceMode: "fixture",
     missing: Object.freeze(["missing"]),
