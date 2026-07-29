@@ -136,7 +136,7 @@ export function verifyCanonicalVerifyResultJson(
   return Object.freeze({
     disposition: "verified",
     availability: expectation.availability,
-    contentHash: sha256(canonicalJson),
+    contentHash: semanticHash,
     decision,
     effectiveDecision: effectiveVetDecision(decision, expectation.availability),
     fetchedAt: value["fetchedAt"] as number,

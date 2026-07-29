@@ -1,6 +1,6 @@
 import { createHash } from "node:crypto";
 import { describe, expect, test } from "bun:test";
-import { canonicalize } from "../../src/protocol/canonical-json.ts";
+import { canonicalize, withoutFields } from "../../src/protocol/canonical-json.ts";
 import { sha256Hex } from "../../src/protocol/hash.ts";
 import {
   aggregateVetResults,
@@ -109,11 +109,17 @@ describe("DACS-2 Vet protocol core", () => {
     const verified = verifyResult(signed.canonicalJson, "live");
     expect(verified).toMatchObject({
       disposition: "verified",
+      contentHash: signed.contentHash,
       decision: "pass",
       effectiveDecision: "pass",
       verificationPerformed: true,
       logicalAddress: verifyResultLogicalAddress(JOB_ID, "key", evaluated.signer.slice(4), 1),
     });
+    expect(signed.contentHash).toBe(sha256Hex(canonicalize(withoutFields(
+      signed.verifyResult as Record<string, unknown>,
+      "signature",
+    ))));
+    expect(signed.contentHash).not.toBe(sha256Hex(signed.canonicalJson));
   });
 
   test("does not infer performed verification from an unsigned attestation reference", () => {
@@ -343,6 +349,11 @@ describe("DACS-2 Vet protocol core", () => {
       dealSpecific: [{ reference, scheme: "key", decision: "pass", availability: "live" }],
       generatedAt: NOW,
     }, verifier, CONTEXT);
+    expect(composite.contentHash).toBe(sha256Hex(canonicalize(withoutFields(
+      composite.record as Record<string, unknown>,
+      "signature",
+    ))));
+    expect(composite.contentHash).not.toBe(sha256Hex(composite.canonicalJson));
     const verified = verifyCanonicalCompositeVerificationRecordJson(composite.canonicalJson, {
       jobId: JOB_ID,
       evaluatedParty: evaluated.signer,

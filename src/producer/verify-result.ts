@@ -75,10 +75,11 @@ export function signVerifyResult(
     ...normalized,
     signature: { algorithm: "ed25519", signer: signer.signer, value: signature },
   }) as Readonly<Record<string, unknown>>;
+  const canonicalJson = canonicalize(verifyResult);
   return Object.freeze({
     verifyResult,
-    canonicalJson: canonicalize(verifyResult),
-    contentHash: sha256Hex(canonicalize(verifyResult)),
+    canonicalJson,
+    contentHash: semanticHash,
     decision: input.decision,
     availability,
   });

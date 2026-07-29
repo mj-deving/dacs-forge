@@ -1,5 +1,8 @@
 import { afterEach, describe, expect, test } from "bun:test";
 import { rm } from "node:fs/promises";
+import { canonicalize, withoutFields } from "../../src/protocol/canonical-json.ts";
+import { sha256Hex } from "../../src/protocol/hash.ts";
+import { ArtifactStore } from "../../src/substrate/sqlite/artifact-store.ts";
 import {
   FIXTURE_KEY_DEFAULT_MAX_AGE_SEC,
   FixtureVetConflictError,
@@ -308,6 +311,39 @@ describe("fixture bilateral Vet store", () => {
     expect(database.query<{ count: bigint }, []>(
       "SELECT count(*) AS count FROM fixture_anchors",
     ).get()!.count).toBe(8n);
+    const artifacts = new ArtifactStore(database);
+    for (const record of [buyer, seller]) {
+      const compositeContentHash = record.compositeReference["contentHash"];
+      expect(typeof compositeContentHash).toBe("string");
+      if (typeof compositeContentHash !== "string") throw new Error("Composite reference content hash is absent");
+      const compositeAnchor = database.query<{
+        contentHash: string; artifactContentHash: string | null;
+      }, { locator: string }>(`
+        SELECT content_hash AS contentHash, artifact_content_hash AS artifactContentHash
+        FROM fixture_anchors WHERE logical_address = $locator
+      `).get({ locator: record.compositeAddress });
+      expect(compositeAnchor).toEqual({
+        contentHash: compositeContentHash,
+        artifactContentHash: record.compositeArtifactHash,
+      });
+      expect(compositeAnchor!.contentHash).not.toBe(compositeAnchor!.artifactContentHash);
+
+      const verifyResultAnchor = database.query<{
+        contentHash: string; artifactContentHash: string | null;
+      }, { locator: string }>(`
+        SELECT content_hash AS contentHash, artifact_content_hash AS artifactContentHash
+        FROM fixture_anchors WHERE logical_address = $locator
+      `).get({ locator: record.verifyResultAddress });
+      const verifyResultJson = artifacts.get(record.verifyResultArtifactHash)!.canonicalJson;
+      expect(verifyResultAnchor).toEqual({
+        contentHash: sha256Hex(canonicalize(withoutFields(
+          JSON.parse(verifyResultJson) as Record<string, unknown>,
+          "signature",
+        ))),
+        artifactContentHash: record.verifyResultArtifactHash,
+      });
+      expect(verifyResultAnchor!.contentHash).not.toBe(verifyResultAnchor!.artifactContentHash);
+    }
     database.close();
 
     database = openLifecycleDatabase(path);

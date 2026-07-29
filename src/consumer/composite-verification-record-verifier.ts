@@ -155,9 +155,6 @@ export function verifyCanonicalCompositeVerificationRecordJson(
     }
     if (read.status === "absent" || read.status === "indeterminate") return indeterminate("reference", read.reason);
     if (read.status === "rejected") return rejected("reference", read.reason);
-    if (sha256(read.canonicalJson) !== reference["contentHash"]) {
-      return rejected("reference", "Composite VerifyResultRef content hash does not match");
-    }
     const verified = verifyCanonicalVerifyResultJson(read.canonicalJson, {
       availability: read.availability,
       expectedRecipeVersion: reference["recipeVersion"] as number,
@@ -167,6 +164,9 @@ export function verifyCanonicalCompositeVerificationRecordJson(
     });
     if (verified.disposition === "indeterminate") return indeterminate("reference", verified.reason);
     if (verified.disposition !== "verified") return rejected("reference", verified.reason);
+    if (verified.contentHash !== reference["contentHash"]) {
+      return rejected("reference", "Composite VerifyResultRef content hash does not match");
+    }
     let unresolvedRecipeAuthority: CompositeRecipeAuthorityRead;
     try {
       unresolvedRecipeAuthority = expectation.resolveRecipeAuthority(verified.scheme, verified.recipeVersion);
@@ -219,7 +219,7 @@ export function verifyCanonicalCompositeVerificationRecordJson(
   }
   return Object.freeze({
     disposition: "verified",
-    contentHash: sha256(canonicalJson),
+    contentHash: semanticHash,
     generatedAt: value["generatedAt"] as number,
     logicalAddress: compositeVerificationLogicalAddress(expectation.jobId, party),
     overallDecision: aggregation.decision,

@@ -101,7 +101,7 @@ export function signCompositeVerificationRecord(
   return Object.freeze({
     record,
     canonicalJson,
-    contentHash: sha256Hex(canonicalJson),
+    contentHash: semanticHash,
     overallDecision: aggregation.decision,
   });
 }

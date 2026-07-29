@@ -228,8 +228,6 @@ export class FixtureVetStore {
       record.requirementSourceContentHash,
     );
     assertAnchor(this.#database, assertion, record.assertionAddress, "dacs-x-fixture-key-possession");
-    assertAnchor(this.#database, verifyResult, record.verifyResultAddress, "dacs-2-verify-result");
-    assertAnchor(this.#database, composite, record.compositeAddress, "dacs-2-composite");
 
     const assertionVerification = verifyFixtureKeyPossessionJson(assertion.canonicalJson, {
       jobId: record.jobId,
@@ -265,11 +263,17 @@ export class FixtureVetStore {
     });
     if (verifiedResult.disposition !== "verified"
       || verifiedResult.logicalAddress !== record.verifyResultAddress
-      || verifiedResult.contentHash !== record.verifyResultArtifactHash
       || verifiedResult.fetchedAt !== record.generatedAt
       || verifiedResult.verifiedAt !== record.generatedAt) {
       throw new FixtureVetIntegrityError("Persisted VerifyResult is invalid or misbound");
     }
+    assertAnchorBinding(
+      this.#database,
+      verifyResult,
+      record.verifyResultAddress,
+      "dacs-2-verify-result",
+      verifiedResult.contentHash,
+    );
     const requirement = verifyPersistedRequirementAuthority(record, requirementSource.canonicalJson, admittedAt);
     const verifiedComposite = verifyCanonicalCompositeVerificationRecordJson(composite.canonicalJson, {
       jobId: record.jobId,
@@ -295,7 +299,7 @@ export class FixtureVetStore {
       resolveVerifyResult: (reference) => {
         const anchor = reference["anchor"] as Record<string, unknown>;
         return anchor?.["kind"] === "storage-program" && anchor["locator"] === record.verifyResultAddress
-          && reference["contentHash"] === verifyResult.contentHash
+          && reference["contentHash"] === verifiedResult.contentHash
           ? {
               status: "resolved" as const,
               availability: record.recipeAvailability,
@@ -306,12 +310,18 @@ export class FixtureVetStore {
     });
     if (verifiedComposite.disposition !== "verified"
       || verifiedComposite.logicalAddress !== record.compositeAddress
-      || verifiedComposite.contentHash !== record.compositeArtifactHash
       || verifiedComposite.generatedAt !== record.generatedAt
       || verifiedComposite.overallDecision !== record.overallDecision) {
       throw new FixtureVetIntegrityError("Persisted CompositeVerificationRecord is invalid or misbound");
     }
-    return record;
+    assertAnchorBinding(
+      this.#database,
+      composite,
+      record.compositeAddress,
+      "dacs-2-composite",
+      verifiedComposite.contentHash,
+    );
+    return rowToRecord(row, verifiedComposite.contentHash);
   }
 
   assertAgreementAuthority(
@@ -536,7 +546,7 @@ export class FixtureVetStore {
   #persistWithinTransaction(prepared: PreparedVet): void {
     const existing = this.#readRow(prepared.input.session, prepared.input.evaluatedRole);
     if (existing !== null) {
-      assertReplay(rowToRecord(existing), prepared);
+      assertReplay(rowToRecord(existing, prepared.composite.contentHash), prepared);
       return;
     }
     const requirementSourceKind = prepared.requirementSourceKind === "seller-listing"
@@ -562,8 +572,22 @@ export class FixtureVetStore {
       prepared.input.createdAt,
     );
     putAnchor(this.#database, prepared.assertion.logicalAddress, "dacs-x-fixture-key-possession", assertionArtifact, prepared.input.createdAt);
-    putAnchor(this.#database, prepared.verifyResultAddress, "dacs-2-verify-result", verifyResultArtifact, prepared.input.createdAt);
-    putAnchor(this.#database, prepared.compositeAddress, "dacs-2-composite", compositeArtifact, prepared.input.createdAt);
+    putAnchorWithContentHash(
+      this.#database,
+      prepared.verifyResultAddress,
+      "dacs-2-verify-result",
+      prepared.verifyResult.contentHash,
+      verifyResultArtifact,
+      prepared.input.createdAt,
+    );
+    putAnchorWithContentHash(
+      this.#database,
+      prepared.compositeAddress,
+      "dacs-2-composite",
+      prepared.composite.contentHash,
+      compositeArtifact,
+      prepared.input.createdAt,
+    );
     this.#database.query<never, Record<string, string | number>>(`
       /* atomic-write: vet.put-record */
       INSERT INTO fixture_vet_records (
@@ -976,7 +1000,7 @@ function assertAnchor(
   }
 }
 
-function rowToRecord(row: FixtureVetRow): FixtureVetRecord {
+function rowToRecord(row: FixtureVetRow, compositeContentHash = row.compositeArtifactHash): FixtureVetRecord {
   const generatedAt = Number(row.generatedAt);
   const recipeRegistryVersion = Number(row.recipeRegistryVersion);
   if (!Number.isSafeInteger(generatedAt) || !Number.isSafeInteger(recipeRegistryVersion)) {
@@ -988,7 +1012,7 @@ function rowToRecord(row: FixtureVetRow): FixtureVetRecord {
     recipeRegistryVersion,
     compositeReference: Object.freeze({
       anchor: Object.freeze({ kind: "storage-program", locator: row.compositeAddress }),
-      contentHash: row.compositeArtifactHash,
+      contentHash: compositeContentHash,
       signer: row.verifierParty,
     }),
   });
@@ -1011,9 +1035,9 @@ function assertReplay(record: FixtureVetRecord, prepared: PreparedVet): void {
     || record.assertionAddress !== prepared.assertion.logicalAddress
     || record.assertionArtifactHash !== prepared.assertion.contentHash
     || record.verifyResultAddress !== prepared.verifyResultAddress
-    || record.verifyResultArtifactHash !== prepared.verifyResult.contentHash
+    || record.verifyResultArtifactHash !== sha256Hex(prepared.verifyResult.canonicalJson)
     || record.compositeAddress !== prepared.compositeAddress
-    || record.compositeArtifactHash !== prepared.composite.contentHash
+    || record.compositeArtifactHash !== sha256Hex(prepared.composite.canonicalJson)
     || record.overallDecision !== prepared.composite.overallDecision
     || record.generatedAt !== prepared.input.generatedAt) {
     throw new FixtureVetConflictError("Fixture Vet role already anchors different immutable authority");

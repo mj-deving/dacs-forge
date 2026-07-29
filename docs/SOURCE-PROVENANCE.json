@@ -149,7 +149,7 @@
     },
     {
       "path": "src/consumer/composite-verification-record-verifier.ts",
-      "sha256": "1be21839d32a492fa9dcb33b21fe717b8584673f7cd36d3efb4e07234f9a6aa9"
+      "sha256": "e1e38e5a5f86e8e718413e317cb3fecbfa26e0d808f30bc5bd2133f96c6c477f"
     },
     {
       "path": "src/consumer/delivery-attestation-verifier.ts",
@@ -177,7 +177,7 @@
     },
     {
       "path": "src/consumer/verify-result-verifier.ts",
-      "sha256": "2fd5d6ca2dce3b28f57760bfc6824ca755847179150a5a8053ba39e095a7d034"
+      "sha256": "9240c90407d7fc3b47a13f295eb42c22042643dfa480069947a0488cf7d0c914"
     },
     {
       "path": "src/consumer/work-product-receipt-verifier.ts",
@@ -265,7 +265,7 @@
     },
     {
       "path": "src/producer/composite-verification-record.ts",
-      "sha256": "539675317dc64a99910811b59544984377ead4d69a75c1a41b8fc473d8dd555a"
+      "sha256": "8bad57ce340c6316012c685d9a9c9cb0142f3ad5e66e7afadd85bded394ca9c8"
     },
     {
       "path": "src/producer/delivery-attestation.ts",
@@ -293,7 +293,7 @@
     },
     {
       "path": "src/producer/verify-result.ts",
-      "sha256": "7749c9d24f92dc35f2484e1f6361cfa510459156042622f1e70c029e01a31233"
+      "sha256": "e0b021fbfe3cc80b637a330df28c2773aab8601df11017f5ce40fe2b23dccd2d"
     },
     {
       "path": "src/producer/work-product-receipt.ts",
@@ -393,7 +393,7 @@
     },
     {
       "path": "src/substrate/sqlite/fixture-bundle.ts",
-      "sha256": "c0e3c1689233d1b8ded9c5bce94863f8a59082d25bbc7005b1dab7402a4dad44"
+      "sha256": "005e72fa847c55a35f23f9d791dba17b2b70336cce254c5d028c7a90e0ba362f"
     },
     {
       "path": "src/substrate/sqlite/fixture-commitment.ts",
@@ -409,7 +409,7 @@
     },
     {
       "path": "src/substrate/sqlite/fixture-vet.ts",
-      "sha256": "8657856eb5898d26d1184ac688b3c71a1600703d502da22bd855e2333e8d7648"
+      "sha256": "65a46c7b694a2f6e32d5e93617a2f59b5d16eecd2967386a2412f69022291689"
     },
     {
       "path": "src/substrate/sqlite/listing-store.ts",
@@ -521,7 +521,7 @@
     },
     {
       "path": "test/conformance/vet-protocol.test.ts",
-      "sha256": "558628a9e8ccf33e03f710c8c47b94b7e191218a80696898eded8f36cc2f8897"
+      "sha256": "4da5495ea1429042f5eea57a5d447ef8aa7e1e5a22cb515d0510cc91d7833901"
     },
     {
       "path": "test/consumer/agreement-verifier.test.ts",
@@ -597,7 +597,7 @@
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "e275b09cacd375050b008da3b54751c123673de69c5205cf1ae2aa872b39dbbd"
+      "sha256": "b0b230af06c6119705810c513fb0dd91449106fd9d32c67e540df0902ded4d21"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -845,7 +845,7 @@
     },
     {
       "path": "test/lifecycle/fixture-vet-store.test.ts",
-      "sha256": "f0e9fc900d82fbfe3e2953411d26a95fd6a93f1b64a38303ce7cc40d43424cea"
+      "sha256": "dd3473de6b27eb7f8a4555243811b75f9cbeebf0888729f2ed1ef8b945e784c3"
     },
     {
       "path": "test/lifecycle/fixtures.ts",

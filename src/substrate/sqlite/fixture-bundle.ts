@@ -846,15 +846,18 @@ export class FixtureBundleStore {
         return Object.freeze({ status: "rejected" as const, reason: "Vet composite lacks its session authority row" });
       }
       const record = this.#vet.get(session, row.evaluatedRole);
+      const compositeContentHash = record?.compositeReference["contentHash"];
       return record !== null && record.compositeAddress === locator
-        && record.compositeArtifactHash === persisted.contentHash
+        && typeof compositeContentHash === "string"
+        && compositeContentHash === persisted.contentHash
+        && record.compositeArtifactHash === persisted.artifactContentHash
         && record.overallDecision === "pass"
         ? Object.freeze({
             status: "verified" as const,
             artifactType: "vet" as const,
             anchorKind: "storage-program",
             anchorLocator: locator,
-            contentHash: record.compositeArtifactHash,
+            contentHash: compositeContentHash,
             jobId: record.jobId,
             signer: record.verifierParty,
           })
