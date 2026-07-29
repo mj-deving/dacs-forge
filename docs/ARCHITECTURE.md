@@ -37,18 +37,18 @@ atomic SQLite write
                  v
 independent receipt verification and byte-identical replay after restart
 
-fixture protocol lifecycle (separate proof path)
+integrated fixture service lifecycle
   signed Listing -> bilateral Vet -> Agreement -> Commitment
-  -> fixture settlement -> attested delivery -> role-local DACS-5 bundles
+  -> handler output -> fixture settlement -> attested delivery -> role-local DACS-5 bundles
                  |
                  v
 independent consumers re-derive bytes, hashes, signatures, authority, and bindings
 ```
 
-The service runtime and the full protocol lifecycle are complementary. The runtime
-test executes the builder handler and produces its template work-product receipt.
-The full-handshake test exercises the wider DACS lifecycle, but does not execute
-that handler. A first-service check therefore runs both.
+The service runtime and full protocol lifecycle are joined by one admitted authority.
+The runtime test isolates the builder handler and template work-product receipt. The
+full-handshake test executes that handler, makes its canonical output the sole Delivery
+payload, and resolves it through the terminal bundles. A first-service check runs both.
 
 ## Service runtime
 
@@ -142,6 +142,7 @@ establish live identity, external source truth, reputation, or payment authority
 
 Implemented and locally exercised:
 
+- the integrated service entry point binds the Agreement request and service request into one admission authority, executes the handler before Delivery, rejects payload substitution, and replays persisted output and terminal lifecycle state without repeating effects;
 - the five-path service contract and handler runtime;
 - strict schemas, canonical artifacts, signed receipts, persistence, replay, and
   bounded stale-claim recovery;

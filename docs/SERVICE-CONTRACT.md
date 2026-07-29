@@ -52,6 +52,12 @@ confirmation. The transaction refuses fresh, replaced, mismatched, or completed 
 The completed ledger retains the original seller claim so replay remains verifiable
 after legitimate signer rotation.
 
+The integrated fixture entry point combines the Agreement request hash and service
+request hash into the admitted session authority. It owns Delivery construction and
+passes only `outputArtifact.canonicalJson` from the completed service run as payload;
+callers cannot supply a replacement payload or Delivery handler. Restart reads the
+persisted output and terminal lifecycle graph without re-executing either effect path.
+
 The receipt binds the admitted `jobId`, exact service id/version, evidence mode,
 admission-bound request hash (including the fixture seed), input and output content hashes,
 input and output schema identities/versions/hashes,

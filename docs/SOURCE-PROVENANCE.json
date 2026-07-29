@@ -92,12 +92,48 @@
       "sha256": "f5cdecfd124b6323787897930f515ac455b36e7be38ecceedbe5b733eb4cdffb"
     },
     {
+      "path": "release/vulnerability-dispositions.json",
+      "sha256": "7b29e43f4496dd700d2ee0146c31b32a466baf9002224c073ad3b5a486758400"
+    },
+    {
+      "path": "schemas/vulnerability-dispositions.schema.json",
+      "sha256": "c1a971932041eb88d8fedd06a3aa106eac93a22c6dc01930d7f6c8bc6f765013"
+    },
+    {
       "path": "scripts/calibrate-mutation-runner.ts",
       "sha256": "a299612e055c93a9f6bfa7f1db260aa46028cc7131f74146b0c5b35802e65f3d"
     },
     {
+      "path": "scripts/container-fixture-runtime.ts",
+      "sha256": "ca0237afc25fe9257fee2011e6a019215b9342efb6a2a4255d912c9d60611e1d"
+    },
+    {
+      "path": "scripts/container-supply-chain.ts",
+      "sha256": "8e6538c82d15c2fd1fa6f6520e8582d76cbda41ed2bb370d2534e7c061a6a97b"
+    },
+    {
       "path": "scripts/emit-evidence-bound-fault-bundle-fixture.ts",
       "sha256": "88400928a629e8461bb7f0bd454cfc28563f8ad61c47633c6530bd45b0780bb4"
+    },
+    {
+      "path": "scripts/lint-dockerfile-bases.ts",
+      "sha256": "7a4a2845303fc93cb27118ab58219ff3a92349f0e42621dd515b21a4c5dcd031"
+    },
+    {
+      "path": "scripts/scan-critical-placeholders.ts",
+      "sha256": "9eb46db69fad1c2d6746dabf9ed5da08e7c1b7f712d473424b3905e8f28316b6"
+    },
+    {
+      "path": "scripts/verify-container-fixture.ts",
+      "sha256": "6cdbfe3dda0b78206364ce5f3c2cfeddd3c7e3e6f134c7eeb48452fdec9fb8f1"
+    },
+    {
+      "path": "scripts/verify-exemplar-diff.ts",
+      "sha256": "9cf726e74139d5184195783438169bc40c0aba0600c4927aee384ad458f614d2"
+    },
+    {
+      "path": "src/cli/authority.ts",
+      "sha256": "ab80515edebceeb420110960fcca656ed8a5e3bd4011108fb067d84609f20ded"
     },
     {
       "path": "src/cli/dacs.ts",
@@ -212,6 +248,14 @@
       "sha256": "cd78aaf5de4682484f5111dd8176a2c3b277f09250011cbf0bb4623874a27ee3"
     },
     {
+      "path": "src/http/party-authority.ts",
+      "sha256": "149c2005d31812ad4b3b7fc7fbc986a45f98a02ea34a8e427542853df1a62451"
+    },
+    {
+      "path": "src/http/public-artifact-disclosure.ts",
+      "sha256": "2fb5cf5491ed3a75c7de2dfca7aed4ec74fae2a54e77058496d4d5fed66d5d1a"
+    },
+    {
       "path": "src/http/readiness-server.ts",
       "sha256": "2444ef32d72d900e48f93e4ad914706ff8f9a41b580745f2b43cae3459af112e"
     },
@@ -229,7 +273,7 @@
     },
     {
       "path": "src/index.ts",
-      "sha256": "8622be894c1e96566f9fbcd91219fabf2b99cdb9d63061f892885a9701d9828b"
+      "sha256": "26f3b135791b6f6f28a7926bfd731828f37225bc0faa1d63b637368aa7586503"
     },
     {
       "path": "src/lifecycle/fixture-attested-delivery-handler.ts",
@@ -237,11 +281,15 @@
     },
     {
       "path": "src/lifecycle/fixture-orchestrator.ts",
-      "sha256": "7a34057a4373c5a9375d88b1a3722e63779a95bc5e129d4593f9854a871c3933"
+      "sha256": "896bff9865d7ee546cf469661443211d5d6ed2d88018613e9b531e066cb6f5d4"
     },
     {
       "path": "src/lifecycle/fixture-vet-orchestrator.ts",
       "sha256": "f5a3d6b78b77b1bed93e2a469826e621086e96832c5d4c9729b401faa59bd5f3"
+    },
+    {
+      "path": "src/lifecycle/integrated-service-lifecycle.ts",
+      "sha256": "af22a111fa85a3ce56d65f41455111656ce0546450dfb6f6f9e745a820cd9894"
     },
     {
       "path": "src/lifecycle/restart-boundaries.ts",
@@ -336,6 +384,10 @@
       "sha256": "4a98ede7c819be7e99388a244f99b60ed2a5a9a53e4537d315f899698f14564e"
     },
     {
+      "path": "src/protocol/integrated-service-request.ts",
+      "sha256": "1bb17a954b127bd1530ad646831530075e015553b2e090a1525278719b4c4438"
+    },
+    {
       "path": "src/protocol/listing-schema.ts",
       "sha256": "2f3a9a37201824ab135fbece451afbe4828af91d578aee2133ff04b9a742692a"
     },
@@ -369,11 +421,23 @@
     },
     {
       "path": "src/service/runtime.ts",
-      "sha256": "07a82489a6260efd5474b9f578bafe24b6124120004521ba46e1a8f870394363"
+      "sha256": "47e65da892cb18ae83ce264ce837c0a5e5e207bb75a5d29955bbc388f1cce4ee"
+    },
+    {
+      "path": "src/substrate/authority-offline.ts",
+      "sha256": "89ef5c9d1a9b15652edb3ff0e7bffcd97a99decbe57cdd01435dda975939525c"
+    },
+    {
+      "path": "src/substrate/capability-limits.ts",
+      "sha256": "e20e57b09b21edb929fc8b01942db774a917b930ef758447bf956e20f7b74b3f"
     },
     {
       "path": "src/substrate/fixture-x402-receipt.ts",
       "sha256": "20fc6879497e13fbcc02ecbfe7fb318e57b84e6a9558f48370053f86967ef5e4"
+    },
+    {
+      "path": "src/substrate/keys/production-key-lifecycle.ts",
+      "sha256": "2e44d012096fb8bafccea7f1286dcc12b6dad8352ec2bd247e5052f91c0034df"
     },
     {
       "path": "src/substrate/sqlite/artifact-store.ts",
@@ -397,7 +461,7 @@
     },
     {
       "path": "src/substrate/sqlite/fixture-commitment.ts",
-      "sha256": "e3f43274e2ccf05fca3f625edd095da2f5107624e933aadda457a286419b7628"
+      "sha256": "3b2e7de2f2c5af14bba7b68f6468e5bf2399ce084bdb15bceedd84d022b1fbd0"
     },
     {
       "path": "src/substrate/sqlite/fixture-delivery.ts",
@@ -414,6 +478,10 @@
     {
       "path": "src/substrate/sqlite/listing-store.ts",
       "sha256": "099ced889e031b6eebd1ae2ea6f9bb7e2d148895cec3b941bd60916b860f41f3"
+    },
+    {
+      "path": "src/substrate/sqlite/party-authority-lifecycle.ts",
+      "sha256": "b1e8b7ad0e9a886909e1ed2448e4cc7f24766d214919f733df52cefb9fc1302a"
     },
     {
       "path": "src/substrate/sqlite/session-store.ts",
@@ -436,8 +504,28 @@
       "sha256": "f6ea458bb6999d9ea87c3d991e309ae6ebdf75e7b18289882dfddf2335dffeec"
     },
     {
+      "path": "test/api/anonymous-route-policy.test.ts",
+      "sha256": "67731b2e809fa7ca2d22def491931bb014d2bcd48e9238bfebd13ba8b6bbfdb1"
+    },
+    {
+      "path": "test/api/artifact-access.test.ts",
+      "sha256": "988a6ce0dbcc988af79304d2f214efcdb75ed972291d2f855d39725acbc21a33"
+    },
+    {
       "path": "test/api/bind-policy.test.ts",
       "sha256": "f07ae6ba0cd435288f0b73c7bec981f2e4daf5a1318e3d5278df5dbb92fb4d1c"
+    },
+    {
+      "path": "test/api/capability-negative-matrix.test.ts",
+      "sha256": "5bfe29bbbb5f674446358685f81b71ebfba43abf93bc14112d165963dc184710"
+    },
+    {
+      "path": "test/api/capability-proof-of-possession.test.ts",
+      "sha256": "51a8c28ca6dd7ac6d9ad311cfe0956e694306456e906bb0786154dfa6fa2ab71"
+    },
+    {
+      "path": "test/api/capability-restart-proxy.test.ts",
+      "sha256": "082ddf515c51f37ca9d2b14b7d2f62f4d3dd611185b503e67e4a452020de6c86"
     },
     {
       "path": "test/api/capability-scope.test.ts",
@@ -454,6 +542,14 @@
     {
       "path": "test/api/terminal-results.test.ts",
       "sha256": "5dbc816676ddadeff284a75463fb00dfff876feb607fe9c920ee574ccc1b6684"
+    },
+    {
+      "path": "test/cli/admin-bootstrap.test.ts",
+      "sha256": "1ce6e05cb60dc95df066eab8ae364ddc81dd7829ae5d60a43ac687d51c2b2f96"
+    },
+    {
+      "path": "test/cli/admin-recovery.test.ts",
+      "sha256": "f97307f91a2165331717302e13fef12c01c1e13e8582f930a3480d865f0ef309"
     },
     {
       "path": "test/cli/binding-readiness.test.ts",
@@ -500,16 +596,16 @@
       "sha256": "131c1062071814475749ca58fdcb17683f46b818c5ea9f6c984af69d6b8ca9d7"
     },
     {
+      "path": "test/conformance/delivery-content.test.ts",
+      "sha256": "28108f9974e877eeb98959e22dd89c9784591044b52d6972f28ae3b854541fc5"
+    },
+    {
       "path": "test/conformance/evidence-bound-fault-bundle-vectors.test.ts",
       "sha256": "30e597830a00ecfa55d4e52d65ad9e22776ea454c731ed0df9df6b20ba15c7bc"
     },
     {
       "path": "test/conformance/metered-pricing.test.ts",
       "sha256": "a7493188672554bd3a33e09b51be9849f1f115510a8ba7b0979bdd1bed42be03"
-    },
-    {
-      "path": "test/conformance/delivery-content.test.ts",
-      "sha256": "28108f9974e877eeb98959e22dd89c9784591044b52d6972f28ae3b854541fc5"
     },
     {
       "path": "test/conformance/settlement-finalization-vector.test.ts",
@@ -538,6 +634,14 @@
     {
       "path": "test/consumer/listing-verifier.test.ts",
       "sha256": "338ba8a62cf82835b1690b1c5ccaf00ce8b5fbf5c8c52752809b3e3ff68c6b36"
+    },
+    {
+      "path": "test/container/fixture-runtime.test.ts",
+      "sha256": "fc7acae0973adeba54e4380824967190d2ce288ee11cfe4a36bb7725037fb9ea"
+    },
+    {
+      "path": "test/container/supply-chain.test.ts",
+      "sha256": "585d8be853eaca275c98157f39566f3aff35ebbe3c323d220338b7058410800e"
     },
     {
       "path": "test/contract/handler-boundary.test.ts",
@@ -585,7 +689,11 @@
     },
     {
       "path": "test/e2e/full-handshake.test.ts",
-      "sha256": "0cba59339af4519866bce4b851d4cba07c5f760843d56d6221b2079c28c6b8d5"
+      "sha256": "f2c6ccbbf053cb61f5d666f43d348ec37cc8e8508f995cc32a8b9c302558a8b7"
+    },
+    {
+      "path": "test/exemplar/extension-boundary.test.ts",
+      "sha256": "8b3d55a3f1cd0cefc5fddb02375d5822d5f8c9ae360fe1059496b3a3efa39a3a"
     },
     {
       "path": "test/fixtures/atomic-logical-snapshot.ts",
@@ -597,7 +705,7 @@
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "99f8acc1dd953374bbdaf675e3f6fb512c0adcd2b51372e07e3ccdd8a2ed2991"
+      "sha256": "1a5f5053ddf56e4e3523e38ec5ce3c3ae3c411f7c9d4a54a675b1b913b57abba"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -670,6 +778,10 @@
     {
       "path": "test/fixtures/private-narrowed-method-alias-fixture.ts",
       "sha256": "2c8ef8584a6dc3955d192a0e5e2552c2bb20d5cda8e737beebc99fce99bdfac1"
+    },
+    {
+      "path": "test/fixtures/production-key-provider.ts",
+      "sha256": "8342b35d60d8d38a6ef2cc2561a1e1928b0a3a69166dd38e7ce1228ba4c56bdc"
     },
     {
       "path": "test/fixtures/reference-agreement.ts",
@@ -852,12 +964,32 @@
       "sha256": "9c9ab2a8313809f338ea0752f5b6194e87fce06065905311be0151a62507e9e4"
     },
     {
+      "path": "test/lifecycle/integrated-service-request.test.ts",
+      "sha256": "549feafc94ccb9af8708ade3ba6003e712616fd484b33ccb30aafc383781171e"
+    },
+    {
       "path": "test/lifecycle/recommit.test.ts",
       "sha256": "010634e7e7df198622feadbae547dff2408bdbeb59a361102078842b4a9d6625"
     },
     {
       "path": "test/lifecycle/settlement-delivery-order.test.ts",
       "sha256": "714f7e8f25799fed8415151a12364d7b2d4622badaf391f1a480a5b468c1feca"
+    },
+    {
+      "path": "test/mutation/calibration-target.ts",
+      "sha256": "3b292127159a019dfe054da603fb3fe7acb5c5fd48cea6acb5def316f43c487a"
+    },
+    {
+      "path": "test/mutation/calibration.test.ts",
+      "sha256": "63907b97d3af4862d04c49bec8aa186589e9ddf992dff639a190fb14886edb41"
+    },
+    {
+      "path": "test/mutation/protocol-pure-modules.test.ts",
+      "sha256": "8b1544a807929d3849ceed45b1fd8dd5624bb002ccf8fa63947e5814356b73f8"
+    },
+    {
+      "path": "test/mutation/runner-contract.test.ts",
+      "sha256": "569f8541ce7a615005dbbd660d26f2ae931fc3b3af7b19c82d67a139a843bcfe"
     },
     {
       "path": "test/producer/agreement.test.ts",
@@ -878,22 +1010,6 @@
     {
       "path": "test/protocol/canonical-json.property.test.ts",
       "sha256": "bdff4091deb4cbfd7ab6e6526065ed155ed5c7af5e4fe728d3322ecf27cdfbdb"
-    },
-    {
-      "path": "test/mutation/calibration-target.ts",
-      "sha256": "3b292127159a019dfe054da603fb3fe7acb5c5fd48cea6acb5def316f43c487a"
-    },
-    {
-      "path": "test/mutation/calibration.test.ts",
-      "sha256": "63907b97d3af4862d04c49bec8aa186589e9ddf992dff639a190fb14886edb41"
-    },
-    {
-      "path": "test/mutation/protocol-pure-modules.test.ts",
-      "sha256": "8b1544a807929d3849ceed45b1fd8dd5624bb002ccf8fa63947e5814356b73f8"
-    },
-    {
-      "path": "test/mutation/runner-contract.test.ts",
-      "sha256": "569f8541ce7a615005dbbd660d26f2ae931fc3b3af7b19c82d67a139a843bcfe"
     },
     {
       "path": "test/protocol/canonical-json.test.ts",
@@ -929,7 +1045,7 @@
     },
     {
       "path": "test/recovery/atomic-write-interruption.test.ts",
-      "sha256": "0c695731f6100a07c1b167d058117772537fda906397bf7472a4741268a2b921"
+      "sha256": "f3428a34c484fffd56326e1e4b2ee1118b357e8ccf56f7e67e94c04f92efd67b"
     },
     {
       "path": "test/recovery/atomic-write-registry.test.ts",
@@ -960,8 +1076,40 @@
       "sha256": "d067ba116becc1a6eb71fa082659d75999ef02f8c262739a352ee214feb8ed39"
     },
     {
+      "path": "test/security/capability-custody.test.ts",
+      "sha256": "9157e6fd370a7112ad7ed8693b55f342fc89df848be16340becf64d0469af71d"
+    },
+    {
+      "path": "test/security/committed-session-key-pin.test.ts",
+      "sha256": "a2fcbd007a6baf56adaef3b22c4ebb84c261303c15f19261643e82d4a3f80ddd"
+    },
+    {
+      "path": "test/security/fixture-key-live-rejection.test.ts",
+      "sha256": "ee41d7a9c53a95ab09bafa22341465564204c22f617d5a46f219e4798fde952f"
+    },
+    {
+      "path": "test/security/key-currentness.test.ts",
+      "sha256": "f2c8a4e91f1aeed0ea23d305a6c14ebd7f95f0c4b750508fc48c6ef125cc8c69"
+    },
+    {
+      "path": "test/security/key-revocation-propagation.test.ts",
+      "sha256": "ee94813e8185040a2abf301b23f53161c8323a14eebb559528c8c19d71d71124"
+    },
+    {
+      "path": "test/security/key-rotation-presentation.test.ts",
+      "sha256": "b8a933a55f4c6935145f144f06ced3dca0584b101352e22510c68b78b065c6ee"
+    },
+    {
+      "path": "test/security/live-signer-provider.test.ts",
+      "sha256": "fbf64e46341a11d96554390b9a488ab859201a7aab220afd113ebb5602dd2b0c"
+    },
+    {
       "path": "test/security/log-redaction.test.ts",
       "sha256": "b63a70cb4f6e676f267b4bb49a1dfac41b736645b5b0c7d7b5153045d4228194"
+    },
+    {
+      "path": "test/security/post-revocation-signature.test.ts",
+      "sha256": "dbfd3ef76a26293207b3ddfde711d377f7b66e0964aff2f771db3d0ed0c2d124"
     },
     {
       "path": "test/security/presentation-nonce-binding.test.ts",
@@ -1032,6 +1180,10 @@
       "sha256": "c9635037cc830b0270c2c2be8eb0c3f4b485b6a5b0c7af01570b5de6dd6e11dc"
     },
     {
+      "path": "test/workers/authority-offline-crash-worker.ts",
+      "sha256": "4a1c3bc895b5cbce37aa22e2ec028f70793455a8a77301f8c04d3c71455a1dac"
+    },
+    {
       "path": "test/workers/concurrent-settlement-worker.ts",
       "sha256": "3d343167d5ef794a340143c5cc7030a8808dfb0a95cb5ea1849ffc7f672ac316"
     },
@@ -1044,36 +1196,8 @@
       "sha256": "94537a0d289069380253322cee135a9bbdbe0b9b39089cf352a3edc53d153217"
     },
     {
-      "path": "release/vulnerability-dispositions.json",
-      "sha256": "7b29e43f4496dd700d2ee0146c31b32a466baf9002224c073ad3b5a486758400"
-    },
-    {
-      "path": "schemas/vulnerability-dispositions.schema.json",
-      "sha256": "c1a971932041eb88d8fedd06a3aa106eac93a22c6dc01930d7f6c8bc6f765013"
-    },
-    {
-      "path": "scripts/container-supply-chain.ts",
-      "sha256": "8e6538c82d15c2fd1fa6f6520e8582d76cbda41ed2bb370d2534e7c061a6a97b"
-    },
-    {
-      "path": "scripts/lint-dockerfile-bases.ts",
-      "sha256": "7a4a2845303fc93cb27118ab58219ff3a92349f0e42621dd515b21a4c5dcd031"
-    },
-    {
-      "path": "test/container/supply-chain.test.ts",
-      "sha256": "585d8be853eaca275c98157f39566f3aff35ebbe3c323d220338b7058410800e"
-    },
-    {
-      "path": "tsconfig.json",
-      "sha256": "37f8d04a719b3db1e0cefbc692748cbcf1ef781eb6bb8f402a43db6f4fda7816"
-    },
-    {
-      "path": "vectors/community-directory/provenance.json",
-      "sha256": "61df503c7f727342d54ad208ce846582efd3a03d1ab415067062974ae495d483"
-    },
-    {
-      "path": "vectors/community-directory/reviewbot-legacy-listing-634caef.json",
-      "sha256": "a390974f6579d2e57df259c3e13787458bf9ebc856c19b5e4f821230b8ee18f3"
+      "path": "tools/exemplar-policy.ts",
+      "sha256": "a057438baed78152ba49d37f70b8e4baa830909d57acf2c72080525dc52d5839"
     },
     {
       "path": "tools/mutation/report.ts",
@@ -1086,6 +1210,18 @@
     {
       "path": "tools/mutation/stryker-protocol.config.mjs",
       "sha256": "1ee9c4286fb4fd32542b5310b1b67cec8a6218ee2d9bfbdc0bea5428c4d52fad"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "37f8d04a719b3db1e0cefbc692748cbcf1ef781eb6bb8f402a43db6f4fda7816"
+    },
+    {
+      "path": "vectors/community-directory/provenance.json",
+      "sha256": "61df503c7f727342d54ad208ce846582efd3a03d1ab415067062974ae495d483"
+    },
+    {
+      "path": "vectors/community-directory/reviewbot-legacy-listing-634caef.json",
+      "sha256": "a390974f6579d2e57df259c3e13787458bf9ebc856c19b5e4f821230b8ee18f3"
     },
     {
       "path": "vectors/dacs-standard-bundle-convergence-ad48d16.json",
@@ -1146,130 +1282,6 @@
     {
       "path": "vectors/dacs-standard-storage-program-fcbf804.json",
       "sha256": "5f8435fd56397db2c674f7fa615257953779bebc395add484d2674f67c5c47d0"
-    },
-    {
-      "path": "src/substrate/keys/production-key-lifecycle.ts",
-      "sha256": "2e44d012096fb8bafccea7f1286dcc12b6dad8352ec2bd247e5052f91c0034df"
-    },
-    {
-      "path": "test/fixtures/production-key-provider.ts",
-      "sha256": "8342b35d60d8d38a6ef2cc2561a1e1928b0a3a69166dd38e7ce1228ba4c56bdc"
-    },
-    {
-      "path": "test/security/committed-session-key-pin.test.ts",
-      "sha256": "a2fcbd007a6baf56adaef3b22c4ebb84c261303c15f19261643e82d4a3f80ddd"
-    },
-    {
-      "path": "test/security/fixture-key-live-rejection.test.ts",
-      "sha256": "ee41d7a9c53a95ab09bafa22341465564204c22f617d5a46f219e4798fde952f"
-    },
-    {
-      "path": "test/security/key-currentness.test.ts",
-      "sha256": "f2c8a4e91f1aeed0ea23d305a6c14ebd7f95f0c4b750508fc48c6ef125cc8c69"
-    },
-    {
-      "path": "test/security/key-revocation-propagation.test.ts",
-      "sha256": "ee94813e8185040a2abf301b23f53161c8323a14eebb559528c8c19d71d71124"
-    },
-    {
-      "path": "test/security/key-rotation-presentation.test.ts",
-      "sha256": "b8a933a55f4c6935145f144f06ced3dca0584b101352e22510c68b78b065c6ee"
-    },
-    {
-      "path": "test/security/live-signer-provider.test.ts",
-      "sha256": "fbf64e46341a11d96554390b9a488ab859201a7aab220afd113ebb5602dd2b0c"
-    },
-    {
-      "path": "test/security/post-revocation-signature.test.ts",
-      "sha256": "dbfd3ef76a26293207b3ddfde711d377f7b66e0964aff2f771db3d0ed0c2d124"
-    },
-    {
-      "path": "src/cli/authority.ts",
-      "sha256": "ab80515edebceeb420110960fcca656ed8a5e3bd4011108fb067d84609f20ded"
-    },
-    {
-      "path": "src/http/party-authority.ts",
-      "sha256": "149c2005d31812ad4b3b7fc7fbc986a45f98a02ea34a8e427542853df1a62451"
-    },
-    {
-      "path": "src/http/public-artifact-disclosure.ts",
-      "sha256": "2fb5cf5491ed3a75c7de2dfca7aed4ec74fae2a54e77058496d4d5fed66d5d1a"
-    },
-    {
-      "path": "src/substrate/authority-offline.ts",
-      "sha256": "89ef5c9d1a9b15652edb3ff0e7bffcd97a99decbe57cdd01435dda975939525c"
-    },
-    {
-      "path": "src/substrate/capability-limits.ts",
-      "sha256": "e20e57b09b21edb929fc8b01942db774a917b930ef758447bf956e20f7b74b3f"
-    },
-    {
-      "path": "src/substrate/sqlite/party-authority-lifecycle.ts",
-      "sha256": "b1e8b7ad0e9a886909e1ed2448e4cc7f24766d214919f733df52cefb9fc1302a"
-    },
-    {
-      "path": "test/api/anonymous-route-policy.test.ts",
-      "sha256": "67731b2e809fa7ca2d22def491931bb014d2bcd48e9238bfebd13ba8b6bbfdb1"
-    },
-    {
-      "path": "test/api/artifact-access.test.ts",
-      "sha256": "988a6ce0dbcc988af79304d2f214efcdb75ed972291d2f855d39725acbc21a33"
-    },
-    {
-      "path": "test/api/capability-negative-matrix.test.ts",
-      "sha256": "5bfe29bbbb5f674446358685f81b71ebfba43abf93bc14112d165963dc184710"
-    },
-    {
-      "path": "test/api/capability-proof-of-possession.test.ts",
-      "sha256": "51a8c28ca6dd7ac6d9ad311cfe0956e694306456e906bb0786154dfa6fa2ab71"
-    },
-    {
-      "path": "test/api/capability-restart-proxy.test.ts",
-      "sha256": "082ddf515c51f37ca9d2b14b7d2f62f4d3dd611185b503e67e4a452020de6c86"
-    },
-    {
-      "path": "test/cli/admin-bootstrap.test.ts",
-      "sha256": "1ce6e05cb60dc95df066eab8ae364ddc81dd7829ae5d60a43ac687d51c2b2f96"
-    },
-    {
-      "path": "test/cli/admin-recovery.test.ts",
-      "sha256": "f97307f91a2165331717302e13fef12c01c1e13e8582f930a3480d865f0ef309"
-    },
-    {
-      "path": "test/security/capability-custody.test.ts",
-      "sha256": "9157e6fd370a7112ad7ed8693b55f342fc89df848be16340becf64d0469af71d"
-    },
-    {
-      "path": "test/workers/authority-offline-crash-worker.ts",
-      "sha256": "4a1c3bc895b5cbce37aa22e2ec028f70793455a8a77301f8c04d3c71455a1dac"
-    },
-    {
-      "path": "scripts/container-fixture-runtime.ts",
-      "sha256": "ca0237afc25fe9257fee2011e6a019215b9342efb6a2a4255d912c9d60611e1d"
-    },
-    {
-      "path": "scripts/verify-container-fixture.ts",
-      "sha256": "6cdbfe3dda0b78206364ce5f3c2cfeddd3c7e3e6f134c7eeb48452fdec9fb8f1"
-    },
-    {
-      "path": "test/container/fixture-runtime.test.ts",
-      "sha256": "fc7acae0973adeba54e4380824967190d2ce288ee11cfe4a36bb7725037fb9ea"
-    },
-    {
-      "path": "scripts/scan-critical-placeholders.ts",
-      "sha256": "9eb46db69fad1c2d6746dabf9ed5da08e7c1b7f712d473424b3905e8f28316b6"
-    },
-    {
-      "path": "scripts/verify-exemplar-diff.ts",
-      "sha256": "9cf726e74139d5184195783438169bc40c0aba0600c4927aee384ad458f614d2"
-    },
-    {
-      "path": "test/exemplar/extension-boundary.test.ts",
-      "sha256": "8b3d55a3f1cd0cefc5fddb02375d5822d5f8c9ae360fe1059496b3a3efa39a3a"
-    },
-    {
-      "path": "tools/exemplar-policy.ts",
-      "sha256": "a057438baed78152ba49d37f70b8e4baa830909d57acf2c72080525dc52d5839"
     }
   ],
   "packagingFiles": [
@@ -1283,15 +1295,15 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "a89d4599898e29a54d3de4189ebc336cd3a0c2c47c89e244f62c7a68cd29e7eb"
-    },
-    {
-      "path": "Dockerfile",
-      "sha256": "d3abb279c06f9f67070fdc8f6cfdc80309092c68885c064f83b6a2b7ab3f8349"
+      "sha256": "445b7b534f1a360d310b54a7ca823334f2055dfdaafa029e8597178768063281"
     },
     {
       "path": "CONTRIBUTING.md",
       "sha256": "354a978bf01677ec1c01f539654875f4e742f2713d5886cec7cd5b9b8d24dd95"
+    },
+    {
+      "path": "Dockerfile",
+      "sha256": "d3abb279c06f9f67070fdc8f6cfdc80309092c68885c064f83b6a2b7ab3f8349"
     },
     {
       "path": "GOVERNANCE.md",
@@ -1310,12 +1322,16 @@
       "sha256": "2149c4e7d572ff924e506b0426dc074a61c12955d71725195ef9a3c4d64bc151"
     },
     {
+      "path": "compose.yaml",
+      "sha256": "b276ea6d0882af37aa0250ba5712d26c2f4d0e55fcbc9db141b6d2a679f13329"
+    },
+    {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "179e27f0b93dce9c7267a5e1e495b017e7b893d75ecba62c36903429a1da9b23"
+      "sha256": "ffb93a91994bf1082159931a9deea0c0ad23468904a03f6e90e4bc27d8fbd58f"
     },
     {
       "path": "docs/FORKING.md",
-      "sha256": "67eadb85009a734c20eb78c7a3cea0247597e30323da7995a5573f3693f4fbc1"
+      "sha256": "cdf69b8beb33a74921d72109de1c54067eae4c2f66106c5f0706203bcdb1848c"
     },
     {
       "path": "docs/HARDENING.md",
@@ -1331,7 +1347,7 @@
     },
     {
       "path": "docs/SERVICE-CONTRACT.md",
-      "sha256": "942ef6e6a2361ba3535e771ff7d1ff5e4893e1593f5751e8c664e1cbe738d834"
+      "sha256": "3aaac6b66a9deb78598106bd7ea95eb8ec35fd2f4964690050f6a93432cb414a"
     },
     {
       "path": "docs/VERSIONING.md",
@@ -1340,10 +1356,6 @@
     {
       "path": "package.json",
       "sha256": "a680e4dc51fe82e1ee4a4d1ae74b4339dd9c42e18fed057c551e3d79aaba40d7"
-    },
-    {
-      "path": "compose.yaml",
-      "sha256": "b276ea6d0882af37aa0250ba5712d26c2f4d0e55fcbc9db141b6d2a679f13329"
     },
     {
       "path": "tools/verify-source-provenance.ts",

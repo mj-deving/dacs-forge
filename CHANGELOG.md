@@ -9,6 +9,7 @@ and release versions follow [Semantic Versioning](https://semver.org/).
 
 ### Added
 
+- Integrated fixture service lifecycle that binds one admission to the Agreement and service request, uses the canonical handler output as the only Delivery payload, and replays the terminal graph without handler or settlement/delivery effects.
 - Initial fixture/no-spend reference substrate and service-agent extension surface.
 - Producer, consumer, lifecycle, persistence, conformance, and adversarial test rig.
 - Public security, contribution, provenance, forking, governance, and versioning contracts.

@@ -38,7 +38,8 @@ Bun or Node APIs.
 ## 3. Prove the service path and protocol path
 
 A service fork is not locally proven merely because it compiles. Run both focused
-tests because they cover different paths:
+tests because the runtime test isolates handler behavior while the full handshake
+proves its integration with the protocol lifecycle:
 
 ```sh
 bun test --timeout 10000 test/runtime/service-runtime.test.ts
@@ -53,10 +54,11 @@ canonical bytes and hashes. The test database is temporary, so this is currently
 the supported artifact-inspection surface rather than a command that leaves a
 production database behind.
 
-The full-handshake test separately proves the fixture protocol path: signed Listing,
-bilateral Vet, Agreement, Commitment, no-spend settlement, attested delivery, and
-buyer/seller/orchestrator DACS-5 bundle copies. It does not execute the service
-handler, which is why both tests are required.
+The full-handshake test admits one authority over the Agreement and service request,
+executes the service handler, uses its canonical output bytes as the attested Delivery
+payload, and resolves those bytes through the buyer/seller/orchestrator DACS-5 bundle
+copies. It also proves restart replay without another handler, settlement, or Delivery
+effect. The isolated runtime test remains required for the narrower service contract.
 
 ## 4. Run repository gates
 

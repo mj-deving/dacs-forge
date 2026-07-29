@@ -7,6 +7,7 @@ import {
 import { assertFixtureAuthority, type EvidenceMode } from "../../core/evidence-mode.ts";
 import { canonicalize, deepFreezeJson, withoutFields } from "../../protocol/canonical-json.ts";
 import { canonicalizeClaimReference } from "../../protocol/claim-reference.ts";
+import { integratedServiceLifecycleRequestHash } from "../../protocol/integrated-service-request.ts";
 import { sha256Hex } from "../../protocol/hash.ts";
 import {
   commitmentLogicalAddress,
@@ -57,6 +58,7 @@ export interface FixtureCommitmentStoreOptions {
 
 export interface FixtureCommitmentInput {
   readonly agreementCanonicalJson: string;
+  readonly serviceRequestHash?: string;
   readonly session: SessionRecord;
   readonly verification: AgreementCommitVerification;
 }
@@ -155,7 +157,7 @@ export class FixtureCommitmentStore {
       input.verification.maxArtifactBytes,
     );
     assertAdmittedFixtureSession(input.session);
-    this.#assertPersistedAdmission(input.session, agreementCanonicalJson);
+    this.#assertPersistedAdmission(input.session, agreementCanonicalJson, input.serviceRequestHash);
     const existing = this.#getByLogicalAddress(commitmentLogicalAddress(input.session.jobId));
     if (existing !== null) {
       return Object.freeze({
@@ -319,7 +321,11 @@ export class FixtureCommitmentStore {
     return row === null ? null : this.#fromRow(row);
   }
 
-  #assertPersistedAdmission(session: SessionRecord, agreementCanonicalJson: string): void {
+  #assertPersistedAdmission(
+    session: SessionRecord,
+    agreementCanonicalJson: string,
+    serviceRequestHash?: string,
+  ): void {
     const persisted = this.#database.query<{
       evidenceMode: string; requestHash: string; status: string;
     }, { instanceId: string; audience: string; jobId: string }>(`
@@ -334,7 +340,11 @@ export class FixtureCommitmentStore {
     `).get({ instanceId: session.instanceId, audience: session.audience, jobId: session.jobId });
     if (persisted === null || persisted.status !== "admitted" || persisted.evidenceMode !== "fixture"
       || persisted.requestHash !== session.requestHash
-      || !fixtureCommitmentRequestMatches(session.requestHash, agreementCanonicalJson)) {
+      || !fixtureCommitmentRequestMatches(
+        session.requestHash,
+        agreementCanonicalJson,
+        serviceRequestHash,
+      )) {
       throw new FixtureCommitmentIntegrityError(
         "Agreement commitment does not match the persisted admitted request binding",
       );
@@ -567,7 +577,14 @@ export function fixtureCommitmentRequestHash(agreementCanonicalJson: string): st
 export function fixtureCommitmentRequestMatches(
   requestHash: string,
   agreementCanonicalJson: string,
+  serviceRequestHash?: string,
 ): boolean {
+  if (serviceRequestHash !== undefined) {
+    return requestHash === integratedServiceLifecycleRequestHash(
+      fixtureCommitmentRequestHash(agreementCanonicalJson),
+      serviceRequestHash,
+    );
+  }
   return requestHash === fixtureCommitmentRequestHash(agreementCanonicalJson)
     || requestHash === legacyFixtureCommitmentRequestHash(agreementCanonicalJson);
 }

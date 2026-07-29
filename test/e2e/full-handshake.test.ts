@@ -2,7 +2,13 @@ import { afterEach, describe, expect, test } from "bun:test";
 import { rm } from "node:fs/promises";
 import { dirname } from "node:path";
 import { FixtureBilateralVetOrchestrator } from "../../src/lifecycle/fixture-vet-orchestrator.ts";
-import { createFixtureAttestedDeliveryHandler } from "../../src/lifecycle/fixture-attested-delivery-handler.ts";
+import { runIntegratedServiceLifecycle } from "../../src/lifecycle/integrated-service-lifecycle.ts";
+import { fixtureLifecycleRequestHash } from "../../src/lifecycle/fixture-orchestrator.ts";
+import { integratedServiceLifecycleRequestHash } from "../../src/protocol/integrated-service-request.ts";
+import { canonicalize } from "../../src/protocol/canonical-json.ts";
+import { ServiceRuntime, serviceRequestHash } from "../../src/service/runtime.ts";
+import { defineServiceContract } from "../../src/service/contract.ts";
+import { ArtifactStore } from "../../src/substrate/sqlite/artifact-store.ts";
 import { signBuyerVetRequirement } from "../../src/producer/buyer-vet-requirement.ts";
 import { signSettlementEvidence } from "../../src/producer/settlement-evidence.ts";
 import { FixtureBundleStore } from "../../src/substrate/sqlite/fixture-bundle.ts";
@@ -20,12 +26,13 @@ import {
 import { fixtureSigner } from "../fixtures/reference-listing.ts";
 import { orchestratorFixtureIdentity, orchestratorFixtureSigner } from "../fixtures/reference-bundle.ts";
 import { DELIVERY_PAYLOAD_FORMAT, DELIVERY_PAYLOAD_JSON } from "../delivery/fixtures.ts";
+import { BASIC_FIXTURE } from "../../service/fixtures/basic.ts";
+import { serviceContract } from "../../service/service.config.ts";
 import {
   admitLifecycleSession,
   agreementFixture,
   lifecycleCommitmentStore,
   lifecycleDatabasePath,
-  lifecycleOrchestrator,
   lifecycleSessionStore,
   openLifecycleDatabase,
 } from "../lifecycle/fixtures.ts";
@@ -53,14 +60,27 @@ afterEach(async () => {
 });
 
 describe("complete no-spend DACS fixture handshake", () => {
-  test("dogfoods listing through bilateral Vet and restart-verified role-local bundles", async () => {
+  test("delivers the handler output through terminal bundles and replays it without effects", async () => {
     const placeholder = agreementFixture(undefined, LISTING_OVERRIDES);
     const listing = fixtureSignedPaidListing(LISTING_OVERRIDES);
     const path = await lifecycleDatabasePath();
     roots.push(dirname(path));
     let database = openLifecycleDatabase(path);
     let sessions = lifecycleSessionStore(database);
-    admitLifecycleSession(sessions, placeholder.agreementCanonicalJson);
+    const serviceHash = serviceRequestHash(
+      serviceContract,
+      BASIC_FIXTURE.input,
+      BASIC_FIXTURE.seed,
+    );
+    admitLifecycleSession(
+      sessions,
+      placeholder.agreementCanonicalJson,
+      {},
+      integratedServiceLifecycleRequestHash(
+        fixtureLifecycleRequestHash(placeholder.agreementCanonicalJson),
+        serviceHash,
+      ),
+    );
     const session = sessions.get(placeholder.input.jobId)!;
 
     const buyerRequirement = signBuyerVetRequirement({
@@ -106,18 +126,25 @@ describe("complete no-spend DACS fixture handshake", () => {
     const orchestratorSigner = orchestratorFixtureSigner();
     const ledger = new FixtureSettlementLedger(database, "fixture");
     const deliveries = new FixtureDeliveryStore(database, { deploymentMode: "fixture", signer: fixtureSigner() });
-    const delivery = createFixtureAttestedDeliveryHandler(deliveries, {
-      now: () => CREATED_AT,
-      observedAt: () => FINALISED_AT,
-      payloadFormat: DELIVERY_PAYLOAD_FORMAT,
-      payloadJson: DELIVERY_PAYLOAD_JSON,
-      paymentAmount: PAYMENT_AMOUNT,
-      sessionStore: sessions,
-    });
     let lifecycleNow = new Date(FIXTURE_COMMITTED_AT).toISOString();
-    const lifecycle = lifecycleOrchestrator(database, sessions, commitments, {
-      payment: () => ({ ok: true, value: { submitted: true, evidenceMode: "fixture" } }),
-      settlement: (context) => {
+    const integrated = await runIntegratedServiceLifecycle({
+      agreementCanonicalJson: agreement.agreementCanonicalJson,
+      commitmentStore: commitments,
+      contract: serviceContract,
+      database,
+      delivery: {
+        now: () => {
+          lifecycleNow = CREATED_AT;
+          return CREATED_AT;
+        },
+        observedAt: () => FINALISED_AT,
+        payloadFormat: DELIVERY_PAYLOAD_FORMAT,
+        paymentAmount: PAYMENT_AMOUNT,
+      },
+      deliveryStore: deliveries,
+      lifecycle: {
+          payment: () => ({ ok: true, value: { submitted: true, evidenceMode: "fixture" } }),
+          settlement: (context) => {
         const transaction = ledger.record({
           agreementHash: context.agreementHash,
           blockNumber: 42,
@@ -178,23 +205,31 @@ describe("complete no-spend DACS fixture handshake", () => {
             },
           },
         };
+          },
+          now: () => lifecycleNow,
       },
-      delivery: async (...args: Parameters<typeof delivery>) => {
-        const result = await delivery(...args);
-        lifecycleNow = CREATED_AT;
-        return result;
-      },
-      now: () => lifecycleNow,
-    });
-    const settled = await lifecycle.run({
-      agreementCanonicalJson: agreement.agreementCanonicalJson,
+      input: BASIC_FIXTURE.input,
       jobId: agreement.input.jobId,
+      runtime: new ServiceRuntime({
+        artifactStore: new ArtifactStore(database),
+        contract: serviceContract,
+        deploymentMode: "fixture",
+        now: () => BASIC_FIXTURE.producedAt,
+        sessionStore: sessions,
+        signer: fixtureSigner(),
+      }),
+      seed: BASIC_FIXTURE.seed,
+      sessionStore: sessions,
       verification: agreement.verification,
     });
+    const settled = integrated.lifecycle;
     if (settled.state !== "settle-completed") throw new Error(JSON.stringify(settled));
+    expect(integrated.service.outputArtifact.canonicalJson).not.toBe(DELIVERY_PAYLOAD_JSON);
     const commitment = commitments.get(session.instanceId, session.audience, session.jobId)!;
     const settlementRef = settled.settlements[0]!.value["attestationRef"] as Record<string, unknown>;
     const deliveryRef = settled.delivery.value["attestationRef"] as Record<string, unknown>;
+    expect(settled.delivery.value["deliverableContentHash"])
+      .toBe(integrated.service.outputArtifact.contentHash);
     const parties = agreement.input.parties.map(({ role, bundleHash, primaryClaim }) => ({
       role: role as "buyer" | "seller", bundleHash, primaryClaim,
     }));
@@ -267,6 +302,108 @@ describe("complete no-spend DACS fixture handshake", () => {
     sessions = lifecycleSessionStore(database);
     commitments = lifecycleCommitmentStore(database);
     bundles = new FixtureBundleStore(database, { commitments, deploymentMode: "fixture" });
+    let replayHandlerCalls = 0;
+    let replayLifecycleEffects = 0;
+    const replayContract = defineServiceContract({
+      ...serviceContract,
+      handler: () => {
+        replayHandlerCalls += 1;
+        throw new Error("persisted terminal replay invoked the service handler");
+      },
+    });
+    const replay = await runIntegratedServiceLifecycle({
+      agreementCanonicalJson: agreement.agreementCanonicalJson,
+      commitmentStore: commitments,
+      contract: replayContract,
+      database,
+      delivery: {
+        now: () => {
+          replayLifecycleEffects += 1;
+          throw new Error("persisted terminal replay repeated delivery clock");
+        },
+        observedAt: () => FINALISED_AT,
+        payloadFormat: DELIVERY_PAYLOAD_FORMAT,
+        paymentAmount: PAYMENT_AMOUNT,
+      },
+      deliveryStore: new FixtureDeliveryStore(database, {
+        deploymentMode: "fixture",
+        signer: fixtureSigner(),
+      }),
+      lifecycle: {
+        payment: () => {
+          replayLifecycleEffects += 1;
+          throw new Error("persisted terminal replay repeated payment");
+        },
+        settlement: () => {
+          replayLifecycleEffects += 1;
+          throw new Error("persisted terminal replay repeated settlement");
+        },
+        now: () => CREATED_AT,
+      },
+      input: BASIC_FIXTURE.input,
+      jobId: agreement.input.jobId,
+      runtime: new ServiceRuntime({
+        artifactStore: new ArtifactStore(database),
+        contract: replayContract,
+        deploymentMode: "fixture",
+        now: () => BASIC_FIXTURE.producedAt,
+        sessionStore: sessions,
+        signer: fixtureSigner(),
+      }),
+      seed: BASIC_FIXTURE.seed,
+      sessionStore: sessions,
+      verification: agreement.verification,
+    });
+    expect(replay.service.outputArtifact.canonicalJson)
+      .toBe(integrated.service.outputArtifact.canonicalJson);
+    expect(replay.lifecycle.state).toBe("finalised");
+    expect(replay.lifecycle.counts).toEqual(settled.counts);
+    expect(replayHandlerCalls).toBe(0);
+    expect(replayLifecycleEffects).toBe(0);
+    const agreementObject = JSON.parse(agreement.agreementCanonicalJson) as Record<string, unknown>;
+    const substitutedAgreement = canonicalize({
+      ...agreementObject,
+      derivedFromPattern: "rfq",
+    });
+    await expect(runIntegratedServiceLifecycle({
+      agreementCanonicalJson: substitutedAgreement,
+      commitmentStore: commitments,
+      contract: replayContract,
+      database,
+      delivery: {
+        now: () => CREATED_AT,
+        observedAt: () => FINALISED_AT,
+        payloadFormat: DELIVERY_PAYLOAD_FORMAT,
+        paymentAmount: PAYMENT_AMOUNT,
+      },
+      deliveryStore: new FixtureDeliveryStore(database, {
+        deploymentMode: "fixture",
+        signer: fixtureSigner(),
+      }),
+      input: BASIC_FIXTURE.input,
+      jobId: agreement.input.jobId,
+      lifecycle: {
+        now: () => CREATED_AT,
+        payment: () => {
+          throw new Error("agreement substitution reached payment");
+        },
+        settlement: () => {
+          throw new Error("agreement substitution reached settlement");
+        },
+      },
+      runtime: new ServiceRuntime({
+        artifactStore: new ArtifactStore(database),
+        contract: replayContract,
+        deploymentMode: "fixture",
+        now: () => BASIC_FIXTURE.producedAt,
+        sessionStore: sessions,
+        signer: fixtureSigner(),
+      }),
+      seed: BASIC_FIXTURE.seed,
+      sessionStore: sessions,
+      verification: agreement.verification,
+    })).rejects.toThrow("Service contract, input, or seed does not match session admission");
+    expect(replayHandlerCalls).toBe(0);
     expect(new FixtureVetStore(database, "fixture").get(session, "buyer")?.overallDecision).toBe("pass");
     expect(new FixtureVetStore(database, "fixture").get(session, "seller")?.overallDecision).toBe("pass");
     expect(new FixtureDeliveryStore(database, {
@@ -286,6 +423,24 @@ describe("complete no-spend DACS fixture handshake", () => {
       disposition: "rejected",
       reputationEligibility: "excluded",
     });
+    database.query<never, { contentHash: string }>(`
+      UPDATE artifacts SET canonical_json = '{}'
+      WHERE content_hash = $contentHash
+    `).run({ contentHash: integrated.service.outputArtifact.contentHash });
+    await expect(new ServiceRuntime({
+      artifactStore: new ArtifactStore(database),
+      contract: replayContract,
+      deploymentMode: "fixture",
+      now: () => BASIC_FIXTURE.producedAt,
+      sessionStore: sessions,
+      signer: fixtureSigner(),
+    }).run({
+      agreementRequestHash: fixtureLifecycleRequestHash(agreement.agreementCanonicalJson),
+      input: BASIC_FIXTURE.input,
+      jobId: agreement.input.jobId,
+      seed: BASIC_FIXTURE.seed,
+    })).rejects.toThrow();
+    expect(replayHandlerCalls).toBe(0);
     database.close();
   });
 });

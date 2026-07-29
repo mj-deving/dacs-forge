@@ -563,6 +563,12 @@ export {
   type FixturePhaseResult,
 } from "./lifecycle/fixture-orchestrator.ts";
 export {
+  runIntegratedServiceLifecycle,
+  type IntegratedServiceLifecycleOptions,
+  type IntegratedServiceLifecycleResult,
+} from "./lifecycle/integrated-service-lifecycle.ts";
+export { integratedServiceLifecycleRequestHash } from "./protocol/integrated-service-request.ts";
+export {
   FixtureBilateralVetOrchestrator,
   classifyFixtureVetPhaseFailure,
   type FixtureBilateralVetInput,

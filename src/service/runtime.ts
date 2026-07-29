@@ -14,6 +14,7 @@ import {
 } from "../producer/work-product-receipt.ts";
 import { canonicalize, deepFreezeJson } from "../protocol/canonical-json.ts";
 import { sha256Hex } from "../protocol/hash.ts";
+import { integratedServiceLifecycleRequestHash } from "../protocol/integrated-service-request.ts";
 import {
   ArtifactIntegrityError,
   type ArtifactRecord,
@@ -44,6 +45,7 @@ export interface ServiceRuntimeOptions<TInput, TOutput> {
 }
 
 export interface ServiceRunInput<TInput> {
+  readonly agreementRequestHash?: string;
   readonly input: TInput;
   readonly jobId: string;
   readonly seed: string;
@@ -160,7 +162,11 @@ export class ServiceRuntime<TInput, TOutput> {
     const input = snapshotJson<TInput>(request.input, "input");
     assertValid("input", this.#inputValidator, input);
     assertArtifactSizeLimit("Service input", canonicalize(input), MAX_INPUT_BYTES);
-    if (serviceRequestHash(this.#contract, input, request.seed) !== session.requestHash) {
+    const serviceHash = serviceRequestHash(this.#contract, input, request.seed);
+    const expectedRequestHash = request.agreementRequestHash === undefined
+      ? serviceHash
+      : integratedServiceLifecycleRequestHash(request.agreementRequestHash, serviceHash);
+    if (expectedRequestHash !== session.requestHash) {
       throw new ServiceRequestBindingError(
         "Service contract, input, or seed does not match session admission",
       );
@@ -389,8 +395,15 @@ function validateRunEnvelope<TInput>(request: ServiceRunInput<TInput>): void {
     throw new TypeError("Service run request must be an object");
   }
   const keys = Object.keys(request).sort();
-  if (keys.join(",") !== "input,jobId,seed") {
-    throw new TypeError("Service run request must contain exactly input, jobId, and seed");
+  if (keys.join(",") !== "input,jobId,seed"
+    && keys.join(",") !== "agreementRequestHash,input,jobId,seed") {
+    throw new TypeError(
+      "Service run request must contain input, jobId, seed, and optional agreementRequestHash",
+    );
+  }
+  if (request.agreementRequestHash !== undefined
+    && !/^[0-9a-f]{64}$/.test(request.agreementRequestHash)) {
+    throw new TypeError("Service run agreementRequestHash must be lowercase SHA-256");
   }
   if (!ULID.test(request.jobId)) throw new TypeError("Service run jobId must be a canonical ULID");
   validateSeed(request.seed);

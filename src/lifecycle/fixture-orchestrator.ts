@@ -98,6 +98,7 @@ export interface FixtureLifecycleOrchestratorOptions {
 export interface FixtureLifecycleInput {
   readonly agreementCanonicalJson: string;
   readonly jobId: string;
+  readonly serviceRequestHash?: string;
   readonly verification: AgreementCommitVerification;
 }
 
@@ -278,6 +279,7 @@ interface PreparedLifecycle {
   readonly agreementCanonicalJson: string;
   readonly binding: LifecycleBinding;
   readonly plan: LifecyclePlan;
+  readonly serviceRequestHash: string | undefined;
   readonly session: SessionRecord;
 }
 
@@ -329,6 +331,8 @@ export class FixtureLifecycleOrchestrator {
 
     const committed = this.#commitmentStore.commit({
       agreementCanonicalJson,
+      ...(input.serviceRequestHash === undefined
+        ? {} : { serviceRequestHash: input.serviceRequestHash }),
       session,
       verification: input.verification,
     });
@@ -414,7 +418,7 @@ export class FixtureLifecycleOrchestrator {
     recovery: FixtureLifecycleRecovery,
   ): Promise<FixtureLifecycleResult> {
     validateRecovery(recovery);
-    const { agreementCanonicalJson, binding, plan, session } = this.#prepare(input);
+    const { agreementCanonicalJson, binding, plan, serviceRequestHash, session } = this.#prepare(input);
     const persisted = this.#read(binding);
     if (persisted === null) throw new FixtureLifecycleIntegrityError("Lifecycle recovery target does not exist");
     const observedAt = this.#timestamp();
@@ -435,6 +439,7 @@ export class FixtureLifecycleOrchestrator {
         recovery,
         observedAt,
         agreementCanonicalJson,
+        serviceRequestHash,
         session,
         input.verification,
       );
@@ -592,7 +597,11 @@ export class FixtureLifecycleOrchestrator {
     if (session === null || session.status !== "admitted" || session.evidenceMode !== "fixture") {
       throw new FixtureLifecycleIntegrityError("Fixture lifecycle requires an admitted fixture session");
     }
-    if (!fixtureCommitmentRequestMatches(session.requestHash, agreementCanonicalJson)) {
+    if (!fixtureCommitmentRequestMatches(
+      session.requestHash,
+      agreementCanonicalJson,
+      input.serviceRequestHash,
+    )) {
       throw new FixtureLifecycleIntegrityError("Lifecycle agreement does not match the admitted request hash");
     }
     const binding = Object.freeze({
@@ -605,7 +614,13 @@ export class FixtureLifecycleOrchestrator {
       deliveryPhaseIndex: plan.delivery.phaseIndex,
       deliveryPhaseKind: plan.delivery.phaseKind,
     });
-    return Object.freeze({ agreementCanonicalJson, binding, plan, session });
+    return Object.freeze({
+      agreementCanonicalJson,
+      binding,
+      plan,
+      serviceRequestHash: input.serviceRequestHash,
+      session,
+    });
   }
 
   #restartBoundary(row: LifecycleRow): FixtureLifecycleRestartBoundary {
@@ -797,6 +812,7 @@ export class FixtureLifecycleOrchestrator {
     recovery: FixtureLifecycleRecovery,
     observedAt: string,
     agreementCanonicalJson: string,
+    serviceRequestHash: string | undefined,
     session: SessionRecord,
     verification: AgreementCommitVerification,
   ): FixtureCommitmentResult {
@@ -804,7 +820,12 @@ export class FixtureLifecycleOrchestrator {
       this.#claimPendingRecovery(binding, row, recovery, observedAt);
       const existing = this.#commitmentStore.get(binding.instanceId, binding.audience, binding.jobId);
       if (existing !== null) return Object.freeze({ disposition: "committed" as const, record: existing });
-      return this.#commitmentStore.commit({ agreementCanonicalJson, session, verification });
+      return this.#commitmentStore.commit({
+        agreementCanonicalJson,
+        ...(serviceRequestHash === undefined ? {} : { serviceRequestHash }),
+        session,
+        verification,
+      });
     });
     return claim.immediate() as FixtureCommitmentResult;
   }

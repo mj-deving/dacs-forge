@@ -30,7 +30,7 @@ interface Driver {
 
 const FULL_HANDSHAKE: Driver = Object.freeze({
   file: "test/e2e/full-handshake.test.ts",
-  pattern: "dogfoods listing through bilateral Vet",
+  pattern: "delivers the handler output through terminal bundles",
 });
 
 const DRIVER_OVERRIDES: Readonly<Record<string, Driver>> = Object.freeze({
