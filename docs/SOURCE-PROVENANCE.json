@@ -1085,7 +1085,7 @@
     },
     {
       "path": "test/runtime/service-runtime.test.ts",
-      "sha256": "afa10d221933c110c421105829810da10c901a94c38042ab8201f61534a72df5"
+      "sha256": "c18a205e88b4fa6bcfdeac8bcf840f3ca391e1336506abcddba4e24ead0759cb"
     },
     {
       "path": "test/runtime/service-session-integration.test.ts",
