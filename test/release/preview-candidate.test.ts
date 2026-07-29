@@ -116,19 +116,36 @@ describe("public export boundary", () => {
     withTrackedFiles({ "README.md": `${localPath}\n` }, (root) => {
       expect(() => verifyPublicExport(root)).toThrow("local-home-path");
     });
+    const privateName = ["notes/", "goal", "_thread_id", ".txt"].join("");
+    withTrackedFiles({ [privateName]: "public-looking bytes\n" }, (root) => {
+      expect(() => verifyPublicExport(root)).toThrow("path name");
+    });
   });
 
-  test("rejects private paths, blob bytes, and messages deleted before the candidate tree", () => {
+  test("rejects a private control path deleted before the candidate tree", () => {
     withDeletedHistoryFile("ISA.md", "temporary control\n", "temporary control", (root, base) => {
       expect(() => verifyPublicExport(root, base)).toThrow("forbidden path");
     });
+  });
+
+  test("rejects private blob bytes deleted before the candidate tree", () => {
     const localPath = ["/", "home", "/", "mj", "/", "projects", "/", "private"].join("");
     withDeletedHistoryFile("notes.txt", `${localPath}\n`, "temporary note", (root, base) => {
       expect(() => verifyPublicExport(root, base)).toThrow("history blob");
     });
+  });
+
+  test("rejects a private commit message in candidate history", () => {
     const privateMessage = ["goal", "_thread_id", " copied"].join("");
     withDeletedHistoryFile("notes.txt", "temporary note\n", privateMessage, (root, base) => {
       expect(() => verifyPublicExport(root, base)).toThrow("commit");
+    });
+  });
+
+  test("rejects a nested private path deleted before the candidate tree", () => {
+    const privateName = ["archive/", ".", "beads", "/task"].join("");
+    withDeletedHistoryFile(privateName, "public-looking bytes\n", "temporary note", (root, base) => {
+      expect(() => verifyPublicExport(root, base)).toThrow("forbidden path");
     });
   });
 });

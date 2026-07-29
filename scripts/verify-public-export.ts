@@ -7,6 +7,7 @@ import previewProfile from "../release/preview-profile.json";
 
 const FORBIDDEN_EXACT_PATHS = new Set(["AGENTS.md", "ISA.md"]);
 const FORBIDDEN_PREFIXES = [[".", "beads/"].join(""), "Plans/", "Probes/", "evidence/"] as const;
+const FORBIDDEN_PATH_SEGMENTS = new Set(["AGENTS.md", "ISA.md", [".", "beads"].join(""), "Plans", "Probes", "evidence"]);
 const FORBIDDEN_CONTENT = [
   { id: "local-home-path", pattern: new RegExp(["/", "home", "/", "mj", "/"].join("")) },
   { id: "private-bead-id", pattern: new RegExp(["DACS", "-standard-", "[a-z0-9]+(?:\\.[0-9]+)+"].join(""), "i") },
@@ -42,9 +43,12 @@ function gitText(root: string, args: readonly string[]): string {
 }
 
 function assertPublicPath(path: string, surface = path): void {
-  if (FORBIDDEN_EXACT_PATHS.has(path) || FORBIDDEN_PREFIXES.some((prefix) => path.startsWith(prefix))) {
+  if (FORBIDDEN_EXACT_PATHS.has(path)
+    || FORBIDDEN_PREFIXES.some((prefix) => path.startsWith(prefix))
+    || path.split("/").some((segment) => FORBIDDEN_PATH_SEGMENTS.has(segment))) {
     throw new Error(`public export contains forbidden path: ${surface}`);
   }
+  assertPublicText(path, `path name: ${surface}`);
 }
 
 function assertPublicText(text: string, surface: string): void {

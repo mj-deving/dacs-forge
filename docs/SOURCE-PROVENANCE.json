@@ -141,7 +141,7 @@
     },
     {
       "path": "scripts/verify-public-export.ts",
-      "sha256": "54a2c75d9f50f718553a2a45023a32f80d2a1c3b85d25b832765b2576aa7a0d0"
+      "sha256": "d863ae6567dfd53243016e589172e8835b82ac48b9edcc0bfde49457e2c2f253"
     },
     {
       "path": "src/cli/authority.ts",
@@ -1077,7 +1077,7 @@
     },
     {
       "path": "test/release/preview-candidate.test.ts",
-      "sha256": "821f4c61adf9940bb3de38ae1efae3f196bf3ca4a5949b3580b7652594a415d3"
+      "sha256": "db1060e0abbedf7b967c7a5a118f9d2adb629cd50a20ec9f5e7dc6c62d8b3459"
     },
     {
       "path": "test/runtime/active-write-shutdown.test.ts",
