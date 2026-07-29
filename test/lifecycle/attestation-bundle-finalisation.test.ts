@@ -878,6 +878,17 @@ describe("atomic DACS-5 lifecycle finalisation", () => {
     });
     deliveryAnchor.database.close();
 
+    const deliverySemanticAnchor = await settledFixture();
+    deliverySemanticAnchor.store.finalise(deliverySemanticAnchor.input);
+    deliverySemanticAnchor.database.run(`
+      UPDATE fixture_anchors SET content_hash = artifact_content_hash
+      WHERE logical_address IN (SELECT verify_result_address FROM fixture_deliveries)
+    `);
+    expect(deliverySemanticAnchor.store.verifySession(
+      deliverySemanticAnchor.input.session.jobId,
+    )).toMatchObject({ disposition: "rejected", reputationEligibility: "excluded" });
+    deliverySemanticAnchor.database.close();
+
     const lifecycleAnchor = await settledFixture();
     lifecycleAnchor.store.finalise(lifecycleAnchor.input);
     const row = lifecycleAnchor.database.query<{ value: string }, []>(`

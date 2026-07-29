@@ -23,6 +23,7 @@ describe("attested delivery restart verification", () => {
     expect(restarted).not.toBeNull();
     expect(restarted?.payloadCanonicalJson).toBe(first.payloadCanonicalJson);
     expect(restarted?.attestationRef).toEqual(first.attestationRef);
+    expect(restarted?.attestationRef.contentHash).not.toBe(restarted?.verifyResultArtifactHash);
     expect(restarted?.evidenceCanonicalJson).toBe(first.evidenceCanonicalJson);
     expect(restarted?.sessionBindingHash).toBe(first.sessionBindingHash);
     const attackerStore = new FixtureDeliveryStore(fixture.database, {

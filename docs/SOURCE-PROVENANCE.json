@@ -153,7 +153,7 @@
     },
     {
       "path": "src/consumer/delivery-attestation-verifier.ts",
-      "sha256": "3edb1502c7a444fe404d1b5edd9eed84a1b30f8dfeb8f7cba0fb4618e2b6f1fd"
+      "sha256": "f331cb1c0052ec2eb30671a50d9ce826ab93af5baca29adc23e27c708a599318"
     },
     {
       "path": "src/consumer/fixture-key-possession-verifier.ts",
@@ -269,7 +269,7 @@
     },
     {
       "path": "src/producer/delivery-attestation.ts",
-      "sha256": "1ff09cdc0e1f3d3769469bf15f53b7abb02f296e91b478cc9d02f6a8b0ba8bb6"
+      "sha256": "4218d3ddce9a783b5d0e998e115613a23ef458ab24d39db6111c06d7995e6beb"
     },
     {
       "path": "src/producer/fixture-ed25519.ts",
@@ -393,7 +393,7 @@
     },
     {
       "path": "src/substrate/sqlite/fixture-bundle.ts",
-      "sha256": "005e72fa847c55a35f23f9d791dba17b2b70336cce254c5d028c7a90e0ba362f"
+      "sha256": "25957c168610c8cf2e265143c8cd271660a1e930b23545d608571e032383107a"
     },
     {
       "path": "src/substrate/sqlite/fixture-commitment.ts",
@@ -401,7 +401,7 @@
     },
     {
       "path": "src/substrate/sqlite/fixture-delivery.ts",
-      "sha256": "1e06ced3c30488d18340b62c771ff2f24b5cf14576e748eaaac593b42efb4a24"
+      "sha256": "6f88c04314cdebcc1853c36cbdb985ac0c017c6033d4639302c9f28d8cb56614"
     },
     {
       "path": "src/substrate/sqlite/fixture-settlement.ts",
@@ -481,7 +481,7 @@
     },
     {
       "path": "test/conformance/attested-delivery.test.ts",
-      "sha256": "ef1ec5e14fb8deeaed72ddde98d913fb977a21aecf7eda10305d81ebb6d9afd5"
+      "sha256": "47803197ea55508c45a80b06ded66626e56915ec562e152c76e5417b09c62bb3"
     },
     {
       "path": "test/conformance/binding.test.ts",
@@ -597,7 +597,7 @@
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "b0b230af06c6119705810c513fb0dd91449106fd9d32c67e540df0902ded4d21"
+      "sha256": "99f8acc1dd953374bbdaf675e3f6fb512c0adcd2b51372e07e3ccdd8a2ed2991"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -833,11 +833,11 @@
     },
     {
       "path": "test/lifecycle/attestation-bundle-finalisation.test.ts",
-      "sha256": "3ae12a4e337a3cd5fa2ba1176c46a0fb122e487ec194c4413c50b9b536f2cba3"
+      "sha256": "1278a21dc789730f0d22e10a75963463c8e9ab823bece073dce7c8e898f47a3e"
     },
     {
       "path": "test/lifecycle/attested-delivery-integration.test.ts",
-      "sha256": "72de84dcc44249d7c7194f86e79c891563a5b27bae819118f4626c349af5ec54"
+      "sha256": "60b0f121d69946f0d9f7656d923cccc39ad5e175009dd232dfc79b1a81fed04b"
     },
     {
       "path": "test/lifecycle/commit-failure-stop.test.ts",
@@ -941,7 +941,7 @@
     },
     {
       "path": "test/recovery/delivery-restart.test.ts",
-      "sha256": "1ec801994e09f167bf80c77b967e7ddcc88d6b413bfdeb8a0a166fc6740ee1bd"
+      "sha256": "7e72ca618cf0e5e4052000ed636ab570209434b6df0cbe34dfc265f0b7d5d905"
     },
     {
       "path": "test/recovery/restart-matrix.test.ts",

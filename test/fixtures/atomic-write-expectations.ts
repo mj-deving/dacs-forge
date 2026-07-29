@@ -85,7 +85,7 @@ export const EXPECTED_ATOMIC_WRITE_SITES: Readonly<Record<string, ExpectedAtomic
   "anchor.put": expected("artifact-anchor", "FixtureAnchorStore.put", "immediate", "fixture-settlement.ts:509"),
   "settlement-consumption.put": expected("artifact-anchor", "FixtureAnchorStore.put", "immediate", "fixture-settlement.ts:832", ["fixture-settlement.ts:494"]),
   "delivery.put-record": expected("attested-delivery", "FixtureDeliveryStore.deliver", "immediate", "fixture-delivery.ts:287"),
-  "delivery.put-anchor": expected("attested-delivery", "FixtureDeliveryStore.deliver", "immediate", "fixture-delivery.ts:919", ["fixture-delivery.ts:262", "fixture-delivery.ts:264", "fixture-delivery.ts:266", "fixture-delivery.ts:268"]),
+  "delivery.put-anchor": expected("attested-delivery", "FixtureDeliveryStore.deliver", "immediate", "fixture-delivery.ts:936", ["fixture-delivery.ts:262", "fixture-delivery.ts:264", "fixture-delivery.ts:266", "fixture-delivery.ts:268"]),
   "bundle.put-anchor": expected("bundle-finalisation", "FixtureBundleStore.#finaliseWithinTransaction", "immediate", "fixture-bundle.ts:336"),
   "bundle.put-copy": expected("bundle-finalisation", "FixtureBundleStore.#finaliseWithinTransaction", "immediate", "fixture-bundle.ts:349"),
   "bundle.finalise-lifecycle": expected("bundle-finalisation", "FixtureBundleStore.#finaliseWithinTransaction", "immediate", "fixture-bundle.ts:369"),

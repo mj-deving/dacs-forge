@@ -262,7 +262,7 @@ export class FixtureDeliveryStore {
       putAnchor(this.#database, attestation.assertionLogicalAddress, "dacs-2-delivery-assertion",
         assertionArtifact.contentHash, assertionArtifact.contentHash, prepared.createdAt);
       putAnchor(this.#database, attestation.verifyResultLogicalAddress, "dacs-2-verify-result",
-        verifyResultArtifact.contentHash, verifyResultArtifact.contentHash, prepared.createdAt);
+        attestation.verifyResultContentHash, verifyResultArtifact.contentHash, prepared.createdAt);
       putAnchor(this.#database, prepared.deliveryAddress, "dacs-4-deliverable",
         deliveryArtifact.contentHash, deliveryArtifact.contentHash, prepared.createdAt);
       putAnchor(this.#database, prepared.evidenceAddress, "dacs-4-evidence",
@@ -357,12 +357,24 @@ export class FixtureDeliveryStore {
         || anchor.artifact.contentHash !== row.deliveryArtifactHash) {
         return Object.freeze({ status: "rejected", reason: "Fixture delivery anchor does not match the persisted delivery" });
       }
+      const verifyResult = requiredArtifact(
+        this.#artifacts,
+        row.verifyResultArtifactHash,
+        "dacs-2-verify-result",
+      );
+      const verifyResultContentHash = signedContentHash(verifyResult.canonicalJson);
+      const verifyResultAnchor = getAnchor(this.#database, this.#artifacts, row.verifyResultAddress);
+      if (verifyResultAnchor === null || verifyResultAnchor.artifactKind !== "dacs-2-verify-result"
+        || verifyResultAnchor.contentHash !== verifyResultContentHash
+        || verifyResultAnchor.artifact.contentHash !== row.verifyResultArtifactHash) {
+        return Object.freeze({ status: "rejected", reason: "Fixture delivery attestation anchor does not match the persisted VerifyResult" });
+      }
       const delivery = anchor.artifact;
       return verifyDeliveryValue(
         logicalAddress,
         expected,
         parseCanonical(delivery.canonicalJson),
-        rowExpectation(row),
+        rowExpectation(row, verifyResultContentHash),
         row.payloadFormat,
       );
     } catch (error) {
@@ -406,6 +418,7 @@ export class FixtureDeliveryStore {
     const verifyResult = this.#requiredArtifactForResolve(row.verifyResultArtifactHash, "dacs-2-verify-result");
     const delivery = this.#requiredArtifactForResolve(row.deliveryArtifactHash, "dacs-4-deliverable");
     const evidence = this.#requiredArtifactForResolve(row.evidenceArtifactHash, "dacs-4-evidence");
+    const verifyResultContentHash = signedContentHash(verifyResult.canonicalJson);
     this.#assertAnchorForResolve(
       row.assertionAddress,
       "dacs-2-delivery-assertion",
@@ -415,7 +428,7 @@ export class FixtureDeliveryStore {
     this.#assertAnchorForResolve(
       row.verifyResultAddress,
       "dacs-2-verify-result",
-      row.verifyResultArtifactHash,
+      verifyResultContentHash,
       row.verifyResultArtifactHash,
     );
     this.#assertAnchorForResolve(
@@ -452,11 +465,12 @@ export class FixtureDeliveryStore {
     if (row.assertionAddress !== attestationVerification.assertionAddress
       || row.assertionArtifactHash !== attestationVerification.assertionArtifactHash
       || row.verifyResultAddress !== attestationVerification.verifyResultAddress
-      || row.verifyResultArtifactHash !== attestationVerification.verifyResultArtifactHash) {
+      || row.verifyResultArtifactHash !== attestationVerification.verifyResultArtifactHash
+      || verifyResultContentHash !== attestationVerification.verifyResultContentHash) {
       throw new FixtureDeliveryIntegrityError("Fixture delivery attestation row addresses or hashes are corrupt");
     }
     const deliveryValue = parseCanonical(delivery.canonicalJson);
-    const expected = rowExpectation(row);
+    const expected = rowExpectation(row, verifyResultContentHash);
     const deliveryCheck = verifyDeliveryValue(
       row.deliveryAddress,
       expected,
@@ -786,12 +800,15 @@ function deliveryExpectation(
   });
 }
 
-function rowExpectation(row: DeliveryRow): SettlementDeliveryExpectation {
+function rowExpectation(
+  row: DeliveryRow,
+  verifyResultContentHash: string,
+): SettlementDeliveryExpectation {
   return Object.freeze({
     agreementHash: row.agreementHash,
     attestationRefCanonicalJson: canonicalize({
       anchor: { kind: "storage-program", locator: row.verifyResultAddress },
-      contentHash: row.verifyResultArtifactHash,
+      contentHash: verifyResultContentHash,
       signer: row.orchestrator,
     }),
     deliverableAnchorCanonicalJson: canonicalize({ kind: "storage-program", locator: row.deliveryAddress }),
@@ -944,17 +961,22 @@ function attestationAnchorRead(database: DacsDatabase, artifacts: ArtifactStore,
   try {
     const anchor = getAnchor(database, artifacts, address);
     if (anchor === null) return { status: "absent" as const };
-    if (anchor.contentHash !== anchor.artifact.contentHash) {
-      return { status: "indeterminate" as const, reason: "Attestation anchor content hash is corrupt" };
-    }
     return {
       status: "resolved" as const,
       artifactContentHash: anchor.artifact.contentHash,
       artifactKind: anchor.artifactKind,
+      contentHash: anchor.contentHash,
     };
   } catch (error) {
     return { status: "indeterminate" as const, reason: message(error) };
   }
+}
+
+function signedContentHash(canonicalJson: string): string {
+  const value = parseCanonical(canonicalJson);
+  const unsigned = { ...value };
+  delete unsigned["signature"];
+  return sha256Hex(canonicalize(unsigned));
 }
 
 function parseCanonical(canonicalJson: string): Record<string, unknown> {

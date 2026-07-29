@@ -64,6 +64,18 @@ describe("lifecycle attested delivery adapter", () => {
     const session = sessions.get(agreement.input.jobId)!;
     const delivered = deliveries.get(session);
     expect(delivered).not.toBeNull();
+    const verifyResultAnchor = database.query<{
+      artifactContentHash: string | null;
+      contentHash: string;
+    }, { address: string }>(`
+      SELECT content_hash AS contentHash, artifact_content_hash AS artifactContentHash
+      FROM fixture_anchors WHERE logical_address = $address
+    `).get({ address: delivered!.verifyResultAddress });
+    expect(verifyResultAnchor).toEqual({
+      contentHash: delivered!.attestationRef.contentHash,
+      artifactContentHash: delivered!.verifyResultArtifactHash,
+    });
+    expect(verifyResultAnchor!.contentHash).not.toBe(verifyResultAnchor!.artifactContentHash);
     expect(result.state === "settle-completed" ? result.delivery.value["evidenceHash"] : undefined)
       .toBe(delivered?.evidenceHash);
     database.close();

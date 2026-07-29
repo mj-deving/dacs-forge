@@ -28,6 +28,7 @@ export interface SignedFixtureDeliveryAttestation {
   readonly verifyResult: Readonly<Record<string, unknown>>;
   readonly verifyResultArtifactHash: string;
   readonly verifyResultCanonicalJson: string;
+  readonly verifyResultContentHash: string;
   readonly verifyResultLogicalAddress: string;
   readonly verifyResultRef: Readonly<Record<string, unknown>>;
 }
@@ -93,10 +94,11 @@ export function signFixtureDeliveryAttestation(
     verifyResult: verifyResult.value,
     verifyResultArtifactHash: verifyResult.artifactHash,
     verifyResultCanonicalJson: verifyResult.canonicalJson,
+    verifyResultContentHash: verifyResult.contentHash,
     verifyResultLogicalAddress,
     verifyResultRef: deepFreezeJson({
       anchor: { kind: "storage-program", locator: verifyResultLogicalAddress },
-      contentHash: verifyResult.artifactHash,
+      contentHash: verifyResult.contentHash,
       signer: signer.signer,
     }) as Readonly<Record<string, unknown>>,
   });
@@ -111,6 +113,7 @@ function signArtifact(
   value: Readonly<Record<string, unknown>>;
   canonicalJson: string;
   artifactHash: string;
+  contentHash: string;
 }> {
   const normalized = JSON.parse(canonicalize(unsigned)) as Record<string, unknown>;
   const semanticHash = sha256Hex(canonicalize(withoutFields(normalized, "signature")));
@@ -124,5 +127,10 @@ function signArtifact(
     signature: { algorithm: "ed25519", signer: signer.signer, value: signature },
   }) as Readonly<Record<string, unknown>>;
   const canonicalJson = canonicalize(value);
-  return Object.freeze({ value, canonicalJson, artifactHash: sha256Hex(canonicalJson) });
+  return Object.freeze({
+    value,
+    canonicalJson,
+    artifactHash: sha256Hex(canonicalJson),
+    contentHash: semanticHash,
+  });
 }

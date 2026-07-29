@@ -22,7 +22,12 @@ export interface DeliveryAttestationExpectation {
 }
 
 export type DeliveryAttestationAnchorRead =
-  | { readonly status: "resolved"; readonly artifactContentHash: string; readonly artifactKind: string }
+  | {
+    readonly status: "resolved";
+    readonly artifactContentHash: string;
+    readonly artifactKind: string;
+    readonly contentHash: string;
+  }
   | { readonly status: "absent" }
   | { readonly status: "rejected"; readonly reason: string }
   | { readonly status: "indeterminate"; readonly reason: string };
@@ -43,6 +48,7 @@ export type DeliveryAttestationVerificationResult =
     readonly assertionArtifactHash: string;
     readonly verifyResultAddress: string;
     readonly verifyResultArtifactHash: string;
+    readonly verifyResultContentHash: string;
   }
   | {
     readonly disposition: "rejected" | "refused-unsupported" | "indeterminate";
@@ -132,12 +138,14 @@ export function verifyDeliveryAttestation(
     const assertionAnchor = readAnchor(options.anchorContext, assertionAddress);
     if ("disposition" in assertionAnchor) return assertionAnchor;
     if (assertionAnchor.artifactKind !== "dacs-2-delivery-assertion"
+      || assertionAnchor.contentHash !== assertion.artifactHash
       || assertionAnchor.artifactContentHash !== assertion.artifactHash) {
       return rejected("anchor-binding", "Anchored delivery assertion does not match its signed artifact");
     }
     const resultAnchor = readAnchor(options.anchorContext, verifyResultAddress);
     if ("disposition" in resultAnchor) return resultAnchor;
     if (resultAnchor.artifactKind !== "dacs-2-verify-result"
+      || resultAnchor.contentHash !== verifyResultHash
       || resultAnchor.artifactContentHash !== verifyResult.artifactHash) {
       return rejected("anchor-binding", "Anchored DACS-2 VerifyResult does not match its signed artifact");
     }
@@ -148,6 +156,7 @@ export function verifyDeliveryAttestation(
     assertionArtifactHash: assertion.artifactHash,
     verifyResultAddress,
     verifyResultArtifactHash: verifyResult.artifactHash,
+    verifyResultContentHash: verifyResultHash,
   });
 }
 

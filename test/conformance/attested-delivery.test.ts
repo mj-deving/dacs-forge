@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { canonicalize } from "../../src/protocol/canonical-json.ts";
+import { canonicalize, withoutFields } from "../../src/protocol/canonical-json.ts";
+import { sha256Hex } from "../../src/protocol/hash.ts";
 import { signFixtureDeliveryAttestation } from "../../src/producer/delivery-attestation.ts";
 import { verifyDeliveryAttestation } from "../../src/consumer/delivery-attestation-verifier.ts";
 import { fixtureSigner } from "../fixtures/reference-listing.ts";
@@ -32,16 +33,26 @@ describe("DACS-2 attested delivery", () => {
       signer,
       { deploymentMode: "fixture", requestMode: "fixture" },
     );
+    const verifyResultContentHash = sha256Hex(canonicalize(withoutFields(
+      signed.verifyResult,
+      "signature",
+    )));
+    expect(verifyResultContentHash).not.toBe(signed.verifyResultArtifactHash);
+    expect(signed.verifyResultContentHash).toBe(verifyResultContentHash);
     expect(signed.verifyResultRef).toEqual({
       anchor: { kind: "storage-program", locator: signed.verifyResultLogicalAddress },
-      contentHash: signed.verifyResultArtifactHash,
+      contentHash: verifyResultContentHash,
       signer: signer.signer,
     });
     expect(verifyDeliveryAttestation(
       signed.assertionCanonicalJson,
       signed.verifyResultCanonicalJson,
       { ...input, anchorContext: { mode: "pre-anchor" } },
-    )).toMatchObject({ disposition: "provisionally-verified" });
+    )).toMatchObject({
+      disposition: "provisionally-verified",
+      verifyResultArtifactHash: signed.verifyResultArtifactHash,
+      verifyResultContentHash,
+    });
   });
 
   test("rejects omitted, mutated, and cross-session attestation material", () => {

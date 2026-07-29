@@ -863,10 +863,12 @@ export class FixtureBundleStore {
           })
         : Object.freeze({ status: "rejected" as const, reason: "Vet composite is invalid, misbound, or non-passing" });
     } else if (persisted.artifactKind === "dacs-2-verify-result") {
-      if (persisted.contentHash !== persisted.artifactContentHash) {
-        return Object.freeze({ status: "rejected" as const, reason: "Delivery attestation anchor hash is corrupt" });
-      }
-      const verified = this.#resolveDeliveryAttestation(locator, artifact.canonicalJson, persisted.artifactContentHash);
+      const verified = this.#resolveDeliveryAttestation(
+        locator,
+        artifact.canonicalJson,
+        persisted.contentHash,
+        persisted.artifactContentHash,
+      );
       return verified;
     } else if (persisted.contentHash !== persisted.artifactContentHash) {
       return Object.freeze({ status: "rejected" as const, reason: "Referenced artifact content hash is corrupt" });
@@ -874,7 +876,12 @@ export class FixtureBundleStore {
     return Object.freeze({ status: "indeterminate" as const, reason: "Referenced artifact kind lacks an authenticated job binding" });
   }
 
-  #resolveDeliveryAttestation(locator: string, verifyResultJson: string, artifactContentHash: string) {
+  #resolveDeliveryAttestation(
+    locator: string,
+    verifyResultJson: string,
+    contentHash: string,
+    artifactContentHash: string,
+  ) {
     const row = this.#database.query<{
       agreementHash: string; assertionAddress: string; assertionArtifactHash: string;
       audience: string; instanceId: string; jobId: string; orchestrator: string;
@@ -901,7 +908,7 @@ export class FixtureBundleStore {
     const authority = this.#deliveryPhaseAuthority(row.jobId, row.instanceId, row.audience);
     if (authority.phaseIndex !== phaseIndex || authority.phaseKind !== "deliver-attested-payload"
       || authority.signer !== row.orchestrator || authority.anchorLocator !== locator
-      || authority.contentHash !== artifactContentHash) {
+      || authority.contentHash !== contentHash) {
       return Object.freeze({ status: "rejected" as const, reason: "Delivery attestation lifecycle authority is invalid" });
     }
     const verification = verifyDeliveryAttestation(assertion.canonicalJson, verifyResultJson, {
@@ -918,7 +925,8 @@ export class FixtureBundleStore {
       if (verification.assertionAddress !== row.assertionAddress
         || verification.assertionArtifactHash !== row.assertionArtifactHash
         || verification.verifyResultAddress !== row.verifyResultAddress
-        || verification.verifyResultArtifactHash !== row.verifyResultArtifactHash) {
+        || verification.verifyResultArtifactHash !== row.verifyResultArtifactHash
+        || verification.verifyResultContentHash !== contentHash) {
         return Object.freeze({ status: "rejected" as const, reason: "Delivery attestation row differs from its verified chain" });
       }
       return Object.freeze({
@@ -926,7 +934,7 @@ export class FixtureBundleStore {
         artifactType: "phase-evidence" as const,
         anchorKind: "storage-program",
         anchorLocator: locator,
-        contentHash: artifactContentHash,
+        contentHash,
         jobId: row.jobId,
         phaseIndex,
         phaseKind: "deliver-attested-payload",
@@ -1096,13 +1104,18 @@ export class FixtureBundleStore {
         FROM fixture_anchors WHERE logical_address = $logicalAddress
       `).get({ logicalAddress });
       if (row === null) return Object.freeze({ status: "absent" as const });
-      if (row.artifactContentHash === null || row.contentHash !== row.artifactContentHash) {
-        return Object.freeze({ status: "rejected" as const, reason: "Artifact anchor content binding is inconsistent" });
+      if (row.artifactContentHash === null) {
+        return Object.freeze({ status: "rejected" as const, reason: "Artifact anchor lacks its stored-byte binding" });
       }
       const artifact = this.#artifacts.get(row.artifactContentHash);
       return artifact === null || !artifact.kinds.includes(row.artifactKind)
         ? Object.freeze({ status: "rejected" as const, reason: "Artifact anchor target is unavailable or mistyped" })
-        : Object.freeze({ status: "resolved" as const, artifactKind: row.artifactKind, artifactContentHash: row.artifactContentHash });
+        : Object.freeze({
+          status: "resolved" as const,
+          artifactKind: row.artifactKind,
+          contentHash: row.contentHash,
+          artifactContentHash: row.artifactContentHash,
+        });
     } catch (error) {
       return error instanceof ArtifactIntegrityError
         ? Object.freeze({ status: "rejected" as const, reason: message(error) })
