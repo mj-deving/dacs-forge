@@ -64,7 +64,7 @@ describe("loopback HTTP readiness disclosure boundary", () => {
       schema: "dacs-health/v1",
       service: "dacs-forge",
       status: "ok",
-      version: "0.0.0-private",
+      version: "0.1.0-preview.1",
     });
 
     const readinessResponse = await fetch(`${server.url}/readyz`);

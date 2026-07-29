@@ -1,6 +1,6 @@
 # DACS Forge architecture
 
-Status: prototype, fixture/no-spend only. This document describes the implemented
+Status: unsupported final Preview, fixture/no-spend only. This document describes the implemented
 local system. It does not claim production readiness, certification, live value
 transfer, external authority, or full DACS conformance.
 

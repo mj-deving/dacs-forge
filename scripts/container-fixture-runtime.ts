@@ -1,6 +1,7 @@
 #!/usr/bin/env bun
 
 import { startReadinessServer } from "../src/http/readiness-server.ts";
+import { doctorPackageVersion } from "../src/readiness/doctor.ts";
 
 const HEALTH_URL = "http://127.0.0.1:3000/healthz";
 const BOUNDARY_MARKER_PATTERN = /^sentinel-[a-z0-9-]{1,32}-[0-9a-f]{32}$/;
@@ -57,7 +58,7 @@ export function normalizeHealthDocument(value: unknown): Readonly<Record<string,
   if (document["schema"] !== "dacs-health/v1"
     || document["service"] !== "dacs-forge"
     || document["status"] !== "ok"
-    || document["version"] !== "0.0.0-private"
+    || document["version"] !== doctorPackageVersion()
     || typeof document["timestamp"] !== "string"
     || !Number.isFinite(Date.parse(document["timestamp"]))) {
     throw new Error("Container health response does not satisfy the DACS health contract");

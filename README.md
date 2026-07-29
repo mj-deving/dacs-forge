@@ -5,8 +5,8 @@
 A hardened, forkable DACS reference service and conformance kit for building
 specific DACS service agents.
 
-> Maturity: **prototype**. Fixture/no-spend only. Not canonical, not production
-> ready, and not suitable for live value transfer.
+> Maturity: **unsupported final Preview**. Fixture/no-spend only. Not a Product
+> Seal, not canonical, not production ready, and not suitable for live value transfer.
 
 ## What it proves
 
@@ -23,8 +23,8 @@ bundle copies. Restart, replay, mutation, concurrency, migration, authority, and
 failure-path tests are first-class release evidence.
 
 It does **not** currently claim live Demos anchoring, live payment rails, external
-attestation authority, a supported release, accepted external-rig qualification,
-reputation eligibility, or steward designation.
+attestation authority, a supported Product Seal, reputation eligibility, or
+steward designation.
 
 ## The 90-second model
 
@@ -142,7 +142,7 @@ See [SECURITY.md](SECURITY.md) and the [Listing trust boundary](docs/LISTING-TRU
 
 ## Conformance status
 
-Overall status: **prototype**.
+Overall status: **unsupported final Preview**.
 
 The repository pins and exercises named DACS-Standard vectors for canonical JSON,
 signature-value encoding, Listing unknown-field retention, settlement finalization,
@@ -172,7 +172,7 @@ See [versioning and release gates](docs/VERSIONING.md), the
 
 ## Project boundary
 
-DACS Forge is an independent community prototype maintained by
+DACS Forge is an independent community implementation maintained by
 [@mj-deving](https://github.com/mj-deving). “DACS Forge” does not imply canonical
 status, steward certification, release readiness, or ownership by the DACS
 organization.

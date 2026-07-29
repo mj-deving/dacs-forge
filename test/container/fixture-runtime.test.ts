@@ -35,26 +35,26 @@ describe("container fixture runtime contract", () => {
       service: "dacs-forge",
       status: "ok",
       timestamp: "2026-07-27T18:00:00.000Z",
-      version: "0.0.0-private",
+      version: "0.1.0-preview.1",
     })).toEqual({
       schema: "dacs-health/v1",
       service: "dacs-forge",
       status: "ok",
-      version: "0.0.0-private",
+      version: "0.1.0-preview.1",
     });
     expect(() => normalizeHealthDocument({
       schema: "dacs-health/v1",
       service: "dacs-forge",
       status: "ok",
       timestamp: "not-a-time",
-      version: "0.0.0-private",
+      version: "0.1.0-preview.1",
     })).toThrow("health contract");
     expect(() => normalizeHealthDocument({
       schema: "dacs-health/v1",
       service: "dacs-forge",
       status: "ok",
       timestamp: "2026-07-27T18:00:00.000Z",
-      version: "0.0.0-private",
+      version: "0.1.0-preview.1",
       detail: "unexpected",
     })).toThrow("unexpected shape");
   });

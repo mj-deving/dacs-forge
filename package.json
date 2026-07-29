@@ -1,6 +1,6 @@
 {
   "name": "dacs-forge",
-  "version": "0.0.0-private",
+  "version": "0.1.0-preview.1",
   "description": "Deterministic no-spend DACS service and conformance substrate for extension-only service implementations.",
   "private": true,
   "license": "MIT",
@@ -37,6 +37,9 @@
     "verify:exemplar-diff": "bun run ./scripts/verify-exemplar-diff.ts",
     "verify:container": "bun run ./scripts/verify-container-fixture.ts",
     "verify:dockerfile-bases": "bun run ./scripts/lint-dockerfile-bases.ts",
+    "verify:preview-profile": "bun run ./scripts/verify-preview-profile.ts",
+    "verify:public-export": "bun run ./scripts/verify-public-export.ts",
+    "verify:preview": "bun run verify:public-export && bun run verify:preview-profile && bun run verify:provenance && bun run typecheck && bun test --timeout 10000 && bun run build && bun run mutation:calibrate && bun run verify:container",
     "verify:provenance": "bun tools/verify-source-provenance.ts"
   },
   "devDependencies": {

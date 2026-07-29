@@ -2,6 +2,7 @@
 
 import { resolve } from "node:path";
 import type { ContainerFixtureReceipt } from "./container-fixture-runtime.ts";
+import { doctorPackageVersion } from "../src/readiness/doctor.ts";
 
 const root = resolve(import.meta.dir, "..");
 const suffix = `${process.pid}-${Date.now()}`;
@@ -86,7 +87,7 @@ function health(container: string): Readonly<Record<string, string>> {
     schema: "dacs-health/v1",
     service: "dacs-forge",
     status: "ok",
-    version: "0.0.0-private",
+    version: doctorPackageVersion(),
   });
   if (JSON.stringify(parsed) !== JSON.stringify(expected)) {
     throw new Error("Container returned an unexpected normalized health contract");

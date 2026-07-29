@@ -7,6 +7,12 @@ and release versions follow [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+## [0.1.0-preview.1] - 2026-07-29
+
+Unsupported final Preview for the first Product Seal upgrade probe. Fixture/no-spend
+only; no Product Seal, production, registration, live-value, certification, or
+steward-endorsement claim.
+
 ### Added
 
 - Integrated fixture service lifecycle that binds one admission to the Agreement and service request, uses the canonical handler output as the only Delivery payload, and replays the terminal graph without handler or settlement/delivery effects.
@@ -27,4 +33,5 @@ and release versions follow [Semantic Versioning](https://semver.org/).
   SEB-1..SEB-6 validation, distinct pointer/signature domains, and independent
   dacs-verify cross-check fixture; no released-conformance claim.
 
-No public release has been cut yet.
+The immutable tag and GitHub release remain approval-gated until exact candidate
+and live readback authorization.

@@ -26,7 +26,7 @@ function healthPayload(): Record<string, unknown> {
   return {
     schema: "dacs-health/v1",
     service: "dacs-forge",
-    version: "0.0.0-private",
+    version: doctorPackageVersion(),
     status: "ok",
     timestamp: "2026-07-24T00:00:00.000Z",
   };

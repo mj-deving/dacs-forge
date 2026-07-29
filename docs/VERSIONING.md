@@ -39,6 +39,11 @@ A Preview is an immutable, unsupported evidence snapshot. The final Preview is
 the only direct predecessor of the first Product Seal and supplies the base for
 the mandatory extension-only update probe.
 
+The first final Preview identity is `v0.1.0-preview.1`. Its source candidate
+remains non-publishable as a package and becomes a Preview only after the exact
+annotated tag, GitHub release, CI result, and public clone readback are approved
+and verified.
+
 The first Product Seal is one supported `v0.x.y` source release. It requires all
 live product criteria to be green on one immutable commit, including fork and
 update qualification, the complete applicable rig, compatibility guidance,

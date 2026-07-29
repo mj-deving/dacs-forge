@@ -25,7 +25,7 @@ that manifest. No image distribution or signing service is implied.
 
 ## Normative source
 
-- DACS-Standard commit: `ad48d16c25a810a6420b4d4cc9b9d8d6d38908c4`
+- DACS-Standard release: immutable tag `v0.4`, commit `4bb9e48a1095ab32c06c25b7c0b52018d3ce4091`
 - `spec/CORE.md` B.2: RFC 8785 JCS, safe-integer constraint, CF-1 NFC normalization
 - `spec/CORE.md` B.1: CF-2 ClaimReference canonical bytes and CF-3 identity
 - `spec/CORE.md` B.7 SIG-6: unpadded Base64URL for DACS-owned signature
@@ -56,7 +56,7 @@ No runtime code is imported from an unpublished dacs-sdk branch.
 
 `vectors/dacs-standard-canonicalize-db9f9c0.json` materializes the seven
 `area: canonicalize` cases first pinned at `db9f9c0`. Those cases remain part of
-the current DACS-Standard conformance manifest at `ad48d16`.
+the released DACS-Standard `v0.4` conformance manifest.
 
 `vectors/dacs-standard-listing-preserve-unknown-c4ace08.json` is an exact copy
 of `conformance/vectors/security/listing-preserve-unknown-v0.1.json` at the
@@ -71,8 +71,8 @@ pin. Local projection SHA-256:
 Upstream source SHA-256:
 `bf47cd0a42b0e0e30f2ff032327395d5a1b820758e6188c51212eb9129ba8312`.
 
-`vectors/dacs-standard-settlement-finalization-ad48d16.json` is a local decision
-projection of all six cases in
+`vectors/dacs-standard-settlement-finalization-ad48d16.json` is a historical local
+decision projection of all six cases in
 `conformance/vectors/security/settlement-finalization-propagation-v0.3.json`.
 The exact upstream source SHA-256 is
 `98c6356157b180d62e1049201143ab5681d9db2e71eb6f9aef6fdf20f787c555`.

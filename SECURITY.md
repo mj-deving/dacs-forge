@@ -1,6 +1,6 @@
 # Security policy
 
-DACS Forge is a prototype and must not be used for live value transfer.
+DACS Forge's final Preview is unsupported and must not be used for live value transfer.
 
 ## Reporting a vulnerability
 
