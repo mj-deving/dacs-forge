@@ -5,11 +5,9 @@ All notable changes to DACS Forge will be recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and release versions follow [Semantic Versioning](https://semver.org/).
 
-## Unreleased
+## [0.1.0] - 2026-07-30
 
-### Product Seal candidate
-
-- Prepare the source-only `0.1.0` Product Seal contract with exact Preview.2,
+- Ship the source-only `0.1.0` Product Seal contract with exact Preview.2,
   DACS v0.4, Community fixture, capability, migration, governance, provenance,
   and complete-rig bindings. Support remains inactive until immutable release
   readback; no package, image, registration, payment, certification, adoption,

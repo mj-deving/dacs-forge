@@ -1,7 +1,9 @@
 # Security policy
 
-DACS Forge's local Product Seal candidate is not supported before immutable release
-readback and must not be used for live value transfer.
+DACS Forge `v0.1.0` is supported only through the exact immutable release after
+attestation and live public readback. Local candidates and branch tips are
+unsupported. Every form of DACS Forge, including the supported release, remains
+fixture/no-spend only and must not be used for live value transfer.
 
 ## Reporting a vulnerability
 

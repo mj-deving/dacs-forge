@@ -1347,7 +1347,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "dc68b48e3b3ccf2702f1759f087385c1a128c43c3a79c12e37215cc695d4936b"
+      "sha256": "4a186a8ef62ce2875a5b7cce1f6b2465a81ddfc5c059e361fe6c35739b273430"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1363,11 +1363,11 @@
     },
     {
       "path": "README.md",
-      "sha256": "2e5fd33849ecbaa5662e1efc0d049a4f5e3109f0821bc3a523dcc713c652d1dd"
+      "sha256": "311062318e596c43dc5f46ad7da95b21743b74f198ae36a5fc3da2d0204bd40c"
     },
     {
       "path": "SECURITY.md",
-      "sha256": "563c6804eedf5efa0f6427214605d2a383f0ad923cffbdf2cb67e385a893a232"
+      "sha256": "9c9268aa4486c3cbb8aab1ed5e659057d13bcdd866f9d12e5629d2813cef24c3"
     },
     {
       "path": "THIRD_PARTY_NOTICES.md",
@@ -1383,7 +1383,7 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "c2435078de940ff8f49dbcd7aeaf0ff9cb729bb93f35a43ee3742352c6ad3b1b"
+      "sha256": "722dce0892f081ddd696a65f160dc172f042887707a5ef6c453740551e588cda"
     },
     {
       "path": "docs/FORKING.md",

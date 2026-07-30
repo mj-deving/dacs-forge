@@ -5,10 +5,10 @@
 A hardened, forkable DACS reference service and conformance kit for building
 specific DACS service agents.
 
-> Maturity: **Product Seal prepublication candidate**. Fixture/no-spend only.
-> Support and the Product Seal claim activate only after the exact immutable
-> `v0.1.0` release readback. Not canonical, not production ready, and not suitable
-> for live value transfer.
+> Release contract: **v0.1.0 Product Seal**. Fixture/no-spend only. Support
+> applies only to the exact immutable `v0.1.0` release after GitHub attestation
+> and public readback; branch tips and prepublication candidates are unsupported.
+> Not canonical, not production ready, and not suitable for live value transfer.
 
 ## What it proves
 
@@ -144,9 +144,8 @@ See [SECURITY.md](SECURITY.md) and the [Listing trust boundary](docs/LISTING-TRU
 
 ## Conformance status
 
-Overall status: **Product Seal prepublication candidate**. The repository becomes
-the supported Product Seal only after the exact immutable release and live
-readback complete.
+Overall status: **v0.1.0 Product Seal source contract**. The tagged source is
+supported only after the exact immutable release and live readback complete.
 
 The repository pins and exercises named DACS-Standard vectors for canonical JSON,
 signature-value encoding, Listing unknown-field retention, settlement finalization,
