@@ -1,0 +1,44 @@
+{
+  "schema": "dacs-forge-compatibility-disposition/v1",
+  "version": "0.1.0",
+  "status": "pending-external-qualification",
+  "directPredecessors": [
+    {
+      "version": "0.1.0-preview.2",
+      "tag": "v0.1.0-preview.2",
+      "commit": "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
+      "tagObject": "0416859c0788e58a66eb2f3a175e53c56ac3f2b3",
+      "releaseId": 362350535,
+      "supported": false,
+      "immutable": true,
+      "path": "shared-git-history-extension-only"
+    }
+  ],
+  "extensionBoundary": {
+    "exactPaths": [
+      "service/handler.ts",
+      "service/input.schema.json",
+      "service/output.schema.json",
+      "service/service.config.ts"
+    ],
+    "prefixes": [
+      "service/fixtures/"
+    ]
+  },
+  "requirements": {
+    "preserveSignedArtifacts": true,
+    "preserveEvidence": true,
+    "unchangedCompleteRig": true,
+    "detectExtensionConflicts": true,
+    "dacsPinDisposition": "unchanged-v0.4"
+  },
+  "otherPredecessors": {
+    "disposition": "unsupported",
+    "multiHopPaths": []
+  },
+  "qualificationEvidence": {
+    "authority": "external-product-seal-qualification-record",
+    "required": true,
+    "embedded": false
+  }
+}

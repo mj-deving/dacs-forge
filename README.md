@@ -5,8 +5,10 @@
 A hardened, forkable DACS reference service and conformance kit for building
 specific DACS service agents.
 
-> Maturity: **unsupported final Preview**. Fixture/no-spend only. Not a Product
-> Seal, not canonical, not production ready, and not suitable for live value transfer.
+> Maturity: **Product Seal prepublication candidate**. Fixture/no-spend only.
+> Support and the Product Seal claim activate only after the exact immutable
+> `v0.1.0` release readback. Not canonical, not production ready, and not suitable
+> for live value transfer.
 
 ## What it proves
 
@@ -23,8 +25,8 @@ bundle copies. Restart, replay, mutation, concurrency, migration, authority, and
 failure-path tests are first-class release evidence.
 
 It does **not** currently claim live Demos anchoring, live payment rails, external
-attestation authority, a supported Product Seal, reputation eligibility, or
-steward designation.
+attestation authority, an already published supported Product Seal, reputation
+eligibility, or steward designation.
 
 ## The 90-second model
 
@@ -142,7 +144,9 @@ See [SECURITY.md](SECURITY.md) and the [Listing trust boundary](docs/LISTING-TRU
 
 ## Conformance status
 
-Overall status: **unsupported final Preview**.
+Overall status: **Product Seal prepublication candidate**. The repository becomes
+the supported Product Seal only after the exact immutable release and live
+readback complete.
 
 The repository pins and exercises named DACS-Standard vectors for canonical JSON,
 signature-value encoding, Listing unknown-field retention, settlement finalization,

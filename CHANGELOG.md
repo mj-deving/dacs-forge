@@ -7,6 +7,14 @@ and release versions follow [Semantic Versioning](https://semver.org/).
 
 ## Unreleased
 
+### Product Seal candidate
+
+- Prepare the source-only `0.1.0` Product Seal contract with exact Preview.2,
+  DACS v0.4, Community fixture, capability, migration, governance, provenance,
+  and complete-rig bindings. Support remains inactive until immutable release
+  readback; no package, image, registration, payment, certification, adoption,
+  or endorsement is claimed.
+
 ## [0.1.0-preview.2] - 2026-07-29
 
 Replacement unsupported final Preview candidate. It retains the complete

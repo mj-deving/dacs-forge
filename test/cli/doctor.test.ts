@@ -84,7 +84,7 @@ describe("Doctor Core", () => {
     } finally {
       packageMetadataJson.version = originalVersion;
     }
-    expect(report?.version).toBe("0.1.0-preview.2");
+    expect(report?.version).toBe("0.1.0");
     expect(report?.exitCode).toBe(4);
     assertDoctorReport(report);
   });
@@ -864,7 +864,7 @@ describe("Doctor Core", () => {
     expect(report).toMatchObject({
       schema: "dacs-doctor/v1",
       service: "dacs-forge",
-      version: "0.1.0-preview.2",
+      version: "0.1.0",
       generatedAt: "2026-07-20T10:30:00.000Z",
       evidenceMode: "fixture",
       ready: false,
@@ -1941,7 +1941,7 @@ describe("Doctor Core", () => {
     expect(() => assertDoctorReport({
       schema: "dacs-doctor/v1",
       service: "dacs-forge",
-      version: "0.1.0-preview.2",
+      version: "0.1.0",
       generatedAt: "2026-07-20T10:30:00.000Z",
       evidenceMode: "fixture",
       ready: true,
@@ -1951,7 +1951,7 @@ describe("Doctor Core", () => {
     expect(() => assertDoctorReport({
       schema: "dacs-doctor/v1",
       service: "dacs-forge",
-      version: "0.1.0-preview.2",
+      version: "0.1.0",
       generatedAt: "2026-07-20T10:30:00.000Z",
       evidenceMode: "fixture",
       ready: false,
@@ -1974,7 +1974,7 @@ describe("Doctor Core", () => {
     const inheritedSentinel = {
       schema: "dacs-doctor/v1",
       service: "dacs-forge",
-      version: "0.1.0-preview.2",
+      version: "0.1.0",
       generatedAt: "2026-07-20T10:30:00.000Z",
       evidenceMode: "fixture",
       ready: false,
@@ -2023,7 +2023,7 @@ describe("Doctor Core", () => {
     expect(() => assertDoctorReport({
       schema: "dacs-doctor/v1",
       service: "dacs-forge",
-      version: "0.1.0-preview.2",
+      version: "0.1.0",
       generatedAt: "2026-07-20T10:30:00.000Z",
       evidenceMode: "fixture",
       ready: false,
@@ -2042,7 +2042,7 @@ describe("Doctor Core", () => {
     expect(() => assertDoctorReport({
       schema: "dacs-doctor/v1",
       service: "dacs-forge",
-      version: "0.1.0-preview.2",
+      version: "0.1.0",
       generatedAt: "now",
       evidenceMode: "fixture",
       ready: true,
@@ -2054,7 +2054,7 @@ describe("Doctor Core", () => {
     const hiddenReport = JSON.parse(JSON.stringify({
       schema: "dacs-doctor/v1",
       service: "dacs-forge",
-      version: "0.1.0-preview.2",
+      version: "0.1.0",
       generatedAt: "2026-07-20T10:30:00.000Z",
       evidenceMode: "fixture",
       ready: false,
@@ -2077,7 +2077,7 @@ describe("Doctor Core", () => {
     const accessorBackedReport = Object.defineProperties({
       schema: "dacs-doctor/v1",
       service: "dacs-forge",
-      version: "0.1.0-preview.2",
+      version: "0.1.0",
       generatedAt: "2026-07-20T10:30:00.000Z",
       evidenceMode: "fixture",
       ready: false,
@@ -2158,7 +2158,7 @@ describe("Doctor Core", () => {
       expect(() => assertDoctorReport({
         schema: "dacs-doctor/v1",
         service: "dacs-forge",
-        version: "0.1.0-preview.2",
+        version: "0.1.0",
         generatedAt: "2026-07-20T10:30:00.000Z",
         evidenceMode: "fixture",
         checks: [validCheck],
@@ -2176,7 +2176,7 @@ describe("Doctor Core", () => {
       expect(() => assertDoctorReport({
         schema: "dacs-doctor/v1",
         service: "dacs-forge",
-        version: "0.1.0-preview.2",
+        version: "0.1.0",
         generatedAt: "2026-07-20T10:30:00.000Z",
         evidenceMode: "fixture",
         ready: true,

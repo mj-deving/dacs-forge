@@ -1,6 +1,7 @@
 # Security policy
 
-DACS Forge's final Preview is unsupported and must not be used for live value transfer.
+DACS Forge's local Product Seal candidate is not supported before immutable release
+readback and must not be used for live value transfer.
 
 ## Reporting a vulnerability
 

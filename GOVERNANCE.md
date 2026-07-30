@@ -37,3 +37,26 @@ A release requires the gates in [Versioning and releases](docs/VERSIONING.md).
 Maintainers must not use a release to imply DACS steward approval, Demos-team
 adoption, production readiness, or conformance beyond the evidence published for
 that exact version.
+
+During `0.x`, a breaking extension-contract or capability-profile change requires
+at least a minor bump and migration guidance. Patch releases preserve the declared
+extension contract and persisted-artifact compatibility.
+
+## Security reporting
+
+Use the private path in the [security policy](SECURITY.md). Exploitable authority,
+signature, secret, settlement, or persistence defects must not be opened as public
+issues.
+
+## Contribution boundary
+
+The [contribution guide](CONTRIBUTING.md) owns the public contribution path.
+Service-specific changes stay inside `service/`; protocol, persistence, release-rig,
+and authenticated-byte changes require separate protocol and security justification.
+
+## Supported release
+
+The first supported release is `v0.1.0`, but support activates only after its exact
+immutable release readback succeeds. The same bytes in a local or public
+prepublication candidate are not yet supported. The release implies no Community,
+Demos-team, canonical, steward, adoption, or support organization endorsement.

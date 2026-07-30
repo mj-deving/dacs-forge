@@ -57,6 +57,12 @@ live product criteria to be green on one immutable commit, including fork and
 update qualification, the complete applicable rig, compatibility guidance,
 public governance, and exact upstream pins.
 
+The first Product Seal version is `v0.1.0`. Its repository bytes may be prepared
+and qualified as a prepublication candidate, but support and the Product Seal
+claim activate only after the exact annotated tag, immutable GitHub release,
+attestation, and public clone readback succeed. Candidate wording is operational
+state, not a second public maturity taxonomy.
+
 ## Fork and update contract
 
 The supported path is a Git fork or clone retaining shared history and an

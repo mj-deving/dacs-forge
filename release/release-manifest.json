@@ -1,0 +1,109 @@
+{
+  "schema": "dacs-forge-release-manifest/v1",
+  "version": "0.1.0",
+  "tag": "v0.1.0",
+  "releaseKind": "product-seal",
+  "repository": "https://github.com/mj-deving/dacs-forge",
+  "support": {
+    "status": "activates-on-immutable-release-readback",
+    "prepublicationStatus": "candidate-not-supported"
+  },
+  "sourceBinding": {
+    "kind": "containing-commit-via-annotated-tag",
+    "requiredRef": "refs/tags/v0.1.0",
+    "candidateCommitAuthority": "annotated-tag-target-and-live-readback",
+    "historyBase": "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
+    "liveReadbackRequired": true
+  },
+  "mandatoryPredecessor": {
+    "version": "0.1.0-preview.2",
+    "tag": "v0.1.0-preview.2",
+    "commit": "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
+    "supported": false,
+    "immutable": true
+  },
+  "pins": {
+    "dacsStandard": {
+      "profile": "v0.4",
+      "tag": "v0.4",
+      "commit": "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091",
+      "vectorSources": [
+        "db9f9c0075a63d69d4464bac62cbfb2362a3f223",
+        "c4ace086a6f7117784d65f527b93e632039db6de",
+        "ad48d16c25a810a6420b4d4cc9b9d8d6d38908c4",
+        "fcbf804dcc53184726eed4385d794a0fdbbe00cc",
+        "9a1ca624e8cc68361cff35c85a919cd72ba25199",
+        "2567c6c357d3fd28f75034b920258f2fd7da20d7",
+        "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091"
+      ]
+    },
+    "community": {
+      "main": "f2fd2145cddfd12ecaa32da2b953e859ec3fd8c3",
+      "listingFixtureCommit": "634caef4b952838281c8c602402e657d41074703"
+    }
+  },
+  "contracts": {
+    "capabilityProfile": {
+      "path": "release/capability-profile.json",
+      "sha256": "2763644ac57a1cccd9890deb7c01c14a5601ca13e536b6c51dcc0bd207e1f505"
+    },
+    "compatibilityDisposition": {
+      "path": "release/compatibility.json",
+      "sha256": "b26bfa71788880c04ca441d209784b3e590b7a67d129d37fdefc2fe448be3986"
+    },
+    "upgrading": "UPGRADING.md",
+    "governance": "GOVERNANCE.md",
+    "security": "SECURITY.md",
+    "contributing": "CONTRIBUTING.md",
+    "provenance": "docs/SOURCE-PROVENANCE.json"
+  },
+  "rig": {
+    "commands": [
+      "bun install --frozen-lockfile",
+      "bun run verify:public-export",
+      "bun run verify:release-manifest",
+      "bun run verify:migrations -- --evidence <qualification-record.json> --repository <migrated-fork> --artifact-graph <artifact-graph.json> --prior-evidence <prior-evidence.json> --rig-evidence <rig-evidence.json> --consumer-report <consumer-report.json>",
+      "bun run verify:governance",
+      "bun run verify:provenance",
+      "bun run typecheck",
+      "bun test --timeout 10000",
+      "bun run build",
+      "bun run mutation:calibrate",
+      "bun run verify:container"
+    ],
+    "definition": {
+      "selection": "tracked package, lock, compiler, workflow, container, scripts, tests, and tools excluding generated evidence",
+      "inventorySha256": "918daa3aaa2e39bea200140c7b35135e035f95a9826d0963d7ee5d5a10ee5b70"
+    },
+    "qualificationEvidence": {
+      "authority": "external-product-seal-qualification-record",
+      "required": true,
+      "embedded": false,
+      "prepublicationStatus": "pending"
+    }
+  },
+  "distributedArtifacts": [
+    {
+      "kind": "git-source-tag",
+      "ref": "refs/tags/v0.1.0"
+    },
+    {
+      "kind": "github-generated-source-archive",
+      "formats": [
+        "tar.gz",
+        "zip"
+      ]
+    }
+  ],
+  "notDistributed": {
+    "package": true,
+    "containerImage": true,
+    "binary": true
+  },
+  "claims": {
+    "certification": false,
+    "stewardEndorsement": false,
+    "communityListing": false,
+    "adoption": false
+  }
+}

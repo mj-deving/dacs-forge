@@ -42,7 +42,7 @@ describe("dacs executable", () => {
     }
     const version = capture();
     expect(await runCli(["--version"], version.io)).toBe(0);
-    expect(version.stdout()).toBe("0.1.0-preview.2\n");
+    expect(version.stdout()).toBe("0.1.0\n");
 
     const absent = capture();
     expect(await runCli([], absent.io)).toBe(2);
@@ -276,7 +276,7 @@ describe("dacs executable", () => {
         timeout: CLI_PROCESS_TIMEOUT_MS,
       });
       expect(version.exitCode).toBe(0);
-      expect(version.stdout.toString()).toBe("0.1.0-preview.2\n");
+      expect(version.stdout.toString()).toBe("0.1.0\n");
       expect(version.stderr.toString()).toBe("");
     }
   }, PACKAGE_MANAGER_SYMLINK_TEST_TIMEOUT_MS);
@@ -293,7 +293,7 @@ describe("dacs executable", () => {
     const smoke = Bun.spawnSync([
       "bun", "-e",
       `const m = await import(${JSON.stringify(join(root, "index.js"))});`
-        + `if (m.doctorPackageVersion() !== "0.1.0-preview.2") process.exit(10);`
+        + `if (m.doctorPackageVersion() !== "0.1.0") process.exit(10);`
         + `const r = m.runDoctor(); if (r.exitCode !== 5) process.exit(11);`
         + `if (JSON.parse(m.serializeDoctorReport(r)).exitCode !== 5) process.exit(12);`,
     ], { cwd: root, stdout: "pipe", stderr: "pipe" });

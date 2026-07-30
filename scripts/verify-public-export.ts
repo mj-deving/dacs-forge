@@ -3,7 +3,7 @@
 import { lstatSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { spawnSync } from "node:child_process";
-import previewProfile from "../release/preview-profile.json";
+import releaseManifest from "../release/release-manifest.json";
 
 const FORBIDDEN_EXACT_PATHS = new Set(["AGENTS.md", "ISA.md"]);
 const FORBIDDEN_PREFIXES = [[".", "beads/"].join(""), "Plans/", "Probes/", "evidence/"] as const;
@@ -129,5 +129,5 @@ export function verifyPublicExport(root: string, historyBase?: string): Readonly
 }
 
 if (import.meta.main) {
-  console.log(JSON.stringify(verifyPublicExport(resolve(import.meta.dir, ".."), previewProfile.priorPublicAuthority)));
+  console.log(JSON.stringify(verifyPublicExport(resolve(import.meta.dir, ".."), releaseManifest.sourceBinding.historyBase)));
 }

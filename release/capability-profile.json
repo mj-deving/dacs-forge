@@ -1,0 +1,26 @@
+{
+  "schema": "dacs-forge-capability-profile/v1",
+  "version": "0.1.0",
+  "releaseKind": "product-seal",
+  "support": {
+    "status": "activates-on-immutable-release-readback",
+    "prepublicationStatus": "candidate-not-supported"
+  },
+  "capabilities": {
+    "fixtureNoSpendLifecycle": "implemented",
+    "handlerToTerminalArtifactGraph": "implemented",
+    "extensionOnlyServiceFork": "qualified",
+    "independentArtifactConsumer": "qualified",
+    "liveRegistration": "unsupported",
+    "livePayment": "unsupported",
+    "productionDeployment": "unsupported",
+    "normativeConformanceAuthority": "not-claimed"
+  },
+  "claims": {
+    "productSeal": "activates-on-immutable-release-readback",
+    "certification": false,
+    "stewardEndorsement": false,
+    "communityListing": false,
+    "adoption": false
+  }
+}
