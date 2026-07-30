@@ -46,8 +46,8 @@ describe("Directory ListingSummary schema-drift Doctor probe", () => {
         httpStatus: 200,
       },
     });
-    expect(report.exitCode).toBe(5);
-    expect(report.ready).toBe(false);
+    expect(report.exitCode).toBe(0);
+    expect(report.ready).toBe(true);
   });
 
   test("reports a valid schema mismatch as a non-gating drift advisory", async () => {
@@ -74,7 +74,8 @@ describe("Directory ListingSummary schema-drift Doctor probe", () => {
       reason: "Current Directory ListingSummary schema differs from the pinned compatibility schema",
     });
     expect(check?.observed["currentSha256"]).not.toBe(LIVE_LISTING_SUMMARY_SCHEMA_SHA256);
-    expect(report.exitCode).toBe(5);
+    expect(report.exitCode).toBe(0);
+    expect(report.ready).toBe(true);
   });
 
   test("keeps unavailable and malformed reads blocked, indeterminate, and body-safe", async () => {

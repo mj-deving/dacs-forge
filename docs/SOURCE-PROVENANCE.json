@@ -585,7 +585,7 @@
     },
     {
       "path": "test/cli/directory-schema-drift.test.ts",
-      "sha256": "0bdcab66eeb15bf972d74e2c3f796b1e61a21ef9971eb296cd72423644978eba"
+      "sha256": "e90a33e6128f2f0835e2975d17f70037b0e092766a0dff1e5840137b34b1d37d"
     },
     {
       "path": "test/cli/doctor-bin.test.ts",
@@ -1423,7 +1423,7 @@
     },
     {
       "path": "release/release-manifest.json",
-      "sha256": "348fb84b27d8ce56c7e92d31893080c766c3a79556ee77f3e772186444524488"
+      "sha256": "03788504742de57a682cb65def7b2599bac25f0bdc716800f807cf30348fef86"
     },
     {
       "path": "tools/verify-source-provenance.ts",
