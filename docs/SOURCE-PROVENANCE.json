@@ -121,7 +121,7 @@
     },
     {
       "path": "scripts/qualify-fork.ts",
-      "sha256": "1b8f58294a29c033a4b64d978eadcdda8abfaacbbb1c246787de9946ee2c251d"
+      "sha256": "2491b22474d374fd27308a2efd82f5428beba95f360e72b5511fc99aed6bda90"
     },
     {
       "path": "scripts/scan-critical-placeholders.ts",
@@ -157,7 +157,7 @@
     },
     {
       "path": "scripts/verify-release-manifest.ts",
-      "sha256": "57cd8d6c3645acb47a56aaa4dcfa6cd02361c748fc858062bbcd93ac658dfa37"
+      "sha256": "e68ccd3341db4a5b5c50b5cd19357abfaf7d16fc27d1655566683d8a181d697f"
     },
     {
       "path": "src/cli/authority.ts",
@@ -1097,7 +1097,7 @@
     },
     {
       "path": "test/release/fork-qualification.test.ts",
-      "sha256": "124c30eda0192556f0f251d60129114c72ceb26582ab510a1778407d6e317175"
+      "sha256": "d0bf738a624eaf221f7045b2ff4ab4f9b0b7f1e55df3b8d9aa07ff85d72b3767"
     },
     {
       "path": "test/release/governance.test.ts",
@@ -1423,7 +1423,7 @@
     },
     {
       "path": "release/release-manifest.json",
-      "sha256": "29789be484b3e7e946e34d00238b17a380af380584881dcf089ab09144839f25"
+      "sha256": "348fb84b27d8ce56c7e92d31893080c766c3a79556ee77f3e772186444524488"
     },
     {
       "path": "tools/verify-source-provenance.ts",

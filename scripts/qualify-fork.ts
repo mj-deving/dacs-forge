@@ -22,6 +22,7 @@ const QUALIFICATION_EFFECT_KEYS = [
 ] as const;
 
 const FULL_RIG = ["bun", "run", "verify:product-seal-candidate"] as const;
+const FROZEN_INSTALL = ["bun", "install", "--frozen-lockfile", "--ignore-scripts"] as const;
 const DOCTOR = [
   "bun", "src/cli/dacs.ts", "doctor", "--json", "--no-input", "--no-color", "--evidence-mode", "fixture",
 ] as const;
@@ -79,7 +80,7 @@ function runTrustedCommand(repository: string, command: readonly string[]): Comm
   const stdout = result.stdout ?? "";
   const stderr = result.stderr ?? "";
   if (result.status !== 0) {
-    throw new Error(`${command.join(" ")} failed (${result.status}): ${stderr.slice(-2_000)}`);
+    throw new Error(`${command.join(" ")} failed (${result.status})\nstdout:\n${stdout.slice(-2_000)}\nstderr:\n${stderr.slice(-2_000)}`);
   }
   return Object.freeze({
     command: command.join(" "),
@@ -199,6 +200,8 @@ export async function qualifyFork(input: {
       forkRepository: forkClone,
       forkTip: input.tipCommit,
     });
+    const baseInstall = runTrustedCommand(baseClone, FROZEN_INSTALL);
+    const forkInstall = runTrustedCommand(forkClone, FROZEN_INSTALL);
     const baseDoctor = runTrustedCommand(baseClone, DOCTOR);
     const forkDoctor = runTrustedCommand(forkClone, DOCTOR);
     validateDoctor(baseDoctor.stdout);
@@ -232,6 +235,8 @@ export async function qualifyFork(input: {
       }),
       execution: Object.freeze({
         materialization: "fresh-local-no-hardlinks-exact-commits",
+        baseInstall: commandReceipt(baseInstall),
+        forkInstall: commandReceipt(forkInstall),
         baseDoctor: commandReceipt(baseDoctor),
         forkDoctor: commandReceipt(forkDoctor),
         baseRig: commandReceipt(baseRig),

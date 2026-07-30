@@ -59,7 +59,7 @@
   },
   "rig": {
     "commands": [
-      "bun install --frozen-lockfile",
+      "bun install --frozen-lockfile --ignore-scripts",
       "bun run verify:public-export",
       "bun run verify:release-manifest",
       "bun run verify:migrations -- --evidence <qualification-record.json> --repository <migrated-fork> --artifact-graph <artifact-graph.json> --prior-evidence <prior-evidence.json> --rig-evidence <rig-evidence.json> --consumer-report <consumer-report.json>",
@@ -75,7 +75,7 @@
     ],
     "definition": {
       "selection": "tracked package, lock, compiler, workflow, container, scripts, tests, and tools excluding generated evidence",
-      "inventorySha256": "5cf56f9d54d16be6d00c3aaf9d46d327494ebc38b198657b1c375c138684f67b"
+      "inventorySha256": "49fd3056a3348f5dbb21d682e0da59d5bdff29a2090de0bc78f6f6e2367e3248"
     },
     "qualificationEvidence": {
       "authority": "external-product-seal-qualification-record",

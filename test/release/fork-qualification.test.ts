@@ -45,6 +45,9 @@ describe("Product Seal fork qualification trust boundary", () => {
       "exactJsonFile",
     ]) expect(source).not.toContain(forbidden);
     expect(source).toContain("fresh-local-no-hardlinks-exact-commits");
+    expect(source).toContain('["bun", "install", "--frozen-lockfile", "--ignore-scripts"]');
+    expect(source).toContain("runTrustedCommand(baseClone, FROZEN_INSTALL)");
+    expect(source).toContain("runTrustedCommand(forkClone, FROZEN_INSTALL)");
     expect(source).toContain("runTrustedCommand(baseClone, FULL_RIG)");
     expect(source).toContain("runTrustedCommand(forkClone, FULL_RIG)");
   });
