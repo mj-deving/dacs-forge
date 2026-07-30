@@ -6,14 +6,14 @@ import { validateDirectoryListingSummary } from "../../src/protocol/directory-su
 import type { ServiceContract } from "../../src/service/contract.ts";
 import { serviceContract as baseContract } from "../../service/service.config.ts";
 
-function forkContract(): ServiceContract<unknown, unknown> {
+function alternateContract(): ServiceContract<unknown, unknown> {
   return {
     ...baseContract,
     service: {
-      id: "counterparty-evidence",
+      id: `${baseContract.service.id}-alternate`,
       version: "1.0.0",
-      title: "Counterparty Evidence",
-      deliverableKind: "counterparty-evidence-result",
+      title: `${baseContract.service.title} Alternate`,
+      deliverableKind: `${baseContract.service.deliverableKind}-alternate`,
     },
   } as ServiceContract<unknown, unknown>;
 }
@@ -24,25 +24,35 @@ describe("Product Seal Directory supply qualification", () => {
       baseContract as ServiceContract<unknown, unknown>,
       "1".repeat(64),
     );
-    const fork = createServiceDirectoryFixture(forkContract(), "2".repeat(64));
+    const alternate = createServiceDirectoryFixture(alternateContract(), "1".repeat(64));
 
-    expect(base.service.id).toBe("reference-json-transform");
-    expect(fork.service.id).toBe("counterparty-evidence");
-    expect(base.listingCanonicalJson).not.toBe(fork.listingCanonicalJson);
-    expect(base.discoveryCanonicalJson).not.toBe(fork.discoveryCanonicalJson);
+    expect(base.service.id).toBe(baseContract.service.id);
+    expect(alternate.service.id).toBe(`${baseContract.service.id}-alternate`);
+    expect(base.listingCanonicalJson).not.toBe(alternate.listingCanonicalJson);
+    expect(base.discoveryCanonicalJson).not.toBe(alternate.discoveryCanonicalJson);
     expect(JSON.parse(base.listingCanonicalJson)).toMatchObject({
-      listingId: "reference-json-transform",
-      seller: { displayName: "Reference JSON Transform" },
+      listingId: baseContract.service.id,
+      seller: { displayName: baseContract.service.title },
     });
-    expect(JSON.parse(fork.listingCanonicalJson)).toMatchObject({
-      listingId: "counterparty-evidence",
-      seller: { displayName: "Counterparty Evidence" },
+    expect(JSON.parse(alternate.listingCanonicalJson)).toMatchObject({
+      listingId: `${baseContract.service.id}-alternate`,
+      seller: { displayName: `${baseContract.service.title} Alternate` },
     });
-    expect(validateDirectoryListingSummary(JSON.parse(base.discoveryCanonicalJson))).toEqual({
+    const baseDiscovery = JSON.parse(base.discoveryCanonicalJson);
+    const alternateDiscovery = JSON.parse(alternate.discoveryCanonicalJson);
+    expect(baseDiscovery).toMatchObject({
+      listingId: baseContract.service.id,
+      seller: { displayName: baseContract.service.title },
+    });
+    expect(alternateDiscovery).toMatchObject({
+      listingId: `${baseContract.service.id}-alternate`,
+      seller: { displayName: `${baseContract.service.title} Alternate` },
+    });
+    expect(validateDirectoryListingSummary(baseDiscovery)).toEqual({
       valid: true,
       errors: [],
     });
-    expect(validateDirectoryListingSummary(JSON.parse(fork.discoveryCanonicalJson))).toEqual({
+    expect(validateDirectoryListingSummary(alternateDiscovery)).toEqual({
       valid: true,
       errors: [],
     });
@@ -56,15 +66,15 @@ describe("Product Seal Directory supply qualification", () => {
     for (const index of [0, 1, 2, 3]) {
       expect(fixture.listingCanonicalJson).toContain(`impl-sha256-${index}-${"1".repeat(16)}`);
     }
-    expect(() => createServiceDirectoryFixture(forkContract(), "invalid")).toThrow(
+    expect(() => createServiceDirectoryFixture(alternateContract(), "invalid")).toThrow(
       "Service implementation digest is invalid",
     );
   });
 
   test("fails closed on an invalid target service descriptor", () => {
     const invalid = {
-      ...forkContract(),
-      service: { ...forkContract().service, id: "Counterparty Evidence" },
+      ...alternateContract(),
+      service: { ...alternateContract().service, id: "Invalid Service" },
     } as ServiceContract<unknown, unknown>;
     expect(() => createServiceDirectoryFixture(invalid, "1".repeat(64))).toThrow(/ListingId|listingId|URL-safe|Service id/i);
   });

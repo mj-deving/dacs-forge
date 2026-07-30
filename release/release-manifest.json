@@ -75,7 +75,7 @@
     ],
     "definition": {
       "selection": "tracked package, lock, compiler, workflow, container, scripts, tests, and tools excluding generated evidence",
-      "inventorySha256": "4c9d91a8eddf206a331831970d22f192c4fb9ccd543c9e73aaf5bd9b87218c5c"
+      "inventorySha256": "5cf56f9d54d16be6d00c3aaf9d46d327494ebc38b198657b1c375c138684f67b"
     },
     "qualificationEvidence": {
       "authority": "external-product-seal-qualification-record",

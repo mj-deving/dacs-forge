@@ -1093,7 +1093,7 @@
     },
     {
       "path": "test/release/directory-supply.test.ts",
-      "sha256": "556ae0ecca4a11932bdbcc271e429e0897c09e82894b9bf23ff0af66aea149c4"
+      "sha256": "0a0b2a27cc9f35b852f19b00b7d2ec0a11d1e63a6ecb3deca1b44fcadd67297c"
     },
     {
       "path": "test/release/fork-qualification.test.ts",
@@ -1423,7 +1423,7 @@
     },
     {
       "path": "release/release-manifest.json",
-      "sha256": "9652c67f97a4d68347ccbdf9189c35b0f5507e85cfd1cd859e98dd137b866af5"
+      "sha256": "29789be484b3e7e946e34d00238b17a380af380584881dcf089ab09144839f25"
     },
     {
       "path": "tools/verify-source-provenance.ts",
