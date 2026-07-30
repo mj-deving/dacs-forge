@@ -9,11 +9,11 @@ live anchoring, or authority-backed external attestation.
 
 Builders change only `service/`:
 
-- `service.config.ts`: service identity and deliverable kind
+- `service.config.ts`: typed runtime contract consuming the canonical service descriptor
 - `input.schema.json`: accepted request shape
 - `output.schema.json`: emitted work-product shape
 - `handler.ts`: deterministic business logic
-- `fixtures/`: deterministic proof inputs and expected outputs
+- `fixtures/`: canonical service descriptor, deterministic proof inputs, expected outputs, and committed Directory-supply artifact
 
 `src/service/` owns schema compilation, admitted-session and exact signed-request-hash gating,
 receipt production, and persistence. The handler receives only a

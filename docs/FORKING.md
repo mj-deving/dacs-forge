@@ -25,9 +25,12 @@ Change only:
 - `service/handler.ts`
 - `service/fixtures/`
 
-Update the service id and version, schema ids and versions, TypeScript input/output
-types, handler result, and fixtures as one coherent contract. A behavior or schema
-change requires a service-version bump.
+Update `service/fixtures/service-descriptor.json` as the canonical service id,
+version, title, and deliverable kind. `service.config.ts` consumes that descriptor;
+the release verifier reads the same committed blob without executing fork code.
+Update schema ids and versions, TypeScript input/output types, handler result, and
+fixtures as one coherent contract. A behavior or schema change requires a
+service-version bump.
 
 Keep the service handler deterministic and side-effect-free. It receives validated,
 deep-frozen input plus inert execution metadata; it receives no signer, database,
@@ -104,11 +107,16 @@ run its verifier and scanner against the separate committed exemplar checkout:
 ```sh
 bun run verify:exemplar-diff -- --repository "$exemplar_checkout" --base "$fork_base" --tip "$exemplar_tip"
 bun run scan:critical -- --repository "$exemplar_checkout" --base "$fork_base" --tip "$exemplar_tip"
+bun run verify:directory-supply -- --repository "$exemplar_checkout" --base "$fork_base" --tip "$exemplar_tip"
+bun run verify:fork -- --repository "$exemplar_checkout" --base "$fork_base" --tip "$exemplar_tip"
 ```
 
-Both commands refuse to run unless their own checkout is clean and exactly at
-`$fork_base`. Verifier, scanner, policy, and regression bytes are therefore
-outside the exemplar delta and cannot qualify themselves as extension changes.
+The trusted verifier checkout must be clean and exactly at `$fork_base`. The fork
+source only has to contain `$exemplar_tip`; qualification executes from a fresh
+local no-hardlink clone at that exact commit. The committed service-owned Listing
+and discovery fixture bind the canonical descriptor and complete service-tree
+digest. Verifier, scanner, policy, and regression bytes are outside the exemplar
+delta and cannot qualify themselves as extension changes.
 
 The provenance gate intentionally allows those extension bytes to differ without
 editing `docs/SOURCE-PROVENANCE.json`. It still fails closed on substrate drift,
@@ -118,11 +126,11 @@ declarations, symlinks, and non-regular files.
 ## What this proves
 
 Passing the steps above shows that the fork-owned handler and schemas work inside
-the current fixture substrate and that the unchanged repository gates remain green.
-It does not complete the still-open extension-only reference-fork and full
-release-rig qualification. Publication, container/readiness qualification,
-external-rig acceptance, live Directory registration, anchoring, payment, and
-reputation remain separate gates.
+the current fixture substrate, that the unchanged repository gates remain green,
+and that the exact fork passes the same candidate rig with distinct service-bound
+Listing and pinned-schema discovery artifacts. It performs no live Directory
+registration. Publication, anchoring, payment, reputation, certification, and
+production operation remain separate gates.
 
 ## What not to change
 

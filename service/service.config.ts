@@ -1,5 +1,6 @@
 import inputSchema from "./input.schema.json";
 import outputSchema from "./output.schema.json";
+import serviceDescriptor from "./fixtures/service-descriptor.json";
 import { defineServiceContract } from "../src/service/contract.ts";
 import {
   handler,
@@ -11,12 +12,7 @@ export const serviceContract = defineServiceContract<
   ReferenceTransformInput,
   ReferenceTransformOutput
 >({
-  service: {
-    id: "reference-json-transform",
-    version: "1.0.0",
-    title: "Reference JSON Transform",
-    deliverableKind: "attested-payload",
-  },
+  service: serviceDescriptor,
   input: {
     id: inputSchema.$id,
     version: "1",

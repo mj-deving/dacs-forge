@@ -14,6 +14,7 @@ and release versions follow [Semantic Versioning](https://semver.org/).
   and complete-rig bindings. Support remains inactive until immutable release
   readback; no package, image, registration, payment, certification, adoption,
   or endorsement is claimed.
+- Qualify extension-only forks from fresh exact-commit clones, with a repository-pinned DACS v0.4 Doctor result and distinct service-owned Listing and discovery artifacts bound to one canonical service descriptor and the complete committed service tree.
 
 ## [0.1.0-preview.2] - 2026-07-29
 

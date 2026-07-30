@@ -9,11 +9,11 @@ transfer, external authority, or full DACS conformance.
 
 A normal service fork changes exactly five extension paths:
 
-- `service/service.config.ts`: service identity, version, title, and deliverable kind
+- `service/service.config.ts`: typed runtime contract consuming the canonical service descriptor
 - `service/input.schema.json`: accepted request contract
 - `service/output.schema.json`: emitted work-product contract
 - `service/handler.ts`: deterministic application logic
-- `service/fixtures/**`: deterministic examples and expected outputs
+- `service/fixtures/**`: canonical service descriptor, deterministic examples, expected outputs, and committed Directory-supply fixture
 
 Forge keeps protocol and evidence machinery outside that boundary. Changing
 canonicalization, signing, verification, persistence, lifecycle ordering, or the
@@ -161,8 +161,7 @@ Implemented and locally exercised:
 
 Still open or explicitly outside the current claim:
 
-- final extension-only reference-fork and complete release-rig qualification;
-- supported external-rig, container, and release qualification;
+- immutable supported release publication and live readback;
 - live Directory registration, Demos anchoring, payment rails, or value transfer;
 - external attestation authority, reputation eligibility, production operation,
   certification, steward designation, or full conformance.

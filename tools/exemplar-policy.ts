@@ -48,8 +48,12 @@ const extensionPrefixes = ["service/fixtures/"] as const;
 const proofPaths = [
   "scripts/verify-exemplar-diff.ts",
   "scripts/scan-critical-placeholders.ts",
+  "scripts/verify-directory-supply.ts",
+  "scripts/qualify-fork.ts",
   "tools/exemplar-policy.ts",
   "test/exemplar/extension-boundary.test.ts",
+  "test/release/directory-supply.test.ts",
+  "test/release/fork-qualification.test.ts",
 ] as const;
 const markerPattern = /\b(?:TODO|FIXME|XXX)\b/;
 const testRoots = new Set(["describe", "it", "test", "xdescribe", "xit", "xtest"]);
@@ -336,7 +340,7 @@ export function assertTrustedVerifierCheckout(trustedRoot: string, baseRevision:
   if (head !== base) throw new Error(`trusted verifier checkout must be at exact base ${base}`);
   const dirty = git(trustedRoot, ["status", "--porcelain=v1", "--", ...proofPaths]);
   if (dirty.trim()) throw new Error("trusted verifier or harness path is dirty");
-  for (const path of proofPaths.slice(0, 3)) {
+  for (const path of proofPaths) {
     const committed = git(trustedRoot, ["show", `${base}:${path}`]);
     if (committed !== readFileSync(resolve(trustedRoot, path), "utf8")) {
       throw new Error(`trusted verifier bytes differ from base: ${path}`);

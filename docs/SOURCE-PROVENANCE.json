@@ -120,6 +120,10 @@
       "sha256": "7a4a2845303fc93cb27118ab58219ff3a92349f0e42621dd515b21a4c5dcd031"
     },
     {
+      "path": "scripts/qualify-fork.ts",
+      "sha256": "1b8f58294a29c033a4b64d978eadcdda8abfaacbbb1c246787de9946ee2c251d"
+    },
+    {
       "path": "scripts/scan-critical-placeholders.ts",
       "sha256": "9eb46db69fad1c2d6746dabf9ed5da08e7c1b7f712d473424b3905e8f28316b6"
     },
@@ -130,6 +134,10 @@
     {
       "path": "scripts/verify-container-fixture.ts",
       "sha256": "e9f25e46d798b4ce6abb6979682f88b132c96e2f1f3e511c2c0597bd46865a26"
+    },
+    {
+      "path": "scripts/verify-directory-supply.ts",
+      "sha256": "27011f7a81cf8c7610c69797720959ce464e45efca07b4f0f889e15a30cc2166"
     },
     {
       "path": "scripts/verify-exemplar-diff.ts",
@@ -149,7 +157,7 @@
     },
     {
       "path": "scripts/verify-release-manifest.ts",
-      "sha256": "aa9f3f666300444b4b59eacefbe1a72923b11654bedc0c963eb25486e3dc0b56"
+      "sha256": "57cd8d6c3645acb47a56aaa4dcfa6cd02361c748fc858062bbcd93ac658dfa37"
     },
     {
       "path": "src/cli/authority.ts",
@@ -433,7 +441,7 @@
     },
     {
       "path": "src/readiness/doctor.ts",
-      "sha256": "1dccc6a439190cb74221b10bcf93490e4f8a89c44a9167a499766d0f9141d586"
+      "sha256": "c6950f2eb66f6511bee1686f425931f0f589f8d1f4e8b945f53f7a6e742a69d1"
     },
     {
       "path": "src/service/contract.ts",
@@ -581,15 +589,15 @@
     },
     {
       "path": "test/cli/doctor-bin.test.ts",
-      "sha256": "a79661b1185bb6dbc67d413e95fea31aa115c28c65ef4915110d93c640ce17dc"
+      "sha256": "c6b19b2ad68057cb03623758909e2277f71a953690bf97f99ac134b3613ace3c"
     },
     {
       "path": "test/cli/doctor.test.ts",
-      "sha256": "a53789c686018156cfd924fb07413d1f7e4ffaa433ec617fd09d43161f0a5fe1"
+      "sha256": "e5407456a2b3a490062552ff5b8074e8046eae6b164f3840ecf962f82ea77e10"
     },
     {
       "path": "test/cli/registration-gate.test.ts",
-      "sha256": "04e73b59ea2094160db529761742c036346cf5d126aaf75400ac4477462adc42"
+      "sha256": "a66d14047e7a7dbd8c923e7e8d1861c93edb4b78572038489dcf38a5765cf569"
     },
     {
       "path": "test/compat/legacy-listing.test.ts",
@@ -957,7 +965,7 @@
     },
     {
       "path": "test/http/readiness-server.test.ts",
-      "sha256": "e88a060f47b779359975b1748f95b405fd41183762e34797f47285f209fea47c"
+      "sha256": "05dfb402b0a4f4da27ae1941a9202d609515e68f42cc130a5632b4953017451e"
     },
     {
       "path": "test/integration/cohort-root-exports.test.ts",
@@ -1082,6 +1090,14 @@
     {
       "path": "test/recovery/restart-matrix.test.ts",
       "sha256": "f7b9085f2a24429ae024cf3f4f118abb7565f75090cc967094500fa454d99977"
+    },
+    {
+      "path": "test/release/directory-supply.test.ts",
+      "sha256": "556ae0ecca4a11932bdbcc271e429e0897c09e82894b9bf23ff0af66aea149c4"
+    },
+    {
+      "path": "test/release/fork-qualification.test.ts",
+      "sha256": "124c30eda0192556f0f251d60129114c72ceb26582ab510a1778407d6e317175"
     },
     {
       "path": "test/release/governance.test.ts",
@@ -1233,7 +1249,7 @@
     },
     {
       "path": "tools/exemplar-policy.ts",
-      "sha256": "a057438baed78152ba49d37f70b8e4baa830909d57acf2c72080525dc52d5839"
+      "sha256": "7ba217587b7b83d2ebd66a2a49fa7d913525cde6229b827d56c6952171b63be5"
     },
     {
       "path": "tools/mutation/report.ts",
@@ -1331,7 +1347,7 @@
     },
     {
       "path": "CHANGELOG.md",
-      "sha256": "3df1019a74cf88087fbe1454a29118c179e7789d3c375daf5b1e3071d0991707"
+      "sha256": "dc68b48e3b3ccf2702f1759f087385c1a128c43c3a79c12e37215cc695d4936b"
     },
     {
       "path": "CONTRIBUTING.md",
@@ -1367,11 +1383,11 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "bab5c3abaea359e499aa25f3cbd8f1e556b8400ff0936554f1597d5ad466ec06"
+      "sha256": "c2435078de940ff8f49dbcd7aeaf0ff9cb729bb93f35a43ee3742352c6ad3b1b"
     },
     {
       "path": "docs/FORKING.md",
-      "sha256": "cdf69b8beb33a74921d72109de1c54067eae4c2f66106c5f0706203bcdb1848c"
+      "sha256": "352c6a7a0527ee76978f28ec5b513490ffad2c20341af15c20f0a1918ef0aae7"
     },
     {
       "path": "docs/HARDENING.md",
@@ -1387,7 +1403,7 @@
     },
     {
       "path": "docs/SERVICE-CONTRACT.md",
-      "sha256": "3aaac6b66a9deb78598106bd7ea95eb8ec35fd2f4964690050f6a93432cb414a"
+      "sha256": "7f435e42b58cc78d41c1c5507af33f76da0b6aaa9d4e4d7ad4b9e1fd95b344ad"
     },
     {
       "path": "docs/VERSIONING.md",
@@ -1395,7 +1411,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "117658a7cb4f9639df568d67d67b961959b004e3859dc12634fcc0c8f263fe85"
+      "sha256": "4ccaea8c572502dcd0bad7dbd0a0f74697490262bfac570070b9131e1b132d03"
     },
     {
       "path": "release/capability-profile.json",
@@ -1407,7 +1423,7 @@
     },
     {
       "path": "release/release-manifest.json",
-      "sha256": "ecd9d491954d189f668c3a0180c9987e15279e81c20305e3846c593093f58d14"
+      "sha256": "9652c67f97a4d68347ccbdf9189c35b0f5507e85cfd1cd859e98dd137b866af5"
     },
     {
       "path": "tools/verify-source-provenance.ts",

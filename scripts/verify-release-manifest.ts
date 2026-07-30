@@ -28,6 +28,8 @@ const RIG_COMMANDS = [
   "bun run verify:public-export",
   "bun run verify:release-manifest",
   "bun run verify:migrations -- --evidence <qualification-record.json> --repository <migrated-fork> --artifact-graph <artifact-graph.json> --prior-evidence <prior-evidence.json> --rig-evidence <rig-evidence.json> --consumer-report <consumer-report.json>",
+  "bun run verify:directory-supply -- --repository <migrated-fork> --base <candidate-commit> --tip <migration-tip>",
+  "bun run verify:fork -- --repository <migrated-fork> --base <candidate-commit> --tip <migration-tip>",
   "bun run verify:governance",
   "bun run verify:provenance",
   "bun run typecheck",
