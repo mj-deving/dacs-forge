@@ -50,7 +50,7 @@ describe("dacs executable", () => {
     expect(absent.stderr()).toContain("A command is required");
 
     const noInput = capture();
-    expect(await runCli(["doctor", "--no-input", "--json"], noInput.io)).toBe(5);
+    expect(await runCli(["doctor", "--no-input", "--json"], noInput.io)).toBe(0);
     expect(noInput.stderr()).toBe("");
     expect(() => JSON.parse(noInput.stdout())).not.toThrow();
   });
@@ -58,7 +58,7 @@ describe("dacs executable", () => {
   test("writes exactly one JSON document to stdout and diagnostics only to stderr", async () => {
     const output = capture();
     const exitCode = await runCli(["doctor", "--json"], output.io);
-    expect(exitCode).toBe(5);
+    expect(exitCode).toBe(0);
     expect(output.stderr()).toBe("");
     expect(output.stdout().split("\n")).toHaveLength(2);
     const report = JSON.parse(output.stdout()) as Record<string, unknown>;
@@ -294,8 +294,8 @@ describe("dacs executable", () => {
       "bun", "-e",
       `const m = await import(${JSON.stringify(join(root, "index.js"))});`
         + `if (m.doctorPackageVersion() !== "0.1.0") process.exit(10);`
-        + `const r = m.runDoctor(); if (r.exitCode !== 5) process.exit(11);`
-        + `if (JSON.parse(m.serializeDoctorReport(r)).exitCode !== 5) process.exit(12);`,
+        + `const r = m.runDoctor(); if (r.exitCode !== 0) process.exit(11);`
+        + `if (JSON.parse(m.serializeDoctorReport(r)).exitCode !== 0) process.exit(12);`,
     ], { cwd: root, stdout: "pipe", stderr: "pipe" });
     expect(smoke.exitCode).toBe(0);
     expect(smoke.stderr.toString()).toBe("");

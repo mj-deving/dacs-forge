@@ -856,7 +856,7 @@ describe("Doctor Core", () => {
     expect(queuedMutationRan).toBe(true);
   });
 
-  test("emits one closed fixture report with honest blockers", async () => {
+  test("emits one ready fixture report from the repository-pinned external rig", async () => {
     const report = await runDoctor({
       now: () => "2026-07-20T10:30:00.000Z",
     });
@@ -867,8 +867,8 @@ describe("Doctor Core", () => {
       version: "0.1.0",
       generatedAt: "2026-07-20T10:30:00.000Z",
       evidenceMode: "fixture",
-      ready: false,
-      exitCode: 5,
+      ready: true,
+      exitCode: 0,
     });
     expect(report.checks.find((item) => item.id === "execution.read-only")).toMatchObject({
       status: "passed",
@@ -878,22 +878,39 @@ describe("Doctor Core", () => {
       .toBe("not-applicable");
     expect(report.checks.find((item) => item.id === "conformance.external-rig")).toMatchObject({
       required: true,
-      status: "blocked",
-      protocolDisposition: "indeterminate",
+      status: "passed",
+      protocolDisposition: "pass",
+      sourceRef: "release/release-manifest.json#pins.dacsStandard",
+      observed: {
+        acceptedRigPinned: true,
+        profile: "v0.4",
+        tag: "v0.4",
+        commit: "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091",
+      },
     });
     expect(Buffer.byteLength(serializeDoctorReport(report), "utf8")).toBeLessThanOrEqual(16_384);
   });
 
-  test("keeps live binding blocked rather than promoting fixture evidence", async () => {
-    const report = await runDoctor({ evidenceMode: "live" });
-    expect(report.exitCode).toBe(5);
-    expect(report.checks.find((item) => item.id === "binding.live-resolution")).toMatchObject({
-      evidenceMode: "live",
-      required: true,
-      status: "blocked",
-      protocolDisposition: "indeterminate",
-      observed: { resolverConfigured: false },
-    });
+  test("keeps local-chain and live blocked only on binding resolution", async () => {
+    for (const evidenceMode of ["local-chain", "live"] as const) {
+      const report = await runDoctor({ evidenceMode });
+      expect(report.exitCode).toBe(5);
+      expect(report.ready).toBe(false);
+      expect(report.checks.filter((item) => item.required && item.status === "blocked")
+        .map((item) => item.id)).toEqual(["binding.live-resolution"]);
+      expect(report.checks.find((item) => item.id === "binding.live-resolution")).toMatchObject({
+        evidenceMode,
+        required: true,
+        status: "blocked",
+        protocolDisposition: "indeterminate",
+        observed: { resolverConfigured: false },
+      });
+      expect(report.checks.find((item) => item.id === "conformance.external-rig")).toMatchObject({
+        status: "passed",
+        protocolDisposition: "pass",
+        observed: { acceptedRigPinned: true },
+      });
+    }
   });
 
   test("applies required exit precedence 4 then 3 then 5 then 0", () => {
@@ -1164,7 +1181,7 @@ describe("Doctor Core", () => {
         }),
       }],
     });
-    expect(expansion.exitCode).toBe(5);
+    expect(expansion.exitCode).toBe(0);
     expect(expansion.checks.at(-1)?.sourceRef.length).toBeLessThanOrEqual(512);
     expect(String(expansion.checks.at(-1)?.observed["value"] ?? "").length)
       .toBeLessThanOrEqual(2048);

@@ -1,4 +1,5 @@
 import packageMetadataJson from "../../package.json" with { type: "json" };
+import releaseManifestJson from "../../release/release-manifest.json" with { type: "json" };
 import { Buffer } from "node:buffer";
 import { types as utilTypes } from "node:util";
 import { EVIDENCE_MODES, parseEvidenceMode, type EvidenceMode } from "../core/evidence-mode.ts";
@@ -63,6 +64,12 @@ interface PackageMetadata {
   readonly packageManager?: unknown;
   readonly engines?: Readonly<Record<string, unknown>>;
   readonly bin?: Readonly<Record<string, unknown>>;
+}
+
+interface ExternalRigPin {
+  readonly profile: unknown;
+  readonly tag: unknown;
+  readonly commit: unknown;
 }
 
 const intrinsicDefineProperty = Object.defineProperty;
@@ -219,6 +226,11 @@ const CAPTURED_PACKAGE_METADATA: PackageMetadata = intrinsicFreeze({
   packageManager: packageMetadataJson.packageManager,
   engines: intrinsicFreeze({ bun: packageMetadataJson.engines?.bun }),
   bin: intrinsicFreeze({ dacs: packageMetadataJson.bin?.dacs }),
+});
+const CAPTURED_EXTERNAL_RIG_PIN: ExternalRigPin = intrinsicFreeze({
+  profile: releaseManifestJson.pins?.dacsStandard?.profile,
+  tag: releaseManifestJson.pins?.dacsStandard?.tag,
+  commit: releaseManifestJson.pins?.dacsStandard?.commit,
 });
 const CAPTURED_BUN_VERSION = Bun.version;
 
@@ -554,6 +566,10 @@ function runtimeCheck(evidenceMode: EvidenceMode): DoctorCheck {
 }
 
 function coreChecks(evidenceMode: EvidenceMode): readonly DoctorCheck[] {
+  const externalRigPinned = CAPTURED_EXTERNAL_RIG_PIN.profile === "v0.4"
+    && CAPTURED_EXTERNAL_RIG_PIN.tag === "v0.4"
+    && typeof CAPTURED_EXTERNAL_RIG_PIN.commit === "string"
+    && regexMatches(/^[0-9a-f]{40}$/, CAPTURED_EXTERNAL_RIG_PIN.commit);
   return [
     check({
       id: "execution.read-only",
@@ -597,12 +613,22 @@ function coreChecks(evidenceMode: EvidenceMode): readonly DoctorCheck[] {
     check({
       id: "conformance.external-rig",
       required: true,
-      status: "blocked",
-      protocolDisposition: "indeterminate",
+      status: externalRigPinned ? "passed" : "blocked",
+      protocolDisposition: externalRigPinned ? "pass" : "indeterminate",
       evidenceMode,
-      sourceRef: "ISA:ISC-34.1",
-      observed: { acceptedRigPinned: false },
-      reason: "No externally accepted conformance-rig release is pinned",
+      sourceRef: "release/release-manifest.json#pins.dacsStandard",
+      observed: {
+        acceptedRigPinned: externalRigPinned,
+        profile: typeof CAPTURED_EXTERNAL_RIG_PIN.profile === "string"
+          ? CAPTURED_EXTERNAL_RIG_PIN.profile : "invalid",
+        tag: typeof CAPTURED_EXTERNAL_RIG_PIN.tag === "string"
+          ? CAPTURED_EXTERNAL_RIG_PIN.tag : "invalid",
+        commit: typeof CAPTURED_EXTERNAL_RIG_PIN.commit === "string"
+          ? CAPTURED_EXTERNAL_RIG_PIN.commit : "invalid",
+      },
+      ...(externalRigPinned ? {} : {
+        reason: "The release manifest does not pin the accepted DACS v0.4 rig authority",
+      }),
     }),
   ];
 }

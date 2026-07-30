@@ -122,7 +122,7 @@ describe("explicit Directory registration gate", () => {
   test("keeps help and doctor read-only while exposing registration only through the explicit command", async () => {
     const readOnly = capture();
     expect(await runCli(["--help"], readOnly.io)).toBe(0);
-    expect(await runCli(["doctor", "--json"], readOnly.io)).toBe(5);
+    expect(await runCli(["doctor", "--json"], readOnly.io)).toBe(0);
     expect(readOnly.stdout()).not.toContain("dacs-directory-registration/v1");
 
     const root = await mkdtemp(join(tmpdir(), "dacs-register-cli-"));

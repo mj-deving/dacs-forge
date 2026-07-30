@@ -68,7 +68,7 @@ describe("loopback HTTP readiness disclosure boundary", () => {
     });
 
     const readinessResponse = await fetch(`${server.url}/readyz`);
-    expect(readinessResponse.status).toBe(503);
+    expect(readinessResponse.status).toBe(200);
     const readiness = await body(readinessResponse);
     expect(Object.keys(readiness).sort()).toEqual([
       "blockerIds", "evidenceMode", "schema", "service", "status", "timestamp", "version",
@@ -76,9 +76,9 @@ describe("loopback HTTP readiness disclosure boundary", () => {
     expect(readiness).toMatchObject({
       schema: "dacs-readiness/v1",
       service: "dacs-forge",
-      status: "not-ready",
+      status: "ready",
       evidenceMode: "fixture",
-      blockerIds: ["conformance.external-rig"],
+      blockerIds: [],
     });
     expect(JSON.stringify(readiness)).not.toContain("sourceRef");
     expect(JSON.stringify(readiness)).not.toContain("observed");
@@ -107,7 +107,7 @@ describe("loopback HTTP readiness disclosure boundary", () => {
     const accepted = handler(new Request("http://127.0.0.1/admin/readiness", {
       headers: { authorization: "Bearer fixture-admin-proof" },
     }));
-    expect(accepted.status).toBe(503);
+    expect(accepted.status).toBe(200);
     const report = await body(accepted);
     expect(report["schema"]).toBe("dacs-doctor/v1");
     expect(report["checks"]).toBeArray();
