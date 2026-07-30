@@ -1343,7 +1343,7 @@
     },
     {
       "path": ".github/workflows/ci.yml",
-      "sha256": "34e342e108ad7d133d5e000177bd59a6dc7fc2ad76c3625358d5fa3808631914"
+      "sha256": "91914136836af71a84298e091dccd8c5fbf9a7cd69024504abb3f832c87531c7"
     },
     {
       "path": "CHANGELOG.md",
@@ -1423,7 +1423,7 @@
     },
     {
       "path": "release/release-manifest.json",
-      "sha256": "5ee85da15a23c710a16ba21f3facbe54ea89d7ef0b6ed80e17c4eff342b8ece5"
+      "sha256": "a4c120cc61c8a36375edaa734150a8d0f706c9fb66feb32a5ade04f7135f4ae6"
     },
     {
       "path": "tools/verify-source-provenance.ts",
