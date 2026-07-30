@@ -29,8 +29,8 @@ jobs:
           bwrap --unshare-pid --die-with-parent --ro-bind / / --proc /proc --dev-bind /dev /dev -- true
       - name: Verify source provenance
         run: bun run verify:provenance
-      - name: Verify public Preview projection
-        run: bun run verify:public-export && bun run verify:preview-profile
+      - name: Verify Product Seal contracts
+        run: bun run verify:public-export && bun run verify:release-manifest && bun run verify:migration-disposition && bun run verify:governance
       - name: Install frozen dependencies
         run: bun install --frozen-lockfile
       - name: Check
