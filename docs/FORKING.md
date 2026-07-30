@@ -127,7 +127,8 @@ declarations, symlinks, and non-regular files.
 
 Passing the steps above shows that the fork-owned handler and schemas work inside
 the current fixture substrate, that the unchanged repository gates remain green,
-and that the exact fork passes the same candidate rig with distinct service-bound
+and that the exact fork passes the complete functional Product Seal rig, excluding
+only the candidate repository's public-history export, with distinct service-bound
 Listing and pinned-schema discovery artifacts. It performs no live Directory
 registration. Publication, anchoring, payment, reputation, certification, and
 production operation remain separate gates.

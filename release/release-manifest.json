@@ -65,6 +65,7 @@
       "bun run verify:migrations -- --evidence <qualification-record.json> --repository <migrated-fork> --artifact-graph <artifact-graph.json> --prior-evidence <prior-evidence.json> --rig-evidence <rig-evidence.json> --consumer-report <consumer-report.json>",
       "bun run verify:directory-supply -- --repository <migrated-fork> --base <candidate-commit> --tip <migration-tip>",
       "bun run verify:fork -- --repository <migrated-fork> --base <candidate-commit> --tip <migration-tip>",
+      "bun run verify:product-seal-fork",
       "bun run verify:governance",
       "bun run verify:provenance",
       "bun run typecheck",
@@ -75,7 +76,7 @@
     ],
     "definition": {
       "selection": "tracked package, lock, compiler, workflow, container, scripts, tests, and tools excluding generated evidence",
-      "inventorySha256": "29635b9fc1d47416c774aaa25c43e54b73c17f694e237eb695192e8e1e439062"
+      "inventorySha256": "92ccbffa6dd9b987ea5d229a5798315e7f19202ac892e689c373dca3295a2bd7"
     },
     "qualificationEvidence": {
       "authority": "external-product-seal-qualification-record",

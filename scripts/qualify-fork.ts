@@ -22,6 +22,7 @@ const QUALIFICATION_EFFECT_KEYS = [
 ] as const;
 
 const FULL_RIG = ["bun", "run", "verify:product-seal-candidate"] as const;
+const FORK_RIG = ["bun", "run", "verify:product-seal-fork"] as const;
 const FROZEN_INSTALL = ["bun", "install", "--frozen-lockfile", "--ignore-scripts"] as const;
 const DOCTOR = [
   "bun", "src/cli/dacs.ts", "doctor", "--json", "--no-input", "--no-color", "--evidence-mode", "fixture",
@@ -207,7 +208,7 @@ export async function qualifyFork(input: {
     validateDoctor(baseDoctor.stdout);
     validateDoctor(forkDoctor.stdout);
     const baseRig = runTrustedCommand(baseClone, FULL_RIG);
-    const forkRig = runTrustedCommand(forkClone, FULL_RIG);
+    const forkRig = runTrustedCommand(forkClone, FORK_RIG);
     const effects = assertExactEffectsRecord({
       public: false,
       release: false,

@@ -45,6 +45,7 @@
     "verify:governance": "bun run ./scripts/verify-governance.ts",
     "verify:public-export": "bun run ./scripts/verify-public-export.ts",
     "verify:product-seal-candidate": "bun run verify:public-export && bun run verify:release-manifest && bun run verify:migration-disposition && bun run verify:governance && bun run verify:provenance && bun run typecheck && bun test --timeout 10000 && bun run build && bun run mutation:calibrate && bun run verify:container",
+    "verify:product-seal-fork": "bun run verify:release-manifest && bun run verify:migration-disposition && bun run verify:governance && bun run verify:provenance && bun run typecheck && bun test --timeout 10000 && bun run build && bun run mutation:calibrate && bun run verify:container",
     "verify:provenance": "bun tools/verify-source-provenance.ts"
   },
   "devDependencies": {

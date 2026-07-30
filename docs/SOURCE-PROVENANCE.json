@@ -121,7 +121,7 @@
     },
     {
       "path": "scripts/qualify-fork.ts",
-      "sha256": "2491b22474d374fd27308a2efd82f5428beba95f360e72b5511fc99aed6bda90"
+      "sha256": "1974ee686da7fcc689c9ba151cc20879812f2673feb23af254cd2800eda1e554"
     },
     {
       "path": "scripts/scan-critical-placeholders.ts",
@@ -157,7 +157,7 @@
     },
     {
       "path": "scripts/verify-release-manifest.ts",
-      "sha256": "e68ccd3341db4a5b5c50b5cd19357abfaf7d16fc27d1655566683d8a181d697f"
+      "sha256": "b6dc464ee0ad19270da9ff2b5b962e240cbafdac8d18659c75912639a44eecbd"
     },
     {
       "path": "src/cli/authority.ts",
@@ -1097,7 +1097,7 @@
     },
     {
       "path": "test/release/fork-qualification.test.ts",
-      "sha256": "d0bf738a624eaf221f7045b2ff4ab4f9b0b7f1e55df3b8d9aa07ff85d72b3767"
+      "sha256": "a0d63ccc90fb08a5846352e1a0ad01152f12cc66abc8a176f722451845f77044"
     },
     {
       "path": "test/release/governance.test.ts",
@@ -1387,7 +1387,7 @@
     },
     {
       "path": "docs/FORKING.md",
-      "sha256": "352c6a7a0527ee76978f28ec5b513490ffad2c20341af15c20f0a1918ef0aae7"
+      "sha256": "eca6a881b62d159e6d0b559c4950517b652ed518cd9fd169fc3cd46cbf72a0d6"
     },
     {
       "path": "docs/HARDENING.md",
@@ -1411,7 +1411,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "4ccaea8c572502dcd0bad7dbd0a0f74697490262bfac570070b9131e1b132d03"
+      "sha256": "466e5115cb7f0e0dd0508099c6f8cb5438c9e694349cd1059ed48e9c6bc3462a"
     },
     {
       "path": "release/capability-profile.json",
@@ -1423,7 +1423,7 @@
     },
     {
       "path": "release/release-manifest.json",
-      "sha256": "03788504742de57a682cb65def7b2599bac25f0bdc716800f807cf30348fef86"
+      "sha256": "5ee85da15a23c710a16ba21f3facbe54ea89d7ef0b6ed80e17c4eff342b8ece5"
     },
     {
       "path": "tools/verify-source-provenance.ts",

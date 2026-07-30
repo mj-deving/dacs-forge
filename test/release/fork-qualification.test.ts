@@ -49,6 +49,6 @@ describe("Product Seal fork qualification trust boundary", () => {
     expect(source).toContain("runTrustedCommand(baseClone, FROZEN_INSTALL)");
     expect(source).toContain("runTrustedCommand(forkClone, FROZEN_INSTALL)");
     expect(source).toContain("runTrustedCommand(baseClone, FULL_RIG)");
-    expect(source).toContain("runTrustedCommand(forkClone, FULL_RIG)");
+    expect(source).toContain("runTrustedCommand(forkClone, FORK_RIG)");
   });
 });
