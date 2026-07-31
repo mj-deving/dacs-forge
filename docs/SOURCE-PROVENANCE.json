@@ -157,7 +157,7 @@
     },
     {
       "path": "scripts/verify-public-export.ts",
-      "sha256": "38c153910e7921e56c889704b89ca259e51b2eaace597a8bfc8d15126bfbd027"
+      "sha256": "4035cf72db3a1d758f45c98d1f93b6baa24e057a2792b748ed046d072037f04f"
     },
     {
       "path": "scripts/verify-public-qualification.ts",
@@ -1116,6 +1116,10 @@
       "sha256": "f3bda943b164302ce82d27522239bb0cdcc44efcd0e494a765a39cd6a4e90fa4"
     },
     {
+      "path": "test/release/public-export-paths.test.ts",
+      "sha256": "9079253ef0d2883e8ef640c04966b0a4e445ce35d8eca353120bd5ddb284a091"
+    },
+    {
       "path": "test/release/public-qualification.test.ts",
       "sha256": "2b602eea20866116dc75056d45902ff0f6ea099443251aff759b0f9f57a1cf3e"
     },
@@ -1349,7 +1353,7 @@
     },
     {
       "path": "evidence/reviews/live-demos-profile/index.json",
-      "sha256": "aad1f5efffffeac60b09bcddf256a445905842b2f99ba5d30396045cda31c148"
+      "sha256": "032f48e13338de34ac3ecd93b0c09b5c6c459380f679bad036d5744e3e938649"
     },
     {
       "path": "evidence/reviews/live-demos-profile/round-001.disposition.md",
@@ -1398,6 +1402,38 @@
     {
       "path": "evidence/reviews/live-demos-profile/round-003.txt",
       "sha256": "dfa6e4473f0b9eb79e7966f9d7f1ccdb9c510480196dacd6e8f5fd9a516c4a30"
+    },
+    {
+      "path": "evidence/reviews/live-demos-profile/round-004.prompt.md",
+      "sha256": "381ade5d591a2cd675bb2ee3884cbf98dce1cbf2afda07c4a2084a2b18ee4998"
+    },
+    {
+      "path": "evidence/reviews/live-demos-profile/round-004.disposition.md",
+      "sha256": "58b6c3db0cf19a5e79d6094922eb897b4542a3d9dd86562ae2ce37e3b316cbeb"
+    },
+    {
+      "path": "evidence/reviews/live-demos-profile/round-004.review.json",
+      "sha256": "2920d37b163bcf30a30bc871da5bac303b6ea6a67097f6ccf876ab55ad57005e"
+    },
+    {
+      "path": "evidence/reviews/live-demos-profile/round-004.txt",
+      "sha256": "9d116e05e2a38674d33727981d0cc382616dd4038a6f8cab51def9530b7fbe59"
+    },
+    {
+      "path": "evidence/reviews/live-demos-profile/round-005.disposition.md",
+      "sha256": "770729163a2148cce06385568a2224e34b7d7838352358f87ef0420f29afccd8"
+    },
+    {
+      "path": "evidence/reviews/live-demos-profile/round-005.prompt.md",
+      "sha256": "d92d7c8a37a55c5d90e60b678848778ba7c027fc97e77d862d4aa1494a0a65c1"
+    },
+    {
+      "path": "evidence/reviews/live-demos-profile/round-005.review.json",
+      "sha256": "bdd6d621a83c9debf4c9f5ea059f922146b608cc23138e912ba85603bc453256"
+    },
+    {
+      "path": "evidence/reviews/live-demos-profile/round-005.txt",
+      "sha256": "a92a9646e574cf9eaae4ec097febc7369bc1fc60e7425a971843cf80fc24897a"
     },
     {
       "path": "scripts/verify-live-import-boundary.ts",

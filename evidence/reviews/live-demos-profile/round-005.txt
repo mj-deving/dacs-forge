@@ -1,0 +1,3 @@
+autoreview clean: no accepted/actionable findings reported
+overall: patch is correct (0.99)
+The correction keeps the allow-list limited to the exact `evidence/reviews/live-demos-profile/` prefix, requires a non-empty suffix, and applies the complete forbidden-segment set to every suffix segment. The added regression test directly covers the previously accepted nested-`evidence` bypass, and no remaining accepted P0/P1 or protected-claim-bypassing P2 defect is evident in the scoped changes.

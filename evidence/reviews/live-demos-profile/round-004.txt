@@ -1,0 +1,7 @@
+autoreview findings: 1
+[P2] [P2] Do not exempt nested `evidence` path segments
+scripts/verify-public-export.ts:50
+The public-capsule branch exempts every segment named `evidence`, not just the leading root segment. Consequently, `evidence/reviews/live-demos-profile/evidence/private.json` returns `true`, even though `evidence` remains a forbidden nested segment under the protected claim. Limit the exemption to the first segment (or validate only the suffix after the exact allowed prefix against the full forbidden-segment set), and add a regression assertion for a nested `evidence` directory.
+
+overall: patch is incorrect (0.99)
+The exact allowed prefix is narrow, but the new segment check unintentionally permits nested directories named `evidence` anywhere within that capsule. This directly bypasses the stated requirement that forbidden nested segments continue to be rejected.

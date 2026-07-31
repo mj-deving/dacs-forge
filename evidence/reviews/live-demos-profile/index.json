@@ -9,6 +9,11 @@
     "thinking": "high",
     "fallbackModels": ["claude-opus-4-8", "claude-sonnet-4-6"]
   },
+  "followUpReviewer": {
+    "engine": "codex",
+    "model": "gpt-5.6-sol",
+    "thinking": "medium"
+  },
   "rounds": [
     {
       "round": 1,
@@ -36,6 +41,26 @@
       "rawSha256": "dfa6e4473f0b9eb79e7966f9d7f1ccdb9c510480196dacd6e8f5fd9a516c4a30",
       "reviewJsonSha256": "5407f243679ef06f829a81cba5d620afb416c84c86fc6c5db032244d05f3d04f",
       "dispositionSha256": "d3ba4d639dc96cc1777718de4d42a9c30d1204d3152ac1bd2630c85699823fbe"
+    },
+    {
+      "round": 4,
+      "reviewer": "followUpReviewer",
+      "findings": { "p2": 1 },
+      "disposition": "accepted and corrected",
+      "promptSha256": "381ade5d591a2cd675bb2ee3884cbf98dce1cbf2afda07c4a2084a2b18ee4998",
+      "rawSha256": "9d116e05e2a38674d33727981d0cc382616dd4038a6f8cab51def9530b7fbe59",
+      "reviewJsonSha256": "2920d37b163bcf30a30bc871da5bac303b6ea6a67097f6ccf876ab55ad57005e",
+      "dispositionSha256": "58b6c3db0cf19a5e79d6094922eb897b4542a3d9dd86562ae2ce37e3b316cbeb"
+    },
+    {
+      "round": 5,
+      "reviewer": "followUpReviewer",
+      "findings": {},
+      "disposition": "clean confirmation; loop stopped",
+      "promptSha256": "d92d7c8a37a55c5d90e60b678848778ba7c027fc97e77d862d4aa1494a0a65c1",
+      "rawSha256": "a92a9646e574cf9eaae4ec097febc7369bc1fc60e7425a971843cf80fc24897a",
+      "reviewJsonSha256": "bdd6d621a83c9debf4c9f5ea059f922146b608cc23138e912ba85603bc453256",
+      "dispositionSha256": "770729163a2148cce06385568a2224e34b7d7838352358f87ef0420f29afccd8"
     }
   ],
   "stoppingCondition": "no accepted P0/P1, protected-claim-bypassing P2, or persistence/recovery P3",

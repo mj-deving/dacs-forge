@@ -8,6 +8,7 @@ import releaseManifest from "../release/release-manifest.json";
 const FORBIDDEN_EXACT_PATHS = new Set(["AGENTS.md", "ISA.md"]);
 const FORBIDDEN_PREFIXES = [[".", "beads/"].join(""), "Plans/", "Probes/", "evidence/"] as const;
 const FORBIDDEN_PATH_SEGMENTS = new Set(["AGENTS.md", "ISA.md", [".", "beads"].join(""), "Plans", "Probes", "evidence"]);
+const PUBLIC_EVIDENCE_PREFIXES = ["evidence/reviews/live-demos-profile/"] as const;
 const FORBIDDEN_CONTENT = [
   { id: "local-home-path", pattern: new RegExp(["/", "home", "/", "mj", "/"].join("")) },
   { id: "private-bead-id", pattern: new RegExp(["DACS", "-standard-", "[a-z0-9]+(?:\\.[0-9]+)+"].join(""), "i") },
@@ -42,10 +43,21 @@ function gitText(root: string, args: readonly string[]): string {
   return decodeText(gitBytes(root, args), `git ${args[0] ?? "output"}`);
 }
 
+export function isPublicPathAllowed(path: string): boolean {
+  if (FORBIDDEN_EXACT_PATHS.has(path)) return false;
+  const segments = path.split("/");
+  const evidencePrefix = PUBLIC_EVIDENCE_PREFIXES.find((prefix) => path.startsWith(prefix));
+  if (evidencePrefix !== undefined) {
+    const suffix = path.slice(evidencePrefix.length);
+    return suffix.length > 0
+      && !suffix.split("/").some((segment) => segment.length === 0 || FORBIDDEN_PATH_SEGMENTS.has(segment));
+  }
+  return !FORBIDDEN_PREFIXES.some((prefix) => path.startsWith(prefix))
+    && !segments.some((segment) => FORBIDDEN_PATH_SEGMENTS.has(segment));
+}
+
 function assertPublicPath(path: string, surface = path): void {
-  if (FORBIDDEN_EXACT_PATHS.has(path)
-    || FORBIDDEN_PREFIXES.some((prefix) => path.startsWith(prefix))
-    || path.split("/").some((segment) => FORBIDDEN_PATH_SEGMENTS.has(segment))) {
+  if (!isPublicPathAllowed(path)) {
     throw new Error(`public export contains forbidden path: ${surface}`);
   }
   assertPublicText(path, `path name: ${surface}`);
