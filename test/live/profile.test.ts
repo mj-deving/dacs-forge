@@ -16,7 +16,7 @@ const LIVE_INPUT: LiveTestnetProfileInput = {
     adapter: "demos-sdk",
     chain: "demos-testnet",
     rpcUrl: "https://node2.demos.sh",
-    sdkCommit: "15ceafa262299f258e2cc35bef7a5e74dc4fb225",
+    sdkCommit: "e2070e0085414c67d139e1e62924ca9ef8b316c7",
   },
   directory: {
     endpoint: "https://community.example/api/dacs",

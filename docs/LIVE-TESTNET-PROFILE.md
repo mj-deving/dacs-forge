@@ -14,7 +14,7 @@ A live profile is admitted only when it binds all of the following:
 
 - an injected signer reference and expected Demos seller claim;
 - Demos testnet RPC and the exact official dacs-sdk commit
-  `15ceafa262299f258e2cc35bef7a5e74dc4fb225`;
+  `e2070e0085414c67d139e1e62924ca9ef8b316c7`;
 - HTTPS Community Directory endpoint, manifest URL, and schema digest;
 - one bounded Demos-testnet or Base-Sepolia rail;
 - an explicit testnet-only effect allow-list with one submission attempt.
@@ -36,6 +36,11 @@ write-once anchoring, owner-bound logical-to-native resolution, and exact native
 readback. The published binding remains discovery, not trust. Forge verifies the
 canonical Listing bytes, signed scope, expected seller, content hash, current
 revocation disposition, and supported rail before Directory submission.
+
+The anchor-only operation stops after independent native readback and returns the
+verified Listing hash and native address without accepting or invoking a Directory
+adapter. The composed publication operation calls the same anchor path before its
+separately admitted Directory effect.
 
 ## Intent and recovery
 

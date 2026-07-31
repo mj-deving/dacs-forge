@@ -1,4 +1,4 @@
-export const OFFICIAL_DACS_SDK_COMMIT = "15ceafa262299f258e2cc35bef7a5e74dc4fb225" as const;
+export const OFFICIAL_DACS_SDK_COMMIT = "e2070e0085414c67d139e1e62924ca9ef8b316c7" as const;
 
 export type LiveEffectKind = "anchor" | "directory-register" | "payment";
 

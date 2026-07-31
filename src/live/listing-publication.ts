@@ -41,7 +41,7 @@ export interface LiveListingAnchorAdapter extends EffectAdapter<AnchorPayload, A
 
 export interface LiveDirectoryAdapter extends EffectAdapter<DirectoryEffectPayload, DirectoryResult> {}
 
-export async function publishListingThroughLiveProfile(input: {
+export interface AnchorListingThroughLiveProfileInput {
   readonly store: LiveEffectStore;
   readonly profile: AdmittedExecutionProfile;
   readonly canonicalJson: string;
@@ -54,11 +54,15 @@ export async function publishListingThroughLiveProfile(input: {
     readonly referencedByPhaseKinds: readonly string[];
   }>) => PaymentRailCheck;
   readonly anchorAdapter: LiveListingAnchorAdapter;
-  readonly directoryAdapter: LiveDirectoryAdapter;
-}): Promise<Readonly<{
-  readonly listing: AnchorResult & { readonly contentHash: string };
-  readonly directory: DirectoryResult;
-}>> {
+}
+
+export interface AnchoredLiveListing extends AnchorResult {
+  readonly contentHash: string;
+}
+
+export async function anchorListingThroughLiveProfile(
+  input: AnchorListingThroughLiveProfileInput,
+): Promise<Readonly<AnchoredLiveListing>> {
   const document = parseDocument(input.canonicalJson);
   const listingId = document["listingId"];
   const listingVersion = document["listingVersion"];
@@ -78,11 +82,10 @@ export async function publishListingThroughLiveProfile(input: {
   if (verification.disposition !== "accepted") {
     throw new Error(`Listing verification failed before anchor: ${verification.stage}: ${verification.reason}`);
   }
-  const effectKey = `listing-anchor:${verification.listingId}:v${verification.listingVersion}`;
   const anchored = await runRecoverableEffect({
     store: input.store,
     profile: input.profile,
-    effectKey,
+    effectKey: `listing-anchor:${verification.listingId}:v${verification.listingVersion}`,
     kind: "anchor",
     payload: Object.freeze({ logicalAddress, canonicalJson: input.canonicalJson }),
     adapter: input.anchorAdapter,
@@ -100,7 +103,20 @@ export async function publishListingThroughLiveProfile(input: {
     || readVerification.contentHash !== verification.contentHash) {
     throw new Error("Listing anchor read-back failed independent verification");
   }
-  const projection = projectDirectorySummary(document, verification.contentHash, anchored.nativeAddress);
+  return Object.freeze({ ...anchored, contentHash: verification.contentHash });
+}
+
+export async function publishListingThroughLiveProfile(input: AnchorListingThroughLiveProfileInput & {
+  readonly directoryAdapter: LiveDirectoryAdapter;
+}): Promise<Readonly<{
+  readonly listing: AnchoredLiveListing;
+  readonly directory: DirectoryResult;
+}>> {
+  const anchored = await anchorListingThroughLiveProfile(input);
+  const document = parseDocument(input.canonicalJson);
+  const listingId = document["listingId"] as string;
+  const listingVersion = document["listingVersion"] as number;
+  const projection = projectDirectorySummary(document, anchored.contentHash, anchored.nativeAddress);
   const sellerProjection = projection["seller"] as Record<string, unknown>;
   const directoryPayload = deepFreezeJson({
     registration: {
@@ -113,13 +129,13 @@ export async function publishListingThroughLiveProfile(input: {
   const directory = await runRecoverableEffect({
     store: input.store,
     profile: input.profile,
-    effectKey: `directory-register:${verification.listingId}:v${verification.listingVersion}`,
+    effectKey: `directory-register:${listingId}:v${listingVersion}`,
     kind: "directory-register",
     payload: directoryPayload,
     adapter: input.directoryAdapter,
   });
   return Object.freeze({
-    listing: Object.freeze({ ...anchored, contentHash: verification.contentHash }),
+    listing: anchored,
     directory,
   });
 }

@@ -65,7 +65,10 @@ export {
   type EffectReconciliation,
 } from "./live/effect-runner.ts";
 export {
+  anchorListingThroughLiveProfile,
   publishListingThroughLiveProfile,
+  type AnchoredLiveListing,
+  type AnchorListingThroughLiveProfileInput,
   type LiveDirectoryAdapter,
   type LiveListingAnchorAdapter,
 } from "./live/listing-publication.ts";
