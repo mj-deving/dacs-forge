@@ -50,6 +50,26 @@ export {
   type EvidenceMode,
 } from "./core/evidence-mode.ts";
 export {
+  OFFICIAL_DACS_SDK_COMMIT,
+  admitExecutionProfile,
+  fixtureExecutionProfile,
+  type AdmittedExecutionProfile,
+  type LiveEffectKind,
+  type LiveTestnetProfileInput,
+} from "./live/profile.ts";
+export { LiveEffectStore, type LiveEffectRecord, type LiveEffectState } from "./live/effect-store.ts";
+export {
+  runRecoverableEffect,
+  type EffectAdapter,
+  type EffectCrashBoundary,
+  type EffectReconciliation,
+} from "./live/effect-runner.ts";
+export {
+  publishListingThroughLiveProfile,
+  type LiveDirectoryAdapter,
+  type LiveListingAnchorAdapter,
+} from "./live/listing-publication.ts";
+export {
   DOCTOR_SCHEMA,
   DOCTOR_STATUSES,
   assertDoctorReport,

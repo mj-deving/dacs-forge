@@ -161,7 +161,7 @@
     },
     {
       "path": "scripts/verify-release-manifest.ts",
-      "sha256": "0475a0faef09b9eedfac9fad50e106430fc574ff313cf7481a65078b4063557d"
+      "sha256": "9aa9110868ce4f1cd4b451a55d46959303dc2a327e7c6840a37c30130b7c6b9e"
     },
     {
       "path": "src/cli/authority.ts",
@@ -305,7 +305,7 @@
     },
     {
       "path": "src/index.ts",
-      "sha256": "26f3b135791b6f6f28a7926bfd731828f37225bc0faa1d63b637368aa7586503"
+      "sha256": "85575ea905b4719e432f6bce254a0a54c9d3ac4450952e1efb0d6cf020820d66"
     },
     {
       "path": "src/lifecycle/fixture-attested-delivery-handler.ts",
@@ -477,11 +477,11 @@
     },
     {
       "path": "src/substrate/sqlite/atomic-write-registry.ts",
-      "sha256": "5ce2b35361e4d8e7499b73f1181863495fc460d47e67fe5b873c84e1340ac3b7"
+      "sha256": "ca6a36e111ee0d780b567904d3cc89e0827fe88bf59f47a0e12b9f23528c46fd"
     },
     {
       "path": "src/substrate/sqlite/database.ts",
-      "sha256": "b8c40c0de58489bddbcea2697bc4d8400faada640b276534f76bc22d5d834100"
+      "sha256": "8d53e2979dd6645d78e9f7caba51814abc7eae32d666643c7aa20e6109cd9907"
     },
     {
       "path": "src/substrate/sqlite/fixture-authority-store.ts",
@@ -569,7 +569,7 @@
     },
     {
       "path": "test/api/session-admission.test.ts",
-      "sha256": "62cfbd69fc45e0d815609558c697aa91c4705e890cfdc15a00e735bfd78dc2e6"
+      "sha256": "4a03d66efe669d9e3b1f9de1565468d5e6d39dc4bff3f2466c93b8f98802fb30"
     },
     {
       "path": "test/api/terminal-results.test.ts",
@@ -737,7 +737,7 @@
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "1a5f5053ddf56e4e3523e38ec5ce3c3ae3c411f7c9d4a54a675b1b913b57abba"
+      "sha256": "350ea59dd22c3ce9fbcda9341091cecb0462a0d0a18b87ea197828987a7fa31f"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -977,7 +977,7 @@
     },
     {
       "path": "test/lifecycle/attestation-bundle-finalisation.test.ts",
-      "sha256": "1278a21dc789730f0d22e10a75963463c8e9ab823bece073dce7c8e898f47a3e"
+      "sha256": "36ec273fd1f89bf59c43d19270b75cb6662cc00fd2faf48db97b47f6f67ac2a2"
     },
     {
       "path": "test/lifecycle/attested-delivery-integration.test.ts",
@@ -985,11 +985,11 @@
     },
     {
       "path": "test/lifecycle/commit-failure-stop.test.ts",
-      "sha256": "e4071d3576d3586fa661977390c7234baa4ccb4ccaa1e26148e5fac6be6afa12"
+      "sha256": "c327d945e50bc48e08ec51ef3e2b5881e8e3aaf522803f53a01b4d4ec0358e93"
     },
     {
       "path": "test/lifecycle/fixture-vet-store.test.ts",
-      "sha256": "dd3473de6b27eb7f8a4555243811b75f9cbeebf0888729f2ed1ef8b945e784c3"
+      "sha256": "36603b6ed63294178644710ef0610a4c7bf04e6b6234c862746e51e6fbf46aa6"
     },
     {
       "path": "test/lifecycle/fixtures.ts",
@@ -1073,11 +1073,11 @@
     },
     {
       "path": "test/recovery/atomic-migration-interruption.test.ts",
-      "sha256": "7199bfa9d9e00cc75e556b7ee60f1e7d35e32ee953519d8e917a0cad94c5e7da"
+      "sha256": "a1d03af81d44ed8f783f659e4429e78a1d3608f9a96f35d4ff9e1cc23c192a58"
     },
     {
       "path": "test/recovery/atomic-write-interruption.test.ts",
-      "sha256": "f3428a34c484fffd56326e1e4b2ee1118b357e8ccf56f7e67e94c04f92efd67b"
+      "sha256": "8322e535b9b3d8b902dcfdcf65e9372261b518a18f15110582aa9f3c016faf79"
     },
     {
       "path": "test/recovery/atomic-write-registry.test.ts",
@@ -1117,7 +1117,7 @@
     },
     {
       "path": "test/release/release-manifest.test.ts",
-      "sha256": "8738994ae279a2b1b5f613f855ee43029b41500eeceb7c3c3601705783699d59"
+      "sha256": "3367738c3ce537303a16ac516341be2d5dfd25c0fb92e19886f51490b899acda"
     },
     {
       "path": "test/runtime/active-write-shutdown.test.ts",
@@ -1193,7 +1193,7 @@
     },
     {
       "path": "test/substrate/sqlite.test.ts",
-      "sha256": "b4129bdd9a0be244851772065be777dc7d3e7750b7e31a3110e8e4285ac9839f"
+      "sha256": "d08028cf3e29b8263528149d0b23ec695dfa3ea77e7071c1350535b61959f86a"
     },
     {
       "path": "test/tools/source-provenance.test.ts",
@@ -1205,7 +1205,7 @@
     },
     {
       "path": "test/workers/atomic-migration-worker.ts",
-      "sha256": "87ddb53427490495dc3dc9d13bfc28543fad2e4b23f0ce283322fcd715c65d5d"
+      "sha256": "482c833c74507ee69dfae7d927aad0713b3ce3ee7d2cf098b86a3257448758e7"
     },
     {
       "path": "test/workers/atomic-write-api-worker.ts",
@@ -1342,6 +1342,54 @@
     {
       "path": "vectors/dacs-standard-storage-program-fcbf804.json",
       "sha256": "5f8435fd56397db2c674f7fa615257953779bebc395add484d2674f67c5c47d0"
+    },
+    {
+      "path": "scripts/verify-live-import-boundary.ts",
+      "sha256": "891949f113288aafacbf306475e003e92003280e40b08c403f88a4fe07ca4b84"
+    },
+    {
+      "path": "src/adapters/community-directory.ts",
+      "sha256": "d1cb6cd4fccaf228890473ad302eda38367e0b6c613408db4022b107571417d3"
+    },
+    {
+      "path": "src/adapters/demos-sdk-listing.ts",
+      "sha256": "1fc994bc727c0533851c0fd3de9b6e1a43f0c4f9aa8a13f3f62f8810d7bba307"
+    },
+    {
+      "path": "src/live/effect-runner.ts",
+      "sha256": "70fb3eeaa5a3acee931667374af0198b5cbec920b24f7d34356a055cb93bd268"
+    },
+    {
+      "path": "src/live/effect-store.ts",
+      "sha256": "c253da1002ee8e399a279e10b707db6281dcd61f835f93b9a797b2abce54c41b"
+    },
+    {
+      "path": "src/live/listing-publication.ts",
+      "sha256": "f45504495debb1340a2427343b624b2066c35532b55459eda6bed51d7a01bebf"
+    },
+    {
+      "path": "src/live/profile.ts",
+      "sha256": "c204619d1eda125b0f24936d0fca2341faaa4f827ad1ce2039d1eb8569e1102e"
+    },
+    {
+      "path": "test/live/adapters.test.ts",
+      "sha256": "cb1d132855b901f60904189c88d92fedce13cb8adf7cd3ddc96794f275f45cdd"
+    },
+    {
+      "path": "test/live/demos-listing.test.ts",
+      "sha256": "a41ddc10015b914bd60643e67dbe57af80a6f01cebe72f5c1dc72e4025568cbb"
+    },
+    {
+      "path": "test/live/effect-recovery.test.ts",
+      "sha256": "e131d4bffb374f14d9275aad13dec734778787bad99fdc4343c1eda139429d9c"
+    },
+    {
+      "path": "test/live/profile.test.ts",
+      "sha256": "b4850848b277014cfbc1c0596d840173350850d68fbcc67b7ed9f65c9a6b84d8"
+    },
+    {
+      "path": "test/live/zero-effect-defaults.test.ts",
+      "sha256": "ae3f0a0b40c2b053153fef15801d52582d2250870c4172249cf7861fe4771c0b"
     }
   ],
   "packagingFiles": [
@@ -1371,7 +1419,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "bc1354a883fcf8ddf5aebeee4398c414bab44809dd852029374e5a7858281183"
+      "sha256": "c34ddd0df378e7c480d4a3df0c13a879c039286a5f418ea1a11161106237d01e"
     },
     {
       "path": "SECURITY.md",
@@ -1391,7 +1439,7 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "722dce0892f081ddd696a65f160dc172f042887707a5ef6c453740551e588cda"
+      "sha256": "48f14af8dfa81cef238af7af37408874d07edf6aeb49e0b7afa98637704473f7"
     },
     {
       "path": "docs/FORKING.md",
@@ -1404,6 +1452,10 @@
     {
       "path": "docs/LISTING-TRUST-BOUNDARY.md",
       "sha256": "eefa23469896bd18f848517db585451770c92600e91a4a6549fe1e9117bc2cb0"
+    },
+    {
+      "path": "docs/LIVE-TESTNET-PROFILE.md",
+      "sha256": "e4a2f5197c874ba8745d3b00831132001f1084d48f086ae50eefacfb39a61d8e"
     },
     {
       "path": "docs/PROVENANCE.md",
@@ -1419,7 +1471,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "c7ed808332d232ac04604273372cb9aa4a8727d650ad6d0075c52678c8d1a329"
+      "sha256": "952f0b1fa1357298b2c58e5b4f4b55fb03ee873653f32994ab8df4d9a92e55f5"
     },
     {
       "path": "release/capability-profile.json",

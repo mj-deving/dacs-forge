@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "subject": "DACS Forge v0.2 live Demos profile foundation",
+  "baseCommit": "ccd85fb8437ea26e9384ff67bb9bc5c2d46333f5",
+  "reviewContract": "bounded",
+  "reviewer": {
+    "engine": "claude",
+    "model": "claude-fable-5",
+    "thinking": "high",
+    "fallbackModels": ["claude-opus-4-8", "claude-sonnet-4-6"]
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "findings": { "p1": 1, "p2": 1, "p3": 2 },
+      "disposition": "all accepted and corrected",
+      "promptSha256": "138ed872f7e926dd4639b18643bc5f7606ded264954a581d83f76907e97d68e5",
+      "rawSha256": "1a9219153e88f0eb201d22d38e941283e5a8d7ad3478f290d36b33deccc06b26",
+      "reviewJsonSha256": "ee4a393818e0b919b85ec9e1e766e9ffd7ec11a74b00fcb6280dd756f53f931e",
+      "dispositionSha256": "ab9c025441fa4a34bfaed30bbf1cccf1ba01e58b1fda2877d42c849c41141731"
+    },
+    {
+      "round": 2,
+      "findings": { "p3": 1 },
+      "disposition": "accepted and corrected because persistence/recovery boundary",
+      "promptSha256": "2c8068f2d796f2161cc6a1d9fd89b0b912acc0a84d3dc06bb8d87c1fcc36504b",
+      "rawSha256": "942a789c42cc11bee11a20483eebdf4eb7e133addcff3e3d9a714049edcc76b7",
+      "reviewJsonSha256": "b5619a8436fdab89c6ebaf84e287e544277746e2ad5ea4be0ef3c811aae27739",
+      "dispositionSha256": "867ac65a95372c339a99d0b98f9ca97a1629f8cb7c1ebab1c27093b883260ddb"
+    },
+    {
+      "round": 3,
+      "findings": {},
+      "disposition": "clean confirmation; loop stopped",
+      "promptSha256": "c770d25ab4cc04a05e3a722d73fe95f4c9f7b7e139c03b6504b15657306bf94b",
+      "rawSha256": "dfa6e4473f0b9eb79e7966f9d7f1ccdb9c510480196dacd6e8f5fd9a516c4a30",
+      "reviewJsonSha256": "5407f243679ef06f829a81cba5d620afb416c84c86fc6c5db032244d05f3d04f",
+      "dispositionSha256": "d3ba4d639dc96cc1777718de4d42a9c30d1204d3152ac1bd2630c85699823fbe"
+    }
+  ],
+  "stoppingCondition": "no accepted P0/P1, protected-claim-bypassing P2, or persistence/recovery P3",
+  "status": "clean",
+  "liveEffects": false
+}

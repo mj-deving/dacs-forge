@@ -34,6 +34,22 @@ const FULL_HANDSHAKE: Driver = Object.freeze({
 });
 
 const DRIVER_OVERRIDES: Readonly<Record<string, Driver>> = Object.freeze({
+  "live-effect.prepare": {
+    file: "test/live/effect-recovery.test.ts",
+    pattern: "before-commit restart reconciles",
+  },
+  "live-effect.mark-submitting": {
+    file: "test/live/effect-recovery.test.ts",
+    pattern: "before-commit restart reconciles",
+  },
+  "live-effect.observe": {
+    file: "test/live/effect-recovery.test.ts",
+    pattern: "before-commit restart reconciles",
+  },
+  "live-effect.commit": {
+    file: "test/live/effect-recovery.test.ts",
+    pattern: "before-commit restart reconciles",
+  },
   "party-authority.cleanup-challenges": {
     file: "test/api/capability-proof-of-possession.test.ts",
     pattern: "bootstraps digest-only custody",

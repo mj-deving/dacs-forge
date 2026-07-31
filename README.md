@@ -51,6 +51,11 @@ Two tests prove different things:
 Read the [architecture](docs/ARCHITECTURE.md) for the component and artifact flow,
 then use [Forking DACS Forge](docs/FORKING.md) to build a first service.
 
+The unreleased v0.2 branch also contains a locally qualified, opt-in
+[live-testnet profile foundation](docs/LIVE-TESTNET-PROFILE.md). It adds durable
+effect intent/recovery and injected Demos/Community adapter boundaries; it does
+not itself establish any live anchor, registration, payment, or deployment.
+
 ## Quickstart
 
 Requires Bun `1.3.9` on Linux.

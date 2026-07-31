@@ -3,7 +3,7 @@ import { resolve } from "node:path";
 import manifest from "../../release/release-manifest.json";
 import profile from "../../release/capability-profile.json";
 import compatibility from "../../release/compatibility.json";
-import { verifyReleaseManifest } from "../../scripts/verify-release-manifest.ts";
+import { rigInventory, verifyReleaseManifest } from "../../scripts/verify-release-manifest.ts";
 
 const ROOT = resolve(import.meta.dir, "../..");
 
@@ -17,6 +17,10 @@ describe("Product Seal release manifest", () => {
       dacsCommit: "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091",
       communityCommit: "634caef4b952838281c8c602402e657d41074703",
     });
+    expect(rigInventory(ROOT, "v0.1.1")).toBe(
+      (manifest.rig.definition as { inventorySha256: string }).inventorySha256,
+    );
+    expect(rigInventory(ROOT)).not.toBe(rigInventory(ROOT, "v0.1.1"));
   });
 
   test("rejects support, source, predecessor, pin, digest, rig, and distribution substitution", () => {

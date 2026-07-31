@@ -113,6 +113,12 @@ agree are transactional. Restart checks reopen the database and repeat resolutio
 canonical-byte, hash, signature, authority, and binding verification instead of
 trusting an earlier in-memory result.
 
+The unreleased v0.2 live-profile foundation adds an immutable `live_effect_intents`
+journal. Anchor, registration, and payment adapters receive a persisted effect key
+and canonical payload; restart reconciliation must resolve that key before retry.
+The default fixture profile does not load these adapters and remains zero-effect.
+See [Live testnet profile](LIVE-TESTNET-PROFILE.md).
+
 ## Listing and Directory path
 
 The local `ListingLifecycle` verifies and stores immutable signed Listing versions

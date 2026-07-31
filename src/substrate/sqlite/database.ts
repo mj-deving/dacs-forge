@@ -11,7 +11,7 @@ import { dirname, join, parse, resolve } from "node:path";
 
 export type DacsDatabase = Database;
 
-const SCHEMA_VERSION = 24;
+const SCHEMA_VERSION = 25;
 const WAL_RETRY_ATTEMPTS = 20;
 const WAL_RETRY_DELAY_MS = 25;
 const retrySignal = new Int32Array(new SharedArrayBuffer(4));
@@ -218,6 +218,26 @@ const PARTY_CAPABILITY_PREPARATIONS_SCHEMA = `
     audience TEXT NOT NULL,
     created_at_ms INTEGER NOT NULL CHECK (created_at_ms >= 0),
     expires_at_ms INTEGER NOT NULL CHECK (expires_at_ms > created_at_ms)
+  ) STRICT
+`;
+
+const LIVE_EFFECT_INTENTS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS live_effect_intents (
+    effect_key TEXT PRIMARY KEY NOT NULL,
+    effect_kind TEXT NOT NULL CHECK (effect_kind IN ('anchor', 'directory-register', 'payment')),
+    payload_hash TEXT NOT NULL CHECK (
+      length(payload_hash) = 64 AND payload_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    payload_json TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (state IN ('prepared', 'submitting', 'observed', 'committed')),
+    external_ref TEXT,
+    result_json TEXT,
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    CHECK (
+      (state IN ('prepared', 'submitting') AND external_ref IS NULL AND result_json IS NULL)
+      OR (state IN ('observed', 'committed') AND external_ref IS NOT NULL AND result_json IS NOT NULL)
+    )
   ) STRICT
 `;
 
@@ -1001,6 +1021,7 @@ function migrate(database: Database): void {
       database.run(PARTY_AUTHORITY_AMENDMENTS_SCHEMA);
     }
     if (version < 24) database.run(PARTY_CAPABILITY_PREPARATIONS_SCHEMA);
+    if (version < 25) database.run(LIVE_EFFECT_INTENTS_SCHEMA);
     database.run(`PRAGMA user_version = ${SCHEMA_VERSION}`);
   });
   apply.exclusive();

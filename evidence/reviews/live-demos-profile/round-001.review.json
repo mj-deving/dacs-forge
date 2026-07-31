@@ -1,0 +1,51 @@
+{
+  "findings": [
+    {
+      "title": "Directory effect payload embeds nowMs-derived catalogObservedAt, wedging restart recovery of the registration effect",
+      "body": "`projectDirectorySummary` sets `catalogObservedAt: observedAt` (= `input.nowMs`) inside the projection, and that projection becomes part of the immutable payload for effect key `directory-register:<listingId>:v<version>`. `LiveEffectStore.prepare` canonicalizes the payload and rejects any re-preparation of an existing effect key whose payload bytes differ (\"Effect key is already bound to a different immutable intent\") \u2014 and it performs this check before the runner's early return for committed intents. Therefore any re-invocation of `publishListingThroughLiveProfile` with a different `nowMs` \u2014 which is exactly what a restart-after-crash retry looks like, since `nowMs` is caller wall-clock time also used for listing expiry checks \u2014 deterministically throws at the directory step. An interrupted publication (crash between anchor commit and directory commit, or even after a fully committed directory registration) can never be completed or re-observed through this API without manually deleting the journal row. This directly defeats the protected ISC-70 claim (\"durable intent-before-effect restart recovery\"): the anchor effect payload (`logicalAddress` + canonical bytes) is stable across retries, but the directory payload is not. The existing tests miss this because `test/live/demos-listing.test.ts` publishes exactly once with a fixed `FIXTURE_NOW_MS`, and `test/live/effect-recovery.test.ts` drives the runner with a payload that is identical across restarts. Fix: derive the directory effect payload only from restart-stable inputs (drop `catalogObservedAt` from the keyed payload, or move it out of `expectedProjection` into the observation), and add a recovery test that re-runs the publication with a different `nowMs`.",
+      "priority": "P1",
+      "confidence": 0.7,
+      "category": "bug",
+      "code_location": {
+        "file_path": "src/live/listing-publication.ts",
+        "line": 158
+      }
+    },
+    {
+      "title": "Effect runner ignores durable 'observed' state and resubmits whenever reconcile reports absent, risking duplicate submissions",
+      "body": "`runRecoverableEffect` persists no marker between `prepare` and `observe`: after a restart it consults only `adapter.reconcile`, and if that returns `absent` it submits again \u2014 even when the journal row is already in state `observed` with a durable `external_ref`/`result_json` proving the effect was previously submitted and observed. Reconciliation absence is a realistic transient for the Community Directory adapter: `submit` returns a `queued` contract (registration is asynchronous), and `reconcile` reads `GET .../listings?limit=100`, so a queued-but-not-yet-projected registration (or one beyond the first 100 results for that `primaryClaim`) reports `absent`. Concrete failing path within the contract's in-scope threats (restart-caused duplicate effects, adapter/network responses, interruption timing): submit POST register \u2192 crash before the post-submit reconcile observes the projection \u2192 restart \u2192 reconcile absent \u2192 second POST register. If propagation lags persist, each retry emits another POST and then throws \"Submitted effect is not yet observable; refusing to resubmit\", so the effect also never commits. The docs delegate this to \"adapter submissions must be idempotent under the effect key\", but the Community POST carries no idempotency key, so the no-duplicate-externally-observable-effect claim (ISC-70) rests on an unverified assumption about the remote endpoint. Minimal fix: when the persisted intent is already `observed`, fail closed (or use the stored observation) instead of entering the submit branch; alternatively persist a submitted marker before `adapter.submit`. The interruption tests don't cover this because their in-memory `external` map survives across the simulated restart, so reconcile never reports absent after a submit.",
+      "priority": "P2",
+      "confidence": 0.55,
+      "category": "bug",
+      "code_location": {
+        "file_path": "src/live/effect-runner.ts",
+        "line": 46
+      }
+    },
+    {
+      "title": "Import-boundary verifier never scans src/index.ts yet reports the package entry point clean",
+      "body": "`scripts/verify-live-import-boundary.ts` scans only the directories `src/core`, `src/consumer`, `src/live`, and `src/adapters` for the SDK specifier, then prints \"core/consumer/package clean\". The public package entry point `src/index.ts` \u2014 modified in this very diff to export the live modules \u2014 is a file at the `src/` root and is never read, and other `src/` subtrees (protocol, substrate, lifecycle, cli) are also unscanned. `docs/LIVE-TESTNET-PROFILE.md` explicitly claims \"Forge Core, the producer-independent consumer, and the public package entry point do not import `dacs-sdk`\", and \"import-boundary drift\" is an in-scope threat, so the verifier's success message overstates what it checked: an accidental future SDK import added to `src/index.ts` (or a substrate/lifecycle module reachable from the entry point) would pass this gate. Minimal fix: include `src/index.ts` (or the full `src/` tree minus an explicit adapter allow-list) in the scan, or narrow the doc/console claim to the directories actually verified.",
+      "priority": "P3",
+      "confidence": 0.7,
+      "category": "test_gap",
+      "code_location": {
+        "file_path": "scripts/verify-live-import-boundary.ts",
+        "line": 7
+      }
+    },
+    {
+      "title": "Admitted profile's allowedEffects and maxAttempts are validated but never enforced by any execution path",
+      "body": "`admitExecutionProfile` carefully validates `effects.allow` and `maxAttempts: 1`, and the docs describe admission as binding \"an explicit testnet-only effect allow-list with one submission attempt\". However, nothing in this diff consumes the admitted profile: `publishListingThroughLiveProfile` and `runRecoverableEffect` accept a store and adapters directly, with no `AdmittedExecutionProfile` parameter, no check that the effect `kind` is in `allowedEffects`, and no attempt counting anywhere (the runner will re-submit on every restart where reconcile reports absent, unbounded). The allow-list and attempt bound are therefore documentation-only. This is arguably acceptable for a bounded foundation where wiring comes later, but as written the admission contract does not constrain effect execution at all, so the doc's admission section overstates what the code enforces. Minimal fix: either thread the admitted profile into `runRecoverableEffect` (reject kinds outside `allowedEffects`) or soften the documented admission claim to say the allow-list is configuration validation only, not yet an execution gate.",
+      "priority": "P3",
+      "confidence": 0.45,
+      "category": "maintainability",
+      "code_location": {
+        "file_path": "src/live/profile.ts",
+        "line": 30
+      }
+    }
+  ],
+  "overall_correctness": "patch is incorrect",
+  "overall_explanation": "The live-profile foundation is largely well built: the effect journal is immutable and fail-closed, the SQLite v25 migration and atomic-write registry updates are consistent, the Demos adapter binds owner and exact SDK commit, listing bytes are independently read back and re-verified before Directory projection, and default commands stay zero-effect. However, the Directory registration effect payload includes `catalogObservedAt` derived from the caller's `nowMs`. Because `LiveEffectStore.prepare` rejects any payload-byte change for an existing effect key (before the committed-state early return), every restart-retry of `publishListingThroughLiveProfile` with a fresh timestamp throws \\\"Effect key is already bound to a different immutable intent\\\" at the directory step, so an interrupted publication can never be recovered through the public API. That deterministically breaks the protected ISC-70 restart-recovery claim, and the test suite misses it because all recovery tests reuse byte-identical payloads across the simulated restart. Secondary issues: the runner ignores a durable `observed` row and resubmits whenever post-restart reconciliation reports absent (a realistic transient for the queued, paginated Community catalog), which risks duplicate POST registrations; the import-boundary verifier never scans `src/index.ts` despite claiming the package entry point clean; and the admitted profile's allow-list/maxAttempts are validated but unenforced. The P1 payload-instability defect must be fixed before this bounded target can land as claimed.",
+  "overall_confidence": 0.65
+}

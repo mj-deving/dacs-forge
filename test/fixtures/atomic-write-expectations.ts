@@ -61,6 +61,10 @@ export const EXPECTED_ATOMIC_WRITE_SITES: Readonly<Record<string, ExpectedAtomic
   "listing.publish-revocation": expected("listing-revocation", "ListingStore.revoke", "immediate", "listing-store.ts:164"),
   "listing.withdraw-discovery": expected("listing-revocation", "ListingStore.revoke", "immediate", "listing-store.ts:171"),
   "listing.pin-session": expected("listing-session-pin", "ListingStore.pinSession", "immediate", "listing-store.ts:238"),
+  "live-effect.prepare": expected("live-effect-intent", "LiveEffectStore.prepare", "autocommit", "effect-store.ts:46"),
+  "live-effect.mark-submitting": expected("live-effect-submission-attempt", "LiveEffectStore.markSubmitting", "autocommit", "effect-store.ts:82"),
+  "live-effect.observe": expected("live-effect-observation", "LiveEffectStore.observe", "autocommit", "effect-store.ts:68"),
+  "live-effect.commit": expected("live-effect-commit", "LiveEffectStore.commit", "autocommit", "effect-store.ts:95"),
   "authority.put-listing": expected("agreement-commitment", "FixtureAuthorityStore.putListingWithinTransaction", "immediate", "fixture-authority-store.ts:105"),
   "authority.put-listing-verification": expected("agreement-commitment", "FixtureAuthorityStore.putListingWithinTransaction", "immediate", "fixture-authority-store.ts:124"),
   "authority.put-commitment-identity": expected(

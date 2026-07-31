@@ -371,7 +371,7 @@ function hasCurrentSchemaVersion(database: Database): boolean {
     const row = (originalQuery.call(database, "PRAGMA user_version") as {
       get(): { readonly user_version: bigint | number } | null;
     }).get();
-    return row !== null && Number(row.user_version) === 24;
+    return row !== null && Number(row.user_version) === 25;
   } finally {
     schemaVersionReadDepth -= 1;
   }
@@ -396,7 +396,7 @@ function beforeMutation(database: Database, sql: string, api: string): number {
   if (probeApi === undefined) migrationCallSiteLines.set(index, migrationCallSiteLine());
   const transactions = transactionContexts.get(database) ?? [];
   const transactionMode = transactions[0]?.mode ?? "autocommit";
-  if (/^pragma user_version = 24$/i.test(sql.replace(/\s+/g, " ").trim()) && transactions.length > 0) {
+  if (/^pragma user_version = 25$/i.test(sql.replace(/\s+/g, " ").trim()) && transactions.length > 0) {
     transactions.at(-1)!.sawMigrationCompletion = true;
   }
   if (mode === "observe") {

@@ -64,6 +64,10 @@ const SITE_ROWS = [
   ["listing.publish-revocation", "listing-revocation", "insert", "ListingStore.revoke", "src/substrate/sqlite/listing-store.ts", "fixture_listing_revocations"],
   ["listing.withdraw-discovery", "listing-revocation", "delete", "ListingStore.revoke", "src/substrate/sqlite/listing-store.ts", "fixture_listing_discovery"],
   ["listing.pin-session", "listing-session-pin", "insert", "ListingStore.pinSession", "src/substrate/sqlite/listing-store.ts", "fixture_session_listing_pins"],
+  ["live-effect.prepare", "live-effect-intent", "insert", "LiveEffectStore.prepare", "src/live/effect-store.ts", "live_effect_intents"],
+  ["live-effect.mark-submitting", "live-effect-submission-attempt", "update", "LiveEffectStore.markSubmitting", "src/live/effect-store.ts", "live_effect_intents"],
+  ["live-effect.observe", "live-effect-observation", "update", "LiveEffectStore.observe", "src/live/effect-store.ts", "live_effect_intents"],
+  ["live-effect.commit", "live-effect-commit", "update", "LiveEffectStore.commit", "src/live/effect-store.ts", "live_effect_intents"],
   ["authority.put-listing", "agreement-commitment", "insert", "FixtureAuthorityStore.putListingWithinTransaction", "src/substrate/sqlite/fixture-authority-store.ts", "fixture_listing_authorities"],
   ["authority.put-listing-verification", "agreement-commitment", "insert", "FixtureAuthorityStore.putListingWithinTransaction", "src/substrate/sqlite/fixture-authority-store.ts", "fixture_listing_verification_authorities"],
   ["authority.put-commitment-identity", "agreement-commitment", "insert", "FixtureAuthorityStore.#putIdentityWithinTransaction", "src/substrate/sqlite/fixture-authority-store.ts", "fixture_identity_authorities"],
@@ -104,6 +108,10 @@ const SITE_ROWS = [
 ])[];
 
 const AUTOCOMMIT_SITE_IDS: ReadonlySet<string> = new Set([
+  "live-effect.prepare",
+  "live-effect.mark-submitting",
+  "live-effect.observe",
+  "live-effect.commit",
   "lifecycle.abort",
   "lifecycle.recover-settlement",
   "lifecycle.resume-paused",

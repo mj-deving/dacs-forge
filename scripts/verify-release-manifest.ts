@@ -56,14 +56,33 @@ function git(root: string, args: readonly string[]): string {
   return result.stdout.trim();
 }
 
-export function rigInventory(root: string): string {
-  const tracked = git(root, ["ls-files", "--cached", "--others", "--exclude-standard", "-z"])
-    .split("\0").filter((path) => path.length > 0 && existsSync(resolve(root, path))).filter((path) =>
-    path === ".tool-versions" || path === "package.json" || path === "bun.lock" || path === "tsconfig.json"
-    || path === "Dockerfile" || path === "compose.yaml" || path.startsWith(".github/workflows/")
-    || path.startsWith("scripts/") || path.startsWith("test/") || path.startsWith("tools/"));
+export function rigInventory(root: string, historicalTag?: string): string {
+  const tagCommit = historicalTag === undefined ? null : resolveTag(root, historicalTag);
+  const tracked = (tagCommit === null
+    ? git(root, ["ls-files", "--cached", "--others", "--exclude-standard", "-z"])
+      .split("\0").filter((path) => path.length > 0 && existsSync(resolve(root, path)))
+    : git(root, ["ls-tree", "-r", "--name-only", "-z", tagCommit]).split("\0")
+      .filter((path) => path.length > 0)).filter((path) =>
+      path === ".tool-versions" || path === "package.json" || path === "bun.lock" || path === "tsconfig.json"
+      || path === "Dockerfile" || path === "compose.yaml" || path.startsWith(".github/workflows/")
+      || path.startsWith("scripts/") || path.startsWith("test/") || path.startsWith("tools/"));
   tracked.sort();
-  return sha256(tracked.map((path) => `${path}\0${sha256(readFileSync(resolve(root, path)))}`).join("\n"));
+  return sha256(tracked.map((path) => `${path}\0${sha256(tagCommit === null
+    ? readFileSync(resolve(root, path)) : gitBytes(root, tagCommit, path))}`).join("\n"));
+}
+
+function resolveTag(root: string, tag: string): string | null {
+  const result = spawnSync("git", ["rev-parse", "--verify", `refs/tags/${tag}^{commit}`], {
+    cwd: root,
+    encoding: "utf8",
+  });
+  return result.status === 0 && /^[0-9a-f]{40}\n?$/.test(result.stdout) ? result.stdout.trim() : null;
+}
+
+function gitBytes(root: string, commit: string, path: string): Uint8Array {
+  const result = spawnSync("git", ["show", `${commit}:${path}`], { cwd: root });
+  if (result.status !== 0) throw new Error(`release manifest check failed: tagged file ${path}`);
+  return result.stdout;
 }
 
 export function verifyReleaseManifest(root: string, manifest: unknown, profile: unknown, compatibility: unknown): Readonly<JsonObject> {
@@ -160,7 +179,7 @@ export function verifyReleaseManifest(root: string, manifest: unknown, profile: 
   const rig = object(value["rig"], "rig");
   if (JSON.stringify(rig["commands"]) !== JSON.stringify(RIG_COMMANDS)) throw new Error("release rig is incomplete");
   const definition = object(rig["definition"], "rig definition");
-  if (definition["inventorySha256"] !== rigInventory(root)) throw new Error("release rig inventory digest mismatch");
+  if (definition["inventorySha256"] !== rigInventory(root, TAG)) throw new Error("release rig inventory digest mismatch");
   const evidence = object(rig["qualificationEvidence"], "qualification evidence");
   if (evidence["authority"] !== "external-product-seal-qualification-record" || evidence["required"] !== true
     || evidence["embedded"] !== true || evidence["status"] !== "qualified-public-evidence"
