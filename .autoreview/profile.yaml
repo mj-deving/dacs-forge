@@ -1,0 +1,28 @@
+schema_version: 1
+extends: canonical-autoreview-routing-v1
+project: dacs-forge-public
+maturity: published-reference-implementation
+
+deterministic_only:
+  - exact release pin, digest, artifact inventory, and byte-equality checks
+  - generated metadata with an authoritative deterministic validator
+
+load_bearing:
+  - DACS protocol semantics and artifact graph integrity
+  - hashes, signatures, identities, authorization, and secret boundaries
+  - persistence, replay, recovery, idempotency, and concurrency
+  - public API, extension boundary, migration, release, and qualification claims
+  - live adapters, testnet value movement, registration, and deployment
+
+required_gates:
+  - owning Forge ISA and evidence-backed work-item contract
+  - focused regression or mutation falsifier
+  - relevant full suite and release rig
+  - git diff --check
+
+evidence:
+  durable_when:
+    - release, migration, or public qualification claim
+    - protocol, security, persistence, or independent-consumer qualification
+    - live adapter or testnet effect
+  default_root: evidence/reviews
