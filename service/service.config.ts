@@ -4,13 +4,13 @@ import serviceDescriptor from "./fixtures/service-descriptor.json";
 import { defineServiceContract } from "../src/service/contract.ts";
 import {
   handler,
-  type ReferenceTransformInput,
-  type ReferenceTransformOutput,
+  type AttestedPublicDataInput,
+  type AttestedPublicDataOutput,
 } from "./handler.ts";
 
 export const serviceContract = defineServiceContract<
-  ReferenceTransformInput,
-  ReferenceTransformOutput
+  AttestedPublicDataInput,
+  AttestedPublicDataOutput
 >({
   service: serviceDescriptor,
   input: {
