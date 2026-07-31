@@ -173,6 +173,10 @@ describe("self-custodied external buyer harness", () => {
     signature["value"] = originalValue;
     signature["extra"] = "malleable";
     expect(verifyBuyerSessionAuthorization(canonicalize(tamperedSignature), expected)).toBe(false);
+    await expect(runner.run({
+      authorizationCanonicalJson: authorization.canonicalJson,
+      request: Object.freeze({ ...request, input: BASIC_FIXTURE.alternateInput }),
+    })).rejects.toThrow("Service contract, input, or seed does not match session admission");
     expect(handlerCalls).toBe(0);
     expect((await runner.run({
       authorizationCanonicalJson: authorization.canonicalJson,
