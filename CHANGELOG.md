@@ -5,6 +5,11 @@ All notable changes to DACS Forge will be recorded here.
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and release versions follow [Semantic Versioning](https://semver.org/).
 
+## [0.1.1] - 2026-07-31
+
+- Publish the exact standalone consumer and Counterparty Evidence reference-fork histories, qualification reports, negative-test boundaries, acquisition locators, and digests; make the manifest, compatibility record, capability profile, and release prose agree through an executable coherence verifier.
+- Preserve the v0.1.0 no-spend runtime, persisted artifacts, service-extension contract, DACS v0.4 pin, and unsupported live-capability boundary; require immutable GitHub release attestation while transparently deferring a cryptographic Git tag signature until a maintainer signing identity and consumer trust policy exist.
+
 ## [0.1.0] - 2026-07-30
 
 - Ship the source-only `0.1.0` Product Seal contract with exact Preview.2,

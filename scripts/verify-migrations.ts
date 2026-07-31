@@ -8,8 +8,9 @@ type JsonObject = Record<string, unknown>;
 
 const PREVIEW_COMMIT = "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9";
 const DACS_COMMIT = "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091";
-const PREVIEW_TAG_OBJECT = "0416859c0788e58a66eb2f3a175e53c56ac3f2b3";
-const PREVIEW_RELEASE_ID = 362350535;
+const PRODUCT_SEAL_COMMIT = "81507c792c158a5782ea67e6c43c873d49356903";
+const PRODUCT_SEAL_TAG_OBJECT = "7fe4d4e26191725cf3b98f2b28f2729cc4226ec5";
+const PRODUCT_SEAL_RELEASE_ID = 362626525;
 const EXACT_PATHS = ["service/handler.ts", "service/input.schema.json", "service/output.schema.json", "service/service.config.ts"];
 const PREFIX = "service/fixtures/";
 const SHA256 = /^[0-9a-f]{64}$/;
@@ -42,16 +43,22 @@ export function gitMergeTreeClean(repository: string, left: string, right: strin
 
 export function verifyMigrationDisposition(value: unknown): Readonly<JsonObject> {
   const disposition = object(value, "compatibility disposition");
-  if (disposition["schema"] !== "dacs-forge-compatibility-disposition/v1" || disposition["version"] !== "0.1.0"
-    || disposition["status"] !== "pending-external-qualification") throw new Error("compatibility identity is invalid");
+  if (disposition["schema"] !== "dacs-forge-compatibility-disposition/v1" || disposition["version"] !== "0.1.1"
+    || disposition["status"] !== "qualified-public-evidence") throw new Error("compatibility identity is invalid");
   const predecessors = disposition["directPredecessors"];
   if (!Array.isArray(predecessors) || predecessors.length !== 1) throw new Error("exactly one direct predecessor is required");
   const predecessor = object(predecessors[0], "direct predecessor");
-  if (predecessor["version"] !== "0.1.0-preview.2" || predecessor["commit"] !== PREVIEW_COMMIT
-    || predecessor["tag"] !== "v0.1.0-preview.2" || predecessor["tagObject"] !== PREVIEW_TAG_OBJECT
-    || predecessor["releaseId"] !== PREVIEW_RELEASE_ID
-    || predecessor["supported"] !== false || predecessor["immutable"] !== true
-    || predecessor["path"] !== "shared-git-history-extension-only") throw new Error("direct predecessor is invalid");
+  if (predecessor["version"] !== "0.1.0" || predecessor["commit"] !== PRODUCT_SEAL_COMMIT
+    || predecessor["tag"] !== "v0.1.0" || predecessor["tagObject"] !== PRODUCT_SEAL_TAG_OBJECT
+    || predecessor["releaseId"] !== PRODUCT_SEAL_RELEASE_ID
+    || predecessor["supported"] !== true || predecessor["immutable"] !== true
+    || predecessor["path"] !== "metadata-only-patch-no-runtime-or-persisted-artifact-change") {
+    throw new Error("direct predecessor is invalid");
+  }
+  const preview = object(disposition["originatingFinalPreview"], "originating final Preview");
+  if (preview["version"] !== "0.1.0-preview.2" || preview["commit"] !== PREVIEW_COMMIT
+    || preview["tag"] !== "v0.1.0-preview.2" || preview["supported"] !== false
+    || preview["immutable"] !== true) throw new Error("originating final Preview is invalid");
   const boundary = object(disposition["extensionBoundary"], "extension boundary");
   if (JSON.stringify(boundary["exactPaths"]) !== JSON.stringify(EXACT_PATHS)
     || JSON.stringify(boundary["prefixes"]) !== JSON.stringify([PREFIX])) throw new Error("extension boundary is invalid");
@@ -66,9 +73,10 @@ export function verifyMigrationDisposition(value: unknown): Readonly<JsonObject>
   }
   const evidence = object(disposition["qualificationEvidence"], "qualification evidence");
   if (evidence["authority"] !== "external-product-seal-qualification-record" || evidence["required"] !== true
-    || evidence["embedded"] !== false) throw new Error("qualification authority is invalid");
-  return Object.freeze({ schema: "dacs-forge-migration-disposition-verification/v1", predecessor: PREVIEW_COMMIT,
-    status: "pending-external-qualification" });
+    || evidence["embedded"] !== true || evidence["status"] !== "qualified-public-evidence"
+    || evidence["index"] !== "release/qualification/index.json") throw new Error("qualification authority is invalid");
+  return Object.freeze({ schema: "dacs-forge-migration-disposition-verification/v1", predecessor: PRODUCT_SEAL_COMMIT,
+    originatingFinalPreview: PREVIEW_COMMIT, status: "qualified-public-evidence" });
 }
 
 export function verifyMigrationEvidence(

@@ -1,6 +1,6 @@
 {
   "name": "dacs-forge",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Deterministic no-spend DACS service and conformance substrate for extension-only service implementations.",
   "private": true,
   "license": "MIT",
@@ -40,12 +40,13 @@
     "verify:container": "bun run ./scripts/verify-container-fixture.ts",
     "verify:dockerfile-bases": "bun run ./scripts/lint-dockerfile-bases.ts",
     "verify:release-manifest": "bun run ./scripts/verify-release-manifest.ts",
+    "verify:public-qualification": "bun run ./scripts/verify-public-qualification.ts",
     "verify:migration-disposition": "bun run ./scripts/verify-migrations.ts --contract-only",
     "verify:migrations": "bun run ./scripts/verify-migrations.ts",
     "verify:governance": "bun run ./scripts/verify-governance.ts",
     "verify:public-export": "bun run ./scripts/verify-public-export.ts",
-    "verify:product-seal-candidate": "bun run verify:public-export && bun run verify:release-manifest && bun run verify:migration-disposition && bun run verify:governance && bun run verify:provenance && bun run typecheck && bun test --timeout 10000 && bun run build && bun run mutation:calibrate && bun run verify:container",
-    "verify:product-seal-fork": "bun run verify:release-manifest && bun run verify:migration-disposition && bun run verify:governance && bun run verify:provenance && bun run typecheck && bun test --timeout 10000 && bun run build && bun run mutation:calibrate && bun run verify:container",
+    "verify:product-seal-candidate": "bun run verify:public-export && bun run verify:release-manifest && bun run verify:public-qualification && bun run verify:migration-disposition && bun run verify:governance && bun run verify:provenance && bun run typecheck && bun test --timeout 10000 && bun run build && bun run mutation:calibrate && bun run verify:container",
+    "verify:product-seal-fork": "bun run verify:release-manifest && bun run verify:public-qualification && bun run verify:migration-disposition && bun run verify:governance && bun run verify:provenance && bun run typecheck && bun test --timeout 10000 && bun run build && bun run mutation:calibrate && bun run verify:container",
     "verify:provenance": "bun tools/verify-source-provenance.ts"
   },
   "devDependencies": {

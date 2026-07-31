@@ -63,6 +63,12 @@ claim activate only after the exact annotated tag, immutable GitHub release,
 attestation, and public clone readback succeed. Candidate wording is operational
 state, not a second public maturity taxonomy.
 
+`v0.1.1` is a source-only evidence correction. It preserves v0.1.0 runtime,
+persisted-artifact, extension, and capability semantics while making the public
+consumer and reference-fork qualification directly acquirable and digest-bound.
+Its direct predecessor is immutable supported v0.1.0; the originating Preview.2
+edge remains recorded as historical first-seal authority.
+
 ## Fork and update contract
 
 The supported path is a Git fork or clone retaining shared history and an
@@ -97,9 +103,13 @@ Every supported release binds:
 - reviewed public provenance manifest;
 - MIT license, security-reporting path, contribution boundary, and no-endorsement statement.
 
-A signed annotated tag and artifact attestation are desirable. They become
+A cryptographically signed annotated tag and artifact attestation are desirable. They become
 mandatory if Forge distributes executable packages or images, or when a concrete
 consumer trust model requires them.
+
+For v0.1.1 the tag is annotated but not claimed as cryptographically signed:
+no maintainer signing identity and consumer trust policy are configured. The
+immutable GitHub release and its GitHub artifact attestation remain mandatory.
 
 Skipped, failed, unavailable, or indeterminate required checks block a supported
 release. Evidence from another commit, tag, manifest, or capability profile does

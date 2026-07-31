@@ -1,0 +1,54 @@
+{
+  "schema": "dacs-forge-independent-consumer-qualification/v1",
+  "version": "0.1.1",
+  "status": "qualified",
+  "consumer": {
+    "commit": "a8e307a34a143357dc3e74203854ad1fa9918027",
+    "tree": "bc565bd13012674fb20bcaf0d7932bcc52b319bc",
+    "asset": "dacs-forge-v0.1.1-independent-consumer.bundle",
+    "sha256": "d252a64f6a225be52a652b9b3cf21a30fb379de394d179d3d25b51646edf1b42",
+    "completeHistory": true
+  },
+  "inputGraph": {
+    "producerCommit": "ab24b97652d8bcafed5be14793637665300afb87",
+    "producerTree": "b862866558b0f72ea9f3227d1c80e1af07292ad3",
+    "asset": "dacs-forge-v0.1.1-independent-artifact-graph.json",
+    "sha256": "e78adb8110e235f1e70ac06b19e4110dd7467943d2eed2f833bbb6476d9ae9a7"
+  },
+  "releaseCompatibilityRun": {
+    "forgeSourceCommit": "81507c792c158a5782ea67e6c43c873d49356903",
+    "forgeVersion": "0.1.0",
+    "bunVersion": "1.3.9",
+    "tests": 32,
+    "assertions": 32,
+    "failures": 0,
+    "result": "pass"
+  },
+  "dependencyBoundary": {
+    "allowed": "the built public Forge entrypoint",
+    "forbidden": [
+      "Forge source modules",
+      "producer modules",
+      "lifecycle modules",
+      "fixtures",
+      "database",
+      "handler",
+      "service implementation"
+    ]
+  },
+  "negativeMatrix": [
+    "content and receipt-signature substitution",
+    "delivered-output and persisted-reference substitution",
+    "identity signature removal, wrong signer, duplicate identity, and non-canonical signature encoding",
+    "missing, duplicate, unreachable, wrong-kind, wrong-address, and mutated references",
+    "Vet, Delivery, payment, phase-plan, signed-scope, amount, and terminal-bundle substitution",
+    "unknown fields, duplicate records, and non-canonical JSON"
+  ],
+  "reproduction": [
+    "git clone dacs-forge-v0.1.1-independent-consumer.bundle consumer",
+    "git clone --branch v0.1.1 https://github.com/mj-deving/dacs-forge.git forge",
+    "cd forge && bun install --frozen-lockfile --ignore-scripts && bun run build",
+    "cd ../consumer && DACS_FORGE_PUBLIC_ENTRY=file://$PWD/../forge/dist/index.js DACS_FORGE_GRAPH_INPUT=$PWD/../dacs-forge-v0.1.1-independent-artifact-graph.json bun test ./consumer.test.js"
+  ],
+  "claimBoundary": "Producer-independent Forge product verification only; no normative DACS conformance, certification, external authority, registration, deployment, or live-payment claim."
+}

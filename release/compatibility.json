@@ -1,19 +1,26 @@
 {
   "schema": "dacs-forge-compatibility-disposition/v1",
-  "version": "0.1.0",
-  "status": "pending-external-qualification",
+  "version": "0.1.1",
+  "status": "qualified-public-evidence",
   "directPredecessors": [
     {
-      "version": "0.1.0-preview.2",
-      "tag": "v0.1.0-preview.2",
-      "commit": "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
-      "tagObject": "0416859c0788e58a66eb2f3a175e53c56ac3f2b3",
-      "releaseId": 362350535,
-      "supported": false,
+      "version": "0.1.0",
+      "tag": "v0.1.0",
+      "commit": "81507c792c158a5782ea67e6c43c873d49356903",
+      "tagObject": "7fe4d4e26191725cf3b98f2b28f2729cc4226ec5",
+      "releaseId": 362626525,
+      "supported": true,
       "immutable": true,
-      "path": "shared-git-history-extension-only"
+      "path": "metadata-only-patch-no-runtime-or-persisted-artifact-change"
     }
   ],
+  "originatingFinalPreview": {
+    "version": "0.1.0-preview.2",
+    "tag": "v0.1.0-preview.2",
+    "commit": "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
+    "immutable": true,
+    "supported": false
+  },
   "extensionBoundary": {
     "exactPaths": [
       "service/handler.ts",
@@ -39,6 +46,10 @@
   "qualificationEvidence": {
     "authority": "external-product-seal-qualification-record",
     "required": true,
-    "embedded": false
+    "embedded": true,
+    "status": "qualified-public-evidence",
+    "index": "release/qualification/index.json",
+    "consumerReport": "release/qualification/independent-consumer.json",
+    "referenceForkReport": "release/qualification/reference-fork.json"
   }
 }

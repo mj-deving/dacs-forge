@@ -8,12 +8,12 @@ import { verifyReleaseManifest } from "../../scripts/verify-release-manifest.ts"
 const ROOT = resolve(import.meta.dir, "../..");
 
 describe("Product Seal release manifest", () => {
-  test("binds the source-only release, sole Preview predecessor, pins, contracts, and complete rig", () => {
+  test("binds the source-only patch, v0.1.0 predecessor, pins, contracts, and complete rig", () => {
     expect(verifyReleaseManifest(ROOT, manifest, profile, compatibility)).toMatchObject({
       schema: "dacs-forge-release-manifest-verification/v1",
-      version: "0.1.0",
-      tag: "v0.1.0",
-      predecessor: "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
+      version: "0.1.1",
+      tag: "v0.1.1",
+      predecessor: "81507c792c158a5782ea67e6c43c873d49356903",
       dacsCommit: "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091",
       communityCommit: "634caef4b952838281c8c602402e657d41074703",
     });
@@ -33,7 +33,7 @@ describe("Product Seal release manifest", () => {
       (value) => { value["rig"].commands[0] = "true"; },
       (value) => { value["rig"].commands = []; },
       (value) => { value["rig"].definition.inventorySha256 = "0".repeat(64); },
-      (value) => { value["rig"].qualificationEvidence.embedded = true; },
+      (value) => { value["rig"].qualificationEvidence.embedded = false; },
       (value) => { value["distributedArtifacts"].push({ kind: "container-image" }); },
       (value) => { value["notDistributed"].package = false; },
       (value) => { value["claims"].certification = true; },

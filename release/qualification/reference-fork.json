@@ -1,0 +1,83 @@
+{
+  "schema": "dacs-forge-reference-fork-qualification/v1",
+  "version": "0.1.1",
+  "status": "qualified",
+  "product": "counterparty-evidence-agent",
+  "migration": {
+    "baseCommit": "81507c792c158a5782ea67e6c43c873d49356903",
+    "tipCommit": "e8b2f2cc2fd7e18dc222488866218d5d9b5e7212",
+    "tipTree": "954cf9a3efd1eb795e2fa1b47bbd1767ce1ac458",
+    "sourceAsset": "dacs-forge-v0.1.1-counterparty-reference.bundle",
+    "sourceSha256": "2bb5ee59bde9ec6d66438fac33a43edd03053f1c30a6ca8ad0d5a9d35c6cdd7c",
+    "completeHistory": true,
+    "sharedForgeHistory": true
+  },
+  "productAuthority": {
+    "commit": "863ff5b0bfecf1e40a7a84d02cf1021ffa2f5866",
+    "tree": "23d7424b14554db87d51daf76e593209d058a604",
+    "progress": "29/29",
+    "sourceAsset": "dacs-forge-v0.1.1-counterparty-authority.bundle",
+    "sourceSha256": "cb27e3ad6a2073e9c4ff00696709c1f6b6007e07ab558a86ff6ccd1874a2918c",
+    "completeHistory": true
+  },
+  "extensionBoundary": {
+    "changedPaths": [
+      "service/fixtures/basic.ts",
+      "service/fixtures/corpus.ts",
+      "service/fixtures/directory-supply.json",
+      "service/fixtures/product-origin.json",
+      "service/fixtures/service-descriptor.json",
+      "service/handler.ts",
+      "service/input.schema.json",
+      "service/output.schema.json",
+      "service/service.config.ts"
+    ],
+    "trustedRigModified": false
+  },
+  "boundedProductClaims": [
+    "fixture observations and source descriptors",
+    "observation timestamps and content hashes",
+    "source availability and ambiguity",
+    "explicit fixture-only, no-source-truth, no-KYB-or-compliance, and time-bounded limitations"
+  ],
+  "negativeTests": {
+    "source": "service/fixtures/basic.ts at the migration tip",
+    "invalidInputs": 6,
+    "covers": [
+      "missing subject",
+      "simultaneous entity name and identifier",
+      "empty source selection",
+      "duplicate source selection",
+      "unknown source",
+      "unsupported jurisdiction"
+    ],
+    "outputBoundary": "output schema requires bounded observations, descriptors, availability, ambiguity, and explicit limitations"
+  },
+  "rig": {
+    "definitionSha256": "d44ce140709e17a8b54deb4c14dc6b3aaaf4fe0953d384cba940cc3f826f4a90",
+    "dacsProfile": "v0.4",
+    "dacsCommit": "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091",
+    "baseInstall": "pass",
+    "forkInstall": "pass",
+    "baseDoctor": "pass",
+    "forkDoctor": "pass",
+    "baseRig": "pass",
+    "forkRig": "pass",
+    "qualification": "pass"
+  },
+  "reproduction": [
+    "git clone dacs-forge-v0.1.1-counterparty-reference.bundle counterparty-reference",
+    "git -C counterparty-reference verify-commit e8b2f2cc2fd7e18dc222488866218d5d9b5e7212 || true",
+    "git -C counterparty-reference diff --name-only 81507c792c158a5782ea67e6c43c873d49356903..e8b2f2cc2fd7e18dc222488866218d5d9b5e7212",
+    "cd counterparty-reference && bun install --frozen-lockfile --ignore-scripts && bun run verify:product-seal-fork"
+  ],
+  "effects": {
+    "registration": false,
+    "deployment": false,
+    "payment": false,
+    "transfer": false,
+    "spend": false,
+    "liveValue": false
+  },
+  "claimBoundary": "Bounded fixture-first reference fork only; no KYB certificate, source-truth, compliance, sanctions-clearance, registration, deployment, payment, certification, or endorsement claim."
+}

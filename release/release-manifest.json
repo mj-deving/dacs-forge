@@ -1,8 +1,8 @@
 {
   "schema": "dacs-forge-release-manifest/v1",
-  "version": "0.1.0",
-  "tag": "v0.1.0",
-  "releaseKind": "product-seal",
+  "version": "0.1.1",
+  "tag": "v0.1.1",
+  "releaseKind": "product-seal-patch",
   "repository": "https://github.com/mj-deving/dacs-forge",
   "support": {
     "status": "activates-on-immutable-release-readback",
@@ -10,16 +10,16 @@
   },
   "sourceBinding": {
     "kind": "containing-commit-via-annotated-tag",
-    "requiredRef": "refs/tags/v0.1.0",
+    "requiredRef": "refs/tags/v0.1.1",
     "candidateCommitAuthority": "annotated-tag-target-and-live-readback",
-    "historyBase": "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
+    "historyBase": "81507c792c158a5782ea67e6c43c873d49356903",
     "liveReadbackRequired": true
   },
   "mandatoryPredecessor": {
-    "version": "0.1.0-preview.2",
-    "tag": "v0.1.0-preview.2",
-    "commit": "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
-    "supported": false,
+    "version": "0.1.0",
+    "tag": "v0.1.0",
+    "commit": "81507c792c158a5782ea67e6c43c873d49356903",
+    "supported": true,
     "immutable": true
   },
   "pins": {
@@ -45,12 +45,17 @@
   "contracts": {
     "capabilityProfile": {
       "path": "release/capability-profile.json",
-      "sha256": "2763644ac57a1cccd9890deb7c01c14a5601ca13e536b6c51dcc0bd207e1f505"
+      "sha256": "d0cf282dc2a3c4cd458453b7f0be32d2a336dfd7bea5c094e2283cee7b87c4a9"
     },
     "compatibilityDisposition": {
       "path": "release/compatibility.json",
-      "sha256": "b26bfa71788880c04ca441d209784b3e590b7a67d129d37fdefc2fe448be3986"
+      "sha256": "76136eee66045202c2b29ddc9f2ccbba065a2af4cdb0a70a049ee726a0b596ba"
     },
+    "qualificationIndex": {
+      "path": "release/qualification/index.json",
+      "sha256": "6dc087207614b6d7c3c4c4488f5ca8e7bcb1fa53447b6b68dfb51d37fc1ad4ac"
+    },
+    "releaseNotes": "release/v0.1.1.md",
     "upgrading": "UPGRADING.md",
     "governance": "GOVERNANCE.md",
     "security": "SECURITY.md",
@@ -62,6 +67,7 @@
       "bun install --frozen-lockfile --ignore-scripts",
       "bun run verify:public-export",
       "bun run verify:release-manifest",
+      "bun run verify:public-qualification",
       "bun run verify:migrations -- --evidence <qualification-record.json> --repository <migrated-fork> --artifact-graph <artifact-graph.json> --prior-evidence <prior-evidence.json> --rig-evidence <rig-evidence.json> --consumer-report <consumer-report.json>",
       "bun run verify:directory-supply -- --repository <migrated-fork> --base <candidate-commit> --tip <migration-tip>",
       "bun run verify:fork -- --repository <migrated-fork> --base <candidate-commit> --tip <migration-tip>",
@@ -76,19 +82,20 @@
     ],
     "definition": {
       "selection": "tracked package, lock, compiler, workflow, container, scripts, tests, and tools excluding generated evidence",
-      "inventorySha256": "d44ce140709e17a8b54deb4c14dc6b3aaaf4fe0953d384cba940cc3f826f4a90"
+      "inventorySha256": "fb6d73ba608471459de951418c87f39ed98c4ebe89a2128fd22bbaec859e6a79"
     },
     "qualificationEvidence": {
       "authority": "external-product-seal-qualification-record",
       "required": true,
-      "embedded": false,
-      "prepublicationStatus": "pending"
+      "embedded": true,
+      "status": "qualified-public-evidence",
+      "index": "release/qualification/index.json"
     }
   },
   "distributedArtifacts": [
     {
       "kind": "git-source-tag",
-      "ref": "refs/tags/v0.1.0"
+      "ref": "refs/tags/v0.1.1"
     },
     {
       "kind": "github-generated-source-archive",
@@ -96,6 +103,10 @@
         "tar.gz",
         "zip"
       ]
+    },
+    {
+      "kind": "qualification-assets",
+      "inventory": "release/qualification/index.json"
     }
   ],
   "notDistributed": {

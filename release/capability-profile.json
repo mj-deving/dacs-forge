@@ -1,7 +1,7 @@
 {
   "schema": "dacs-forge-capability-profile/v1",
-  "version": "0.1.0",
-  "releaseKind": "product-seal",
+  "version": "0.1.1",
+  "releaseKind": "product-seal-patch",
   "support": {
     "status": "activates-on-immutable-release-readback",
     "prepublicationStatus": "candidate-not-supported"
@@ -15,6 +15,12 @@
     "livePayment": "unsupported",
     "productionDeployment": "unsupported",
     "normativeConformanceAuthority": "not-claimed"
+  },
+  "qualification": {
+    "status": "qualified-public-evidence",
+    "index": "release/qualification/index.json",
+    "independentConsumer": "qualified",
+    "extensionOnlyServiceFork": "qualified"
   },
   "claims": {
     "productSeal": "activates-on-immutable-release-readback",

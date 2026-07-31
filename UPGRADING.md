@@ -2,7 +2,15 @@
 
 ## Supported direct path
 
-The first Product Seal has exactly one direct predecessor:
+`v0.1.1` is a metadata- and evidence-only patch over the immutable supported
+`v0.1.0` commit `81507c792c158a5782ea67e6c43c873d49356903`.
+It changes no runtime, persisted-artifact shape, DACS pin, or declared service
+extension path. Existing v0.1.0 forks can fast-forward or merge v0.1.1 and rerun
+the unchanged complete rig.
+
+The original first-Product-Seal path remains historical authority:
+
+The v0.1.0 Product Seal has exactly one direct predecessor:
 `v0.1.0-preview.2` at commit
 `0c6e92cc707c62db0ca3c9627d59bb95ba9970e9`. That Preview is immutable and
 unsupported. Every other predecessor is unsupported for a direct upgrade.

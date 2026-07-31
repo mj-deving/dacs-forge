@@ -5,8 +5,8 @@
 A hardened, forkable DACS reference service and conformance kit for building
 specific DACS service agents.
 
-> Release contract: **v0.1.0 Product Seal**. Fixture/no-spend only. Support
-> applies only to the exact immutable `v0.1.0` release after GitHub attestation
+> Release contract: **v0.1.1 Product Seal evidence correction**. Fixture/no-spend only. Support
+> applies only to the exact immutable `v0.1.1` release after GitHub attestation
 > and public readback; branch tips and prepublication candidates are unsupported.
 > Not canonical, not production ready, and not suitable for live value transfer.
 
@@ -144,8 +144,17 @@ See [SECURITY.md](SECURITY.md) and the [Listing trust boundary](docs/LISTING-TRU
 
 ## Conformance status
 
-Overall status: **v0.1.0 Product Seal source contract**. The tagged source is
+Overall status: **v0.1.1 Product Seal source contract**. The patch preserves the
+v0.1.0 runtime and extension contract while publishing the previously external
+consumer and reference-fork qualification as digest-bound release evidence. The tagged source is
 supported only after the exact immutable release and live readback complete.
+
+The machine-readable [qualification index](release/qualification/index.json)
+binds the standalone consumer, serialized artifact graph, Counterparty Evidence
+reference-fork source, separate product authority, reports, and release-asset
+locators. These establish independent Forge product verification and one bounded
+extension-only reference fork; they do not establish normative DACS conformance,
+certification, registration, deployment, or live commerce.
 
 The repository pins and exercises named DACS-Standard vectors for canonical JSON,
 signature-value encoding, Listing unknown-field retention, settlement finalization,

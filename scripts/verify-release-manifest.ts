@@ -7,9 +7,9 @@ import packageMetadata from "../package.json";
 
 type JsonObject = Record<string, unknown>;
 
-const VERSION = "0.1.0";
-const TAG = "v0.1.0";
-const PREVIEW_COMMIT = "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9";
+const VERSION = "0.1.1";
+const TAG = "v0.1.1";
+const PRODUCT_SEAL_COMMIT = "81507c792c158a5782ea67e6c43c873d49356903";
 const DACS_COMMIT = "4bb9e48a1095ab32c06c25b7c0b52018d3ce4091";
 const COMMUNITY_COMMIT = "634caef4b952838281c8c602402e657d41074703";
 const COMMUNITY_MAIN = "f2fd2145cddfd12ecaa32da2b953e859ec3fd8c3";
@@ -27,6 +27,7 @@ const RIG_COMMANDS = [
   "bun install --frozen-lockfile --ignore-scripts",
   "bun run verify:public-export",
   "bun run verify:release-manifest",
+  "bun run verify:public-qualification",
   "bun run verify:migrations -- --evidence <qualification-record.json> --repository <migrated-fork> --artifact-graph <artifact-graph.json> --prior-evidence <prior-evidence.json> --rig-evidence <rig-evidence.json> --consumer-report <consumer-report.json>",
   "bun run verify:directory-supply -- --repository <migrated-fork> --base <candidate-commit> --tip <migration-tip>",
   "bun run verify:fork -- --repository <migrated-fork> --base <candidate-commit> --tip <migration-tip>",
@@ -68,7 +69,7 @@ export function rigInventory(root: string): string {
 export function verifyReleaseManifest(root: string, manifest: unknown, profile: unknown, compatibility: unknown): Readonly<JsonObject> {
   const value = object(manifest, "release manifest");
   if (value["schema"] !== "dacs-forge-release-manifest/v1") throw new Error("unknown release manifest schema");
-  if (value["version"] !== VERSION || value["tag"] !== TAG || value["releaseKind"] !== "product-seal") {
+  if (value["version"] !== VERSION || value["tag"] !== TAG || value["releaseKind"] !== "product-seal-patch") {
     throw new Error("release identity is invalid");
   }
   if (packageMetadata.version !== VERSION || packageMetadata.private !== true) {
@@ -80,15 +81,16 @@ export function verifyReleaseManifest(root: string, manifest: unknown, profile: 
   const source = object(value["sourceBinding"], "source binding");
   if (source["kind"] !== "containing-commit-via-annotated-tag" || source["requiredRef"] !== `refs/tags/${TAG}`
     || source["candidateCommitAuthority"] !== "annotated-tag-target-and-live-readback"
-    || source["historyBase"] !== PREVIEW_COMMIT || source["liveReadbackRequired"] !== true) {
+    || source["historyBase"] !== PRODUCT_SEAL_COMMIT || source["liveReadbackRequired"] !== true) {
     throw new Error("source binding is invalid");
   }
   if (Object.hasOwn(source, "commit") || Object.hasOwn(value, "sourceCommit")) {
     throw new Error("manifest must not embed its containing commit");
   }
   const predecessor = object(value["mandatoryPredecessor"], "mandatory predecessor");
-  if (predecessor["version"] !== "0.1.0-preview.2" || predecessor["tag"] !== "v0.1.0-preview.2"
-    || predecessor["commit"] !== PREVIEW_COMMIT || predecessor["supported"] !== false || predecessor["immutable"] !== true) {
+  if (predecessor["version"] !== "0.1.0" || predecessor["tag"] !== "v0.1.0"
+    || predecessor["commit"] !== PRODUCT_SEAL_COMMIT || predecessor["supported"] !== true
+    || predecessor["immutable"] !== true) {
     throw new Error("mandatory predecessor is invalid");
   }
   const pins = object(value["pins"], "pins");
@@ -102,7 +104,7 @@ export function verifyReleaseManifest(root: string, manifest: unknown, profile: 
   const expectedProfile = {
     schema: "dacs-forge-capability-profile/v1",
     version: VERSION,
-    releaseKind: "product-seal",
+    releaseKind: "product-seal-patch",
     support: { status: "activates-on-immutable-release-readback", prepublicationStatus: "candidate-not-supported" },
     capabilities: {
       fixtureNoSpendLifecycle: "implemented",
@@ -113,6 +115,12 @@ export function verifyReleaseManifest(root: string, manifest: unknown, profile: 
       livePayment: "unsupported",
       productionDeployment: "unsupported",
       normativeConformanceAuthority: "not-claimed",
+    },
+    qualification: {
+      status: "qualified-public-evidence",
+      index: "release/qualification/index.json",
+      independentConsumer: "qualified",
+      extensionOnlyServiceFork: "qualified",
     },
     claims: {
       productSeal: "activates-on-immutable-release-readback",
@@ -139,8 +147,15 @@ export function verifyReleaseManifest(root: string, manifest: unknown, profile: 
     security: "SECURITY.md",
     contributing: "CONTRIBUTING.md",
     provenance: "docs/SOURCE-PROVENANCE.json",
+    releaseNotes: "release/v0.1.1.md",
   })) {
     if (contracts[key] !== path || !existsSync(resolve(root, path))) throw new Error(`${key} contract reference is invalid`);
+  }
+  const qualificationContract = object(contracts["qualificationIndex"], "qualification index reference");
+  if (qualificationContract["path"] !== "release/qualification/index.json"
+    || !SHA256.test(String(qualificationContract["sha256"]))
+    || sha256(readFileSync(resolve(root, String(qualificationContract["path"])))) !== qualificationContract["sha256"]) {
+    throw new Error("qualification index reference is invalid");
   }
   const rig = object(value["rig"], "rig");
   if (JSON.stringify(rig["commands"]) !== JSON.stringify(RIG_COMMANDS)) throw new Error("release rig is incomplete");
@@ -148,12 +163,14 @@ export function verifyReleaseManifest(root: string, manifest: unknown, profile: 
   if (definition["inventorySha256"] !== rigInventory(root)) throw new Error("release rig inventory digest mismatch");
   const evidence = object(rig["qualificationEvidence"], "qualification evidence");
   if (evidence["authority"] !== "external-product-seal-qualification-record" || evidence["required"] !== true
-    || evidence["embedded"] !== false || evidence["prepublicationStatus"] !== "pending") {
+    || evidence["embedded"] !== true || evidence["status"] !== "qualified-public-evidence"
+    || evidence["index"] !== "release/qualification/index.json") {
     throw new Error("qualification evidence boundary is invalid");
   }
   const expectedDistributed = [
     { kind: "git-source-tag", ref: `refs/tags/${TAG}` },
     { kind: "github-generated-source-archive", formats: ["tar.gz", "zip"] },
+    { kind: "qualification-assets", inventory: "release/qualification/index.json" },
   ];
   if (JSON.stringify(value["distributedArtifacts"]) !== JSON.stringify(expectedDistributed)
     || JSON.stringify(value["notDistributed"]) !== JSON.stringify({ package: true, containerImage: true, binary: true })) {
@@ -166,7 +183,7 @@ export function verifyReleaseManifest(root: string, manifest: unknown, profile: 
     adoption: false,
   })) throw new Error("release claims are invalid");
   return Object.freeze({ schema: "dacs-forge-release-manifest-verification/v1", version: VERSION, tag: TAG,
-    predecessor: PREVIEW_COMMIT, dacsCommit: DACS_COMMIT, communityCommit: COMMUNITY_COMMIT,
+    predecessor: PRODUCT_SEAL_COMMIT, dacsCommit: DACS_COMMIT, communityCommit: COMMUNITY_COMMIT,
     rigInventorySha256: definition["inventorySha256"] });
 }
 

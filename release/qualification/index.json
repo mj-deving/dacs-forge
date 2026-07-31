@@ -1,0 +1,58 @@
+{
+  "schema": "dacs-forge-public-qualification-index/v1",
+  "version": "0.1.1",
+  "tag": "v0.1.1",
+  "status": "qualified-public-evidence",
+  "reports": {
+    "independentConsumer": {
+      "path": "release/qualification/independent-consumer.json",
+      "sha256": "a8cb7fa690be5aafdd4d6bc0da0fc4f76a5cbf1cb731f27382f3f4cbe8cacfc5"
+    },
+    "referenceFork": {
+      "path": "release/qualification/reference-fork.json",
+      "sha256": "a896fb32b2ac73bb59721ca31f6291ef13d1125f934978924e1e2abd15490cab"
+    }
+  },
+  "releaseAssets": [
+    {
+      "name": "dacs-forge-v0.1.1-qualification-index.json",
+      "sourcePath": "release/qualification/index.json",
+      "url": "https://github.com/mj-deving/dacs-forge/releases/download/v0.1.1/dacs-forge-v0.1.1-qualification-index.json",
+      "digestAuthority": "release-manifest-contract"
+    },
+    {
+      "name": "dacs-forge-v0.1.1-independent-consumer.bundle",
+      "url": "https://github.com/mj-deving/dacs-forge/releases/download/v0.1.1/dacs-forge-v0.1.1-independent-consumer.bundle",
+      "sha256": "d252a64f6a225be52a652b9b3cf21a30fb379de394d179d3d25b51646edf1b42"
+    },
+    {
+      "name": "dacs-forge-v0.1.1-independent-artifact-graph.json",
+      "url": "https://github.com/mj-deving/dacs-forge/releases/download/v0.1.1/dacs-forge-v0.1.1-independent-artifact-graph.json",
+      "sha256": "e78adb8110e235f1e70ac06b19e4110dd7467943d2eed2f833bbb6476d9ae9a7"
+    },
+    {
+      "name": "dacs-forge-v0.1.1-counterparty-reference.bundle",
+      "url": "https://github.com/mj-deving/dacs-forge/releases/download/v0.1.1/dacs-forge-v0.1.1-counterparty-reference.bundle",
+      "sha256": "2bb5ee59bde9ec6d66438fac33a43edd03053f1c30a6ca8ad0d5a9d35c6cdd7c"
+    },
+    {
+      "name": "dacs-forge-v0.1.1-counterparty-authority.bundle",
+      "url": "https://github.com/mj-deving/dacs-forge/releases/download/v0.1.1/dacs-forge-v0.1.1-counterparty-authority.bundle",
+      "sha256": "cb27e3ad6a2073e9c4ff00696709c1f6b6007e07ab558a86ff6ccd1874a2918c"
+    }
+  ],
+  "attestation": {
+    "githubImmutableRelease": "required",
+    "githubArtifactAttestation": "required-live-readback",
+    "cryptographicGitTagSignature": "deferred-no-maintainer-signing-identity-configured",
+    "tagType": "annotated",
+    "disposition": "GitHub immutable-release attestation remains mandatory. A cryptographic Git tag signature is not claimed and is deferred until a maintainer signing identity and consumer trust policy are explicitly configured."
+  },
+  "claims": {
+    "independentConsumerQualified": true,
+    "extensionOnlyReferenceForkQualified": true,
+    "normativeDacsConformance": false,
+    "certification": false,
+    "stewardEndorsement": false
+  }
+}

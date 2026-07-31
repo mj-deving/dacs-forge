@@ -70,11 +70,12 @@ const OBSERVED = {
 };
 
 describe("Product Seal migration disposition", () => {
-  test("declares exactly one pending external Preview.2 qualification edge", () => {
+  test("declares one v0.1.0 patch predecessor and public qualification edge", () => {
     expect(verifyMigrationDisposition(disposition)).toEqual({
       schema: "dacs-forge-migration-disposition-verification/v1",
-      predecessor: "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
-      status: "pending-external-qualification",
+      predecessor: "81507c792c158a5782ea67e6c43c873d49356903",
+      originatingFinalPreview: "0c6e92cc707c62db0ca3c9627d59bb95ba9970e9",
+      status: "qualified-public-evidence",
     });
   });
 
