@@ -11,7 +11,7 @@ import { dirname, join, parse, resolve } from "node:path";
 
 export type DacsDatabase = Database;
 
-const SCHEMA_VERSION = 25;
+const SCHEMA_VERSION = 26;
 const WAL_RETRY_ATTEMPTS = 20;
 const WAL_RETRY_DELAY_MS = 25;
 const retrySignal = new Int32Array(new SharedArrayBuffer(4));
@@ -237,6 +237,64 @@ const LIVE_EFFECT_INTENTS_SCHEMA = `
     CHECK (
       (state IN ('prepared', 'submitting') AND external_ref IS NULL AND result_json IS NULL)
       OR (state IN ('observed', 'committed') AND external_ref IS NOT NULL AND result_json IS NOT NULL)
+    )
+  ) STRICT
+`;
+
+const TURNKEY_SIGNING_INTENTS_SCHEMA = `
+  CREATE TABLE IF NOT EXISTS turnkey_signing_intents (
+    effect_key TEXT PRIMARY KEY NOT NULL,
+    provider_request_id TEXT NOT NULL UNIQUE CHECK (
+      length(provider_request_id) = 64 AND provider_request_id NOT GLOB '*[^0-9a-f]*'
+    ),
+    signing_role TEXT NOT NULL CHECK (signing_role = 'demos-storage-anchor'),
+    seller_claim TEXT NOT NULL,
+    organization_id TEXT NOT NULL,
+    private_key_id TEXT NOT NULL,
+    public_key_hex TEXT NOT NULL CHECK (
+      length(public_key_hex) = 64 AND public_key_hex NOT GLOB '*[^0-9a-f]*'
+    ),
+    chain TEXT NOT NULL CHECK (chain = 'demos-testnet'),
+    signing_domain TEXT NOT NULL,
+    amount_atomic TEXT NOT NULL CHECK (amount_atomic = '0'),
+    fee_atomic TEXT NOT NULL,
+    fee_cap_atomic TEXT NOT NULL,
+    payload_hash TEXT NOT NULL CHECK (
+      length(payload_hash) = 64 AND payload_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    request_body_hash TEXT NOT NULL UNIQUE CHECK (
+      length(request_body_hash) = 64 AND request_body_hash NOT GLOB '*[^0-9a-f]*'
+    ),
+    request_body_json TEXT NOT NULL,
+    state TEXT NOT NULL CHECK (
+      state IN ('prepared', 'submitting', 'activity-observed', 'signed', 'failed')
+    ),
+    activity_id TEXT UNIQUE,
+    activity_status TEXT,
+    activity_json TEXT,
+    signature_json TEXT,
+    signature_digest TEXT CHECK (
+      signature_digest IS NULL OR (
+        length(signature_digest) = 64 AND signature_digest NOT GLOB '*[^0-9a-f]*'
+      )
+    ),
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL,
+    CHECK (
+      (state IN ('prepared', 'submitting')
+        AND activity_id IS NULL AND activity_status IS NULL AND activity_json IS NULL
+        AND signature_json IS NULL AND signature_digest IS NULL)
+      OR (state = 'activity-observed'
+        AND activity_id IS NOT NULL AND activity_status IS NOT NULL AND activity_json IS NOT NULL
+        AND signature_json IS NULL AND signature_digest IS NULL)
+      OR (state = 'signed'
+        AND activity_id IS NOT NULL AND activity_status = 'ACTIVITY_STATUS_COMPLETED'
+        AND activity_json IS NOT NULL AND signature_json IS NOT NULL
+        AND signature_digest IS NOT NULL)
+      OR (state = 'failed'
+        AND activity_id IS NOT NULL
+        AND activity_status IN ('ACTIVITY_STATUS_FAILED', 'ACTIVITY_STATUS_REJECTED')
+        AND activity_json IS NOT NULL AND signature_json IS NULL AND signature_digest IS NULL)
     )
   ) STRICT
 `;
@@ -1022,6 +1080,7 @@ function migrate(database: Database): void {
     }
     if (version < 24) database.run(PARTY_CAPABILITY_PREPARATIONS_SCHEMA);
     if (version < 25) database.run(LIVE_EFFECT_INTENTS_SCHEMA);
+    if (version < 26) database.run(TURNKEY_SIGNING_INTENTS_SCHEMA);
     database.run(`PRAGMA user_version = ${SCHEMA_VERSION}`);
   });
   apply.exclusive();

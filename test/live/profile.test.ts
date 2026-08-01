@@ -10,6 +10,7 @@ const LIVE_INPUT: LiveTestnetProfileInput = {
   signer: {
     kind: "injected",
     keyReference: "demos-testnet:seller-1",
+    publicKeyHex: "3".repeat(64),
     expectedClaim: `did:demos:agent:${"1".repeat(64)}`,
   },
   anchor: {
@@ -55,6 +56,9 @@ describe("Forge v0.2 execution profiles", () => {
 
   for (const [name, mutate] of [
     ["missing signer", (v: LiveTestnetProfileInput) => ({ ...v, signer: undefined })],
+    ["missing signer public key", (v: LiveTestnetProfileInput) => ({
+      ...v, signer: { ...v.signer, publicKeyHex: "" },
+    })],
     ["floating SDK", (v: LiveTestnetProfileInput) => ({ ...v, anchor: { ...v.anchor, sdkCommit: "main" } })],
     ["mainnet rail", (v: LiveTestnetProfileInput) => ({ ...v, rail: { ...v.rail, chain: "base-mainnet" } })],
     ["unbounded attempts", (v: LiveTestnetProfileInput) => ({ ...v, effects: { ...v.effects, maxAttempts: 2 } })],

@@ -320,7 +320,7 @@ describe("commitment failure stop boundary", () => {
     }).disposition).toBe("committed");
     expect(database.query<{ user_version: bigint }, []>(
       "PRAGMA user_version",
-    ).get()!.user_version).toBe(25n);
+    ).get()!.user_version).toBe(26n);
     database.close();
   });
 

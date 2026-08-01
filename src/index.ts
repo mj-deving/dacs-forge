@@ -65,6 +65,22 @@ export {
   type EffectReconciliation,
 } from "./live/effect-runner.ts";
 export {
+  runTurnkeySellerAnchorSigning,
+  TurnkeySigningIntentStore,
+  type TurnkeyActivity,
+  type TurnkeyActivityClient,
+  type TurnkeySellerAnchorConfig,
+  type TurnkeySignRawPayloadRequest,
+  type TurnkeySignature,
+  type TurnkeySigningCrashBoundary,
+  type TurnkeySigningIntentRecord,
+  type TurnkeySigningIntentState,
+} from "./live/turnkey-signing-activity.ts";
+export {
+  assertTurnkeyRequestUsesEd25519RawSigning,
+  connectOfficialTurnkeyActivityClient,
+} from "./adapters/turnkey-signing.ts";
+export {
   anchorListingThroughLiveProfile,
   publishListingThroughLiveProfile,
   type AnchoredLiveListing,

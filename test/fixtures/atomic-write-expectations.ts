@@ -65,6 +65,10 @@ export const EXPECTED_ATOMIC_WRITE_SITES: Readonly<Record<string, ExpectedAtomic
   "live-effect.mark-submitting": expected("live-effect-submission-attempt", "LiveEffectStore.markSubmitting", "autocommit", "effect-store.ts:82"),
   "live-effect.observe": expected("live-effect-observation", "LiveEffectStore.observe", "autocommit", "effect-store.ts:68"),
   "live-effect.commit": expected("live-effect-commit", "LiveEffectStore.commit", "autocommit", "effect-store.ts:95"),
+  "turnkey-signing.prepare": expected("turnkey-signing-intent", "TurnkeySigningIntentStore.prepare", "autocommit", "turnkey-signing-activity.ts:161"),
+  "turnkey-signing.mark-submitting": expected("turnkey-signing-submission", "TurnkeySigningIntentStore.markSubmitting", "autocommit", "turnkey-signing-activity.ts:199"),
+  "turnkey-signing.observe-activity": expected("turnkey-signing-activity-observation", "TurnkeySigningIntentStore.observeActivity", "autocommit", "turnkey-signing-activity.ts:225"),
+  "turnkey-signing.persist-signature": expected("turnkey-signing-envelope-persistence", "TurnkeySigningIntentStore.persistSignature", "autocommit", "turnkey-signing-activity.ts:271"),
   "authority.put-listing": expected("agreement-commitment", "FixtureAuthorityStore.putListingWithinTransaction", "immediate", "fixture-authority-store.ts:105"),
   "authority.put-listing-verification": expected("agreement-commitment", "FixtureAuthorityStore.putListingWithinTransaction", "immediate", "fixture-authority-store.ts:124"),
   "authority.put-commitment-identity": expected(

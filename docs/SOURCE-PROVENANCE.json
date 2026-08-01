@@ -93,7 +93,7 @@
     },
     {
       "path": "bun.lock",
-      "sha256": "f5cdecfd124b6323787897930f515ac455b36e7be38ecceedbe5b733eb4cdffb"
+      "sha256": "8fb13cd760d7988e0debb0f53653c1ffe99f23476e46cddda899b5f59222cd34"
     },
     {
       "path": "release/vulnerability-dispositions.json",
@@ -309,7 +309,7 @@
     },
     {
       "path": "src/index.ts",
-      "sha256": "76febfa2df9b831ccd1aa0de1410aec6cfef52db1e9a8040c1f76d62bcdc267c"
+      "sha256": "d8a7d6f3de2b4f649389ed9f6bf81b42249d095562289840d7a2a7f4dac2ec0a"
     },
     {
       "path": "src/lifecycle/fixture-attested-delivery-handler.ts",
@@ -481,11 +481,11 @@
     },
     {
       "path": "src/substrate/sqlite/atomic-write-registry.ts",
-      "sha256": "ca6a36e111ee0d780b567904d3cc89e0827fe88bf59f47a0e12b9f23528c46fd"
+      "sha256": "30fd0b1e669f8ae89a13edfcbc05f30cfb666a28548802226ea217f78f8c6b0e"
     },
     {
       "path": "src/substrate/sqlite/database.ts",
-      "sha256": "8d53e2979dd6645d78e9f7caba51814abc7eae32d666643c7aa20e6109cd9907"
+      "sha256": "805966541102f66c659e84ab1607cf5576535ccab2d9242ce3efeccc6f5528de"
     },
     {
       "path": "src/substrate/sqlite/fixture-authority-store.ts",
@@ -573,7 +573,7 @@
     },
     {
       "path": "test/api/session-admission.test.ts",
-      "sha256": "4a03d66efe669d9e3b1f9de1565468d5e6d39dc4bff3f2466c93b8f98802fb30"
+      "sha256": "b5e3a29ed73d067d1bef7d91def1379c7099379b6e578fd60c000fd3df757249"
     },
     {
       "path": "test/api/terminal-results.test.ts",
@@ -741,7 +741,7 @@
     },
     {
       "path": "test/fixtures/atomic-write-expectations.ts",
-      "sha256": "350ea59dd22c3ce9fbcda9341091cecb0462a0d0a18b87ea197828987a7fa31f"
+      "sha256": "fbd3ac75797c07a9bb7fb5c674f705d36ee38eea3f6fca4482b28072904e81a8"
     },
     {
       "path": "test/fixtures/conditional-narrowed-alias-fixture.ts",
@@ -981,7 +981,7 @@
     },
     {
       "path": "test/lifecycle/attestation-bundle-finalisation.test.ts",
-      "sha256": "36ec273fd1f89bf59c43d19270b75cb6662cc00fd2faf48db97b47f6f67ac2a2"
+      "sha256": "678858806e08f849299342e0c06978304f69518aa555f1b274cf532dbfaf9be8"
     },
     {
       "path": "test/lifecycle/attested-delivery-integration.test.ts",
@@ -989,11 +989,11 @@
     },
     {
       "path": "test/lifecycle/commit-failure-stop.test.ts",
-      "sha256": "c327d945e50bc48e08ec51ef3e2b5881e8e3aaf522803f53a01b4d4ec0358e93"
+      "sha256": "da47f3452b37838b04954b392aab8d89566b4eb8ca2eee92d01adfc5e8a391eb"
     },
     {
       "path": "test/lifecycle/fixture-vet-store.test.ts",
-      "sha256": "36603b6ed63294178644710ef0610a4c7bf04e6b6234c862746e51e6fbf46aa6"
+      "sha256": "c14e3ea2fb9a09f578f5a1571a70e78dc2d2dce730ba57ffc015e17d922c11e7"
     },
     {
       "path": "test/lifecycle/fixtures.ts",
@@ -1077,11 +1077,11 @@
     },
     {
       "path": "test/recovery/atomic-migration-interruption.test.ts",
-      "sha256": "a1d03af81d44ed8f783f659e4429e78a1d3608f9a96f35d4ff9e1cc23c192a58"
+      "sha256": "15c5dac323e62ee0122129397a8a12cb3e0518a868b587af608bb3f0be5d785b"
     },
     {
       "path": "test/recovery/atomic-write-interruption.test.ts",
-      "sha256": "8322e535b9b3d8b902dcfdcf65e9372261b518a18f15110582aa9f3c016faf79"
+      "sha256": "4defe01b3b44d1e41520bdb187006b255549cae4f4f7e77a1ad53ba5437b9b7e"
     },
     {
       "path": "test/recovery/atomic-write-registry.test.ts",
@@ -1201,7 +1201,7 @@
     },
     {
       "path": "test/substrate/sqlite.test.ts",
-      "sha256": "d08028cf3e29b8263528149d0b23ec695dfa3ea77e7071c1350535b61959f86a"
+      "sha256": "2d63151393c7e2e65eb45673ad0ad6a29e64ff9c79ff7d4060a9f87a257962ae"
     },
     {
       "path": "test/tools/source-provenance.test.ts",
@@ -1213,7 +1213,7 @@
     },
     {
       "path": "test/workers/atomic-migration-worker.ts",
-      "sha256": "482c833c74507ee69dfae7d927aad0713b3ce3ee7d2cf098b86a3257448758e7"
+      "sha256": "de4db2e981a24fb39465f952622bcb5325c86ab4eab5a215bd7c5e52d000f44b"
     },
     {
       "path": "test/workers/atomic-write-api-worker.ts",
@@ -1461,27 +1461,39 @@
     },
     {
       "path": "src/live/profile.ts",
-      "sha256": "669e204ac4d5d2060d478e5ed67062e0394877c0c1464a827a76245510d44ca9"
+      "sha256": "131335e46a6dfaf09c04b774ab48e75c86dd3edc73c894403d88bcd89f776245"
     },
     {
       "path": "test/live/adapters.test.ts",
-      "sha256": "cb1d132855b901f60904189c88d92fedce13cb8adf7cd3ddc96794f275f45cdd"
+      "sha256": "c60f8a72893525d674efd429cf03003c7761aee1ad5edf3119df6855200d3b63"
     },
     {
       "path": "test/live/demos-listing.test.ts",
-      "sha256": "d157c2df129f214de6bc82ce1cedadccec32201812315069cd4dc73f0fddfc53"
+      "sha256": "cd4a77a42e3b6431e7f1fd94eec89ee28d0aed3c660a9b198752a3d4b95db0ed"
     },
     {
       "path": "test/live/effect-recovery.test.ts",
-      "sha256": "8c7ff597d9771310ca728f234c974ac53720dcd11544d0fabb7c8657b1e72943"
+      "sha256": "ea1eebfae75d92daa097f996388060b3b83fb7efeefa27651a3b4a7ce30a7660"
     },
     {
       "path": "test/live/profile.test.ts",
-      "sha256": "5965be1091e4e14f22fe704120138ba12316212a90d94810e3fbea6046926ce7"
+      "sha256": "d00425190c2e12361cc00e5aa7a6237966ed42b1b157f803bdedc3a1f78b379f"
     },
     {
       "path": "test/live/zero-effect-defaults.test.ts",
       "sha256": "ae3f0a0b40c2b053153fef15801d52582d2250870c4172249cf7861fe4771c0b"
+    },
+    {
+      "path": "src/adapters/turnkey-signing.ts",
+      "sha256": "729156107dc76dad55b1e0bf370b48110ba2d0566994ab14684e5285bbcdbef2"
+    },
+    {
+      "path": "src/live/turnkey-signing-activity.ts",
+      "sha256": "03203e60315a8e12df621a8edd815bfd413af656a251b394d1836fbd190f4d08"
+    },
+    {
+      "path": "test/live/effect-signing-intent.test.ts",
+      "sha256": "4ac808f6a3e434a053dce5da0b2d622bf02cb5dd98ffcf974d836e065c93ea9a"
     }
   ],
   "packagingFiles": [
@@ -1563,7 +1575,7 @@
     },
     {
       "path": "package.json",
-      "sha256": "952f0b1fa1357298b2c58e5b4f4b55fb03ee873653f32994ab8df4d9a92e55f5"
+      "sha256": "34b4695e5f5d23445234eea8d201958b49c7e14352f678d039bb451ecd55fc51"
     },
     {
       "path": "release/capability-profile.json",

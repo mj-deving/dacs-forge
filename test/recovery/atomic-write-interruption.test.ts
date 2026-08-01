@@ -50,6 +50,22 @@ const DRIVER_OVERRIDES: Readonly<Record<string, Driver>> = Object.freeze({
     file: "test/live/effect-recovery.test.ts",
     pattern: "before-commit restart reconciles",
   },
+  "turnkey-signing.prepare": {
+    file: "test/live/effect-signing-intent.test.ts",
+    pattern: "after-signed-persist restart resolves one immutable Activity",
+  },
+  "turnkey-signing.mark-submitting": {
+    file: "test/live/effect-signing-intent.test.ts",
+    pattern: "after-signed-persist restart resolves one immutable Activity",
+  },
+  "turnkey-signing.observe-activity": {
+    file: "test/live/effect-signing-intent.test.ts",
+    pattern: "after-signed-persist restart resolves one immutable Activity",
+  },
+  "turnkey-signing.persist-signature": {
+    file: "test/live/effect-signing-intent.test.ts",
+    pattern: "after-signed-persist restart resolves one immutable Activity",
+  },
   "party-authority.cleanup-challenges": {
     file: "test/api/capability-proof-of-possession.test.ts",
     pattern: "bootstraps digest-only custody",

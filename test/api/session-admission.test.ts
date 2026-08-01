@@ -31,7 +31,7 @@ describe("HTTP admission resource guards", () => {
     const migrated = openDatabase(path);
     expect(migrated.query<{ user_version: bigint }, []>(
       "PRAGMA user_version",
-    ).get()?.user_version).toBe(25n);
+    ).get()?.user_version).toBe(26n);
     expect(migrated.query<{ count: bigint }, []>(`
       SELECT count(*) AS count FROM sqlite_schema
       WHERE type = 'table' AND name = 'http_rate_buckets'

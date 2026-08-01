@@ -7,6 +7,7 @@ export interface LiveTestnetProfileInput {
   readonly signer: {
     readonly kind: "injected";
     readonly keyReference: string;
+    readonly publicKeyHex: string;
     readonly expectedClaim: string;
   };
   readonly anchor: {
@@ -48,6 +49,7 @@ export function admitExecutionProfile(input: LiveTestnetProfileInput): AdmittedE
   if (!isRecord(input) || input.mode !== "live-testnet") throw new TypeError("Live profile mode is required");
   const signer = input.signer;
   if (!isRecord(signer) || signer.kind !== "injected" || !field(signer.keyReference)
+    || !lowerHex64(signer.publicKeyHex)
     || !/^did:demos:agent:[0-9a-f]{64}$/.test(signer.expectedClaim)) {
     throw new TypeError("Live profile requires an injected exact signer reference and Demos claim");
   }
@@ -80,6 +82,7 @@ export function admitExecutionProfile(input: LiveTestnetProfileInput): AdmittedE
     signer: {
       kind: "injected",
       keyReference: signer.keyReference as string,
+      publicKeyHex: signer.publicKeyHex as string,
       expectedClaim: signer.expectedClaim as string,
     },
     anchor: {

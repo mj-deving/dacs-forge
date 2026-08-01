@@ -19,6 +19,7 @@ const TEST_PROFILE = admitExecutionProfile({
   signer: {
     kind: "injected",
     keyReference: "fixture:seller",
+    publicKeyHex: "2".repeat(64),
     expectedClaim: `did:demos:agent:${"1".repeat(64)}`,
   },
   anchor: {
