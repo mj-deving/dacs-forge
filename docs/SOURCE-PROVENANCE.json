@@ -1465,7 +1465,7 @@
     },
     {
       "path": "test/live/adapters.test.ts",
-      "sha256": "c60f8a72893525d674efd429cf03003c7761aee1ad5edf3119df6855200d3b63"
+      "sha256": "32e8d7a2aebd61bbc779f2a4e0d0b7d3857d6dc4ca39ae1acd709d8fdab60a4a"
     },
     {
       "path": "test/live/demos-listing.test.ts",
@@ -1485,7 +1485,7 @@
     },
     {
       "path": "src/adapters/turnkey-signing.ts",
-      "sha256": "729156107dc76dad55b1e0bf370b48110ba2d0566994ab14684e5285bbcdbef2"
+      "sha256": "f0b03cd68b3c68c680aae399ba5a1ce015c9b306b85d46650283ceac3893e5f4"
     },
     {
       "path": "src/live/turnkey-signing-activity.ts",
