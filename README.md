@@ -24,9 +24,9 @@ signatures, references, settlement evidence, delivery attestations, and DACS-5
 bundle copies. Restart, replay, mutation, concurrency, migration, authority, and
 failure-path tests are first-class release evidence.
 
-It does **not** currently claim live Demos anchoring, live payment rails, external
-attestation authority, an already published supported Product Seal, reputation
-eligibility, or steward designation.
+The supported Product Seal baseline is the immutable `v0.1.1` release. It does
+**not** claim live Demos anchoring, live payment rails, external attestation
+authority, reputation eligibility, production readiness, or steward designation.
 
 ## The 90-second model
 
@@ -35,6 +35,27 @@ schema, handler, and fixtures. Forge owns everything around them: admission,
 schema validation, canonical bytes and hashes, signing, independent verification,
 SQLite persistence, replay, the fixture protocol lifecycle, and role-local DACS-5
 evidence bundles.
+
+```mermaid
+flowchart LR
+  subgraph Service[Service-owned extension]
+    C[Config and schemas] --> H[Handler]
+    C --> F[Admission fixtures]
+  end
+
+  subgraph Forge[Forge-owned protocol substrate]
+    A[Signed Listing and Agreement] --> R[Session admission]
+    F --> R
+    R --> X[ServiceRuntime]
+    H --> X
+    X --> P[(Output envelope, canonical bytes and hash, receipt, and run ledger)]
+    P --> D[Fixture settlement and attested delivery]
+    D --> B[DACS-5 role-local bundles]
+  end
+
+  P --> V[Independent consumer]
+  B --> V
+```
 
 The handler is trusted application code, not a sandbox. It receives validated,
 deep-frozen input and inert run metadata, but no signer, database, wallet, network
@@ -56,19 +77,25 @@ The unreleased v0.2 branch also contains a locally qualified, opt-in
 effect intent/recovery and injected Demos/Community adapter boundaries; it does
 not itself establish any live anchor, registration, payment, or deployment.
 
-## Quickstart
+## Reproduce the supported release
 
 Requires Bun `1.3.9` on Linux.
 
 ```sh
-git clone https://github.com/mj-deving/dacs-forge.git
+git clone --branch v0.1.1 --depth 1 https://github.com/mj-deving/dacs-forge.git
 cd dacs-forge
+test "$(git rev-parse HEAD)" = ccd85fb8437ea26e9384ff67bb9bc5c2d46333f5
 bun install --frozen-lockfile
 bun test --timeout 10000 test/runtime/service-runtime.test.ts
 bun test --timeout 10000 test/e2e/full-handshake.test.ts
 bun run check
 bun run build
 ```
+
+This path checks out the exact source qualified by the
+[v0.1.1 release](https://github.com/mj-deving/dacs-forge/releases/tag/v0.1.1).
+Clone without `--branch v0.1.1` only when intentionally evaluating unreleased
+development on `main`; branch tips are outside the supported-release contract.
 
 The first focused test proves the builder-owned service path. The second proves
 the complete implemented fixture handshake. `bun run check` verifies source

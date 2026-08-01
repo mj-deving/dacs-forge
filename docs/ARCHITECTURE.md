@@ -1,10 +1,10 @@
 # DACS Forge architecture
 
-Status: `v0.1.0` Product Seal source contract, fixture/no-spend only. The tagged
-source is supported only after the exact immutable release and live readback.
-This document describes the implemented local system. It does not claim production
-readiness, certification, live value transfer, external authority, or full DACS
-conformance.
+Status: the immutable `v0.1.1` Product Seal baseline is supported for
+fixture/no-spend use. `main` also contains unreleased v0.2 foundation work. This
+document describes the implemented local system; branch-tip development is not
+covered by the v0.1.1 support contract. It does not claim production readiness,
+certification, live value transfer, external authority, or full DACS conformance.
 
 ## What a service fork owns
 
@@ -168,7 +168,7 @@ Implemented and locally exercised:
 
 Still open or explicitly outside the current claim:
 
-- immutable supported release publication and live readback;
+- a supported v0.2 release and its live readback;
 - live Directory registration, Demos anchoring, payment rails, or value transfer;
 - external attestation authority, reputation eligibility, production operation,
   certification, steward designation, or full conformance.

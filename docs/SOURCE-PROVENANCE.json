@@ -1523,7 +1523,7 @@
     },
     {
       "path": "README.md",
-      "sha256": "c34ddd0df378e7c480d4a3df0c13a879c039286a5f418ea1a11161106237d01e"
+      "sha256": "7e83443a6a3f00f8b6e6c038858dbdfb31d4cd86054a40a5a91b9d407a51aa69"
     },
     {
       "path": "SECURITY.md",
@@ -1543,7 +1543,7 @@
     },
     {
       "path": "docs/ARCHITECTURE.md",
-      "sha256": "48f14af8dfa81cef238af7af37408874d07edf6aeb49e0b7afa98637704473f7"
+      "sha256": "567ce00b3bf70cf9debe59699762b70ead68515c6996a76d74c0d43cb9aa8a9c"
     },
     {
       "path": "docs/FORKING.md",
