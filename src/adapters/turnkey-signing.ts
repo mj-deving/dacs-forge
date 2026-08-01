@@ -30,16 +30,22 @@ function normalizeActivity(value: Awaited<ReturnType<OfficialTurnkeyClient["getA
   const intent = value.intent.signRawPayloadIntentV2;
   if (intent === undefined) throw new Error("Turnkey SDK returned an Activity without the expected signing intent");
   const signature = value.result.signRawPayloadResult;
+  const normalizedSignature = signature === undefined ? undefined : {
+    ...signature,
+    // Turnkey serializes the unused Ed25519 recovery component as one zero byte.
+    // Forge's curve-specific envelope represents the same absence canonically as an empty string.
+    v: signature.v === "00" ? "" : signature.v,
+  };
   return Object.freeze({
     id: value.id,
     organizationId: value.organizationId,
     status: value.status,
     type: value.type,
     intent: Object.freeze({ signRawPayloadIntentV2: Object.freeze({ ...intent }) }),
-    ...(signature === undefined
+    ...(normalizedSignature === undefined
       ? {}
-      : { result: Object.freeze({ signRawPayloadResult: Object.freeze({ ...signature }) }) }),
-    ...(value.failure === undefined ? {} : { failure: Object.freeze({
+      : { result: Object.freeze({ signRawPayloadResult: Object.freeze(normalizedSignature) }) }),
+    ...(value.failure == null ? {} : { failure: Object.freeze({
       code: value.failure.code,
       message: value.failure.message,
     }) }),

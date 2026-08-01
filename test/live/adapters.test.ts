@@ -28,7 +28,8 @@ describe("optional live adapters", () => {
         encoding: "PAYLOAD_ENCODING_HEXADECIMAL",
         hashFunction: "HASH_FUNCTION_NOT_APPLICABLE",
       } },
-      result: { signRawPayloadResult: { r: "1".repeat(64), s: "2".repeat(64), v: "" } },
+      result: { signRawPayloadResult: { r: "1".repeat(64), s: "2".repeat(64), v: "00" } },
+      failure: null,
       votes: [],
       fingerprint: "fingerprint",
       canApprove: false,
@@ -58,7 +59,10 @@ describe("optional live adapters", () => {
         hashFunction: "HASH_FUNCTION_NOT_APPLICABLE" as const,
       },
     };
-    expect(await client.submitSignRawPayload(request)).toMatchObject({ id: activity.id, result: activity.result });
+    expect(await client.submitSignRawPayload(request)).toMatchObject({
+      id: activity.id,
+      result: { signRawPayloadResult: { r: "1".repeat(64), s: "2".repeat(64), v: "" } },
+    });
     expect(await client.getActivity({ organizationId: "org", activityId: activity.id }))
       .toMatchObject({ id: activity.id });
     expect(calls).toEqual([
