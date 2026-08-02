@@ -125,7 +125,7 @@
     },
     {
       "path": "scripts/qualify-fork.ts",
-      "sha256": "1974ee686da7fcc689c9ba151cc20879812f2673feb23af254cd2800eda1e554"
+      "sha256": "d6bdbee705f79ae03207b119e04d957c4434e7cc1431f0c8b631b827452cce33"
     },
     {
       "path": "scripts/scan-critical-placeholders.ts",
@@ -1105,7 +1105,7 @@
     },
     {
       "path": "test/release/fork-qualification.test.ts",
-      "sha256": "a0d63ccc90fb08a5846352e1a0ad01152f12cc66abc8a176f722451845f77044"
+      "sha256": "a21d77a309b2078c73325bbd8d7fd38b83da5b80509dfe5166272f65737a5f35"
     },
     {
       "path": "test/release/governance.test.ts",

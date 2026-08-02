@@ -27,6 +27,7 @@ const FROZEN_INSTALL = ["bun", "install", "--frozen-lockfile", "--ignore-scripts
 const DOCTOR = [
   "bun", "src/cli/dacs.ts", "doctor", "--json", "--no-input", "--no-color", "--evidence-mode", "fixture",
 ] as const;
+const HISTORICAL_RELEASE_TAG = "v0.1.1";
 
 interface CommandReceipt {
   readonly command: string;
@@ -121,6 +122,22 @@ function exactClone(source: string, revision: string, destination: string): void
   }
 }
 
+function installTrustedHistoricalReleaseTag(trustedRoot: string, destination: string): void {
+  const expectedCommit = git(trustedRoot, ["rev-parse", "--verify", `refs/tags/${HISTORICAL_RELEASE_TAG}^{commit}`]);
+  const fetched = spawnSync("git", [
+    "fetch", "--no-tags", "--force", "--", trustedRoot,
+    `refs/tags/${HISTORICAL_RELEASE_TAG}:refs/tags/${HISTORICAL_RELEASE_TAG}`,
+  ], {
+    cwd: destination,
+    encoding: "utf8",
+    env: { ...process.env, GIT_NO_LAZY_FETCH: "1", GIT_NO_REPLACE_OBJECTS: "1" },
+  });
+  if (fetched.status !== 0
+    || git(destination, ["rev-parse", "--verify", `refs/tags/${HISTORICAL_RELEASE_TAG}^{commit}`]) !== expectedCommit) {
+    throw new Error("qualification clone did not receive the trusted historical release tag");
+  }
+}
+
 export function assertExactEffectsRecord(value: unknown): Readonly<Record<string, false>> {
   const effects = object(value, "qualification effects");
   if (JSON.stringify(Object.keys(effects).sort()) !== JSON.stringify([...QUALIFICATION_EFFECT_KEYS].sort())) {
@@ -157,15 +174,17 @@ function validateDoctor(stdout: string): Readonly<JsonObject> {
   return report;
 }
 
-function rigDefinition(root: string): string {
+export function candidateRigDefinition(root: string): string {
   const manifest = object(releaseManifest, "release manifest");
   const rig = object(manifest["rig"], "release rig");
   const definition = object(rig["definition"], "release rig definition");
-  const expected = rigInventory(root);
-  if (definition["inventorySha256"] !== expected) {
-    throw new Error("release manifest does not pin the current trusted rig");
+  const releaseTagCommit = git(root, ["rev-parse", "--verify", `refs/tags/${HISTORICAL_RELEASE_TAG}^{commit}`]);
+  if (!/^[0-9a-f]{40}$/.test(releaseTagCommit)
+    || manifest["tag"] !== HISTORICAL_RELEASE_TAG
+    || definition["inventorySha256"] !== rigInventory(root, HISTORICAL_RELEASE_TAG)) {
+    throw new Error("release manifest does not pin the trusted historical release rig");
   }
-  return expected;
+  return rigInventory(root);
 }
 
 export async function qualifyFork(input: {
@@ -188,13 +207,15 @@ export async function qualifyFork(input: {
   if (criticalFindings.length > 0) {
     throw new Error(`fork critical scan rejected:\n${formatFindings(criticalFindings)}`);
   }
-  const expectedRig = rigDefinition(input.trustedRoot);
+  const expectedRig = candidateRigDefinition(input.trustedRoot);
   const temporaryRoot = mkdtempSync(join(tmpdir(), "dacs-forge-fork-qualification-"));
   const baseClone = join(temporaryRoot, "base");
   const forkClone = join(temporaryRoot, "fork");
   try {
     exactClone(input.trustedRoot, input.baseCommit, baseClone);
     exactClone(input.forkRepository, input.tipCommit, forkClone);
+    installTrustedHistoricalReleaseTag(input.trustedRoot, baseClone);
+    installTrustedHistoricalReleaseTag(input.trustedRoot, forkClone);
     const directory = await verifyDirectorySupply({
       trustedRoot: baseClone,
       baseCommit: input.baseCommit,
