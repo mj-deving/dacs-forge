@@ -2,8 +2,8 @@
 
 [![CI](https://github.com/mj-deving/dacs-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/mj-deving/dacs-forge/actions/workflows/ci.yml)
 
-A hardened, forkable reference service and conformance kit for building service
-agents that speak DACS, the Demos Agent Commerce Standards.
+A hardened reference service and conformance kit for building service agents
+that speak DACS, the Demos Agent Commerce Standards.
 
 **In plain terms:** DACS is an open specification for how autonomous software
 agents transact with each other. One agent lists a service, a second vets it,
