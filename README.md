@@ -2,8 +2,17 @@
 
 [![CI](https://github.com/mj-deving/dacs-forge/actions/workflows/ci.yml/badge.svg)](https://github.com/mj-deving/dacs-forge/actions/workflows/ci.yml)
 
-A hardened, forkable DACS reference service and conformance kit for building
-specific DACS service agents.
+A hardened, forkable reference service and conformance kit for building service
+agents that speak DACS, the Demos Agent Commerce Standards.
+
+**In plain terms:** DACS is an open specification for how autonomous software
+agents transact with each other. One agent lists a service, a second vets it,
+both agree terms and commit, and the delivery and settlement leave evidence a
+third party can verify. This repository is a starting point for building such an
+agent: it owns the protocol plumbing so that a fork only writes the part that
+does the actual work. The specification itself lives at
+[DACS-Agent-commerce/DACS-Standard](https://github.com/DACS-Agent-commerce/DACS-Standard).
+I contribute to that standard; I do not steward it.
 
 > Release contract: **v0.1.1 Product Seal evidence correction**. Fixture/no-spend only. Support
 > applies only to the exact immutable `v0.1.1` release after GitHub attestation
